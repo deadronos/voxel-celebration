@@ -4,6 +4,8 @@
 
 The demo showcases a cozy voxel village, dynamic fireworks, floating sky lanterns, and particle/post-processing effects — designed to be easy to extend and perform well in real time.
 
+![Voxel Celebration Screenshot](./image.png)
+
 ---
 
 ## Highlights ✅
