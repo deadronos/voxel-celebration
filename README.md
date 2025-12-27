@@ -101,7 +101,7 @@ npm run format
 
 > Note: A minimal GitHub Actions CI workflow (`.github/workflows/ci.yml`) runs on pull requests and pushes to `main` to validate `lint`, `format:check`, `typecheck`, and `test` automatically.
 
-4. Update `memory/` with designs or task notes for non-trivial changes.
+1. Update `memory/` with designs or task notes for non-trivial changes.
 
 ---
 
