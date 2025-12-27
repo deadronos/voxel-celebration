@@ -17,27 +17,27 @@ const MAX_PARTICLES = 2000;
 
 export const FireworksManager: React.FC<FireworksManagerProps> = ({ rockets, removeRocket }) => {
   const meshRef = useRef<THREE.InstancedMesh>(null);
-  
+
   // Particle State stored in refs for performance (no re-renders on update)
   const particles = useRef<ParticleData[]>([]);
 
   useFrame((state, delta) => {
     // 1. Handle Rockets (Visuals handled by RocketComponent below, logic here is just cleanup if needed)
-    // Actually, we will render rockets as individual components for simplicity of animation, 
+    // Actually, we will render rockets as individual components for simplicity of animation,
     // but the EXPLOSION logic happens here.
-    
+
     // 2. Handle Particles
     if (meshRef.current) {
       const activeParticles = particles.current;
       let i = 0;
       while (i < activeParticles.length) {
         const p = activeParticles[i];
-        
+
         // Physics
         p.life -= delta * p.decay;
         p.velocity.y -= 9.8 * delta * 0.5; // Gravity
         p.position.add(p.velocity.clone().multiplyScalar(delta));
-        
+
         // Update Instance
         if (p.life > 0 && p.position.y > 0) {
           tempObject.position.copy(p.position);
@@ -45,7 +45,7 @@ export const FireworksManager: React.FC<FireworksManagerProps> = ({ rockets, rem
           const scale = p.scale * p.life;
           tempObject.scale.set(scale, scale, scale);
           tempObject.updateMatrix();
-          
+
           meshRef.current.setMatrixAt(i, tempObject.matrix);
           meshRef.current.setColorAt(i, p.color);
           i++;
@@ -55,7 +55,7 @@ export const FireworksManager: React.FC<FireworksManagerProps> = ({ rockets, rem
           activeParticles.pop();
         }
       }
-      
+
       meshRef.current.count = activeParticles.length;
       meshRef.current.instanceMatrix.needsUpdate = true;
       if (meshRef.current.instanceColor) meshRef.current.instanceColor.needsUpdate = true;
@@ -65,7 +65,7 @@ export const FireworksManager: React.FC<FireworksManagerProps> = ({ rockets, rem
   // Function exposed via a custom event or ref would be better, but for this structure:
   // We need a way to add explosion particles.
   // We will pass a "RegisterExplosion" function via context or handle it via a "Rocket" component that reports back.
-  
+
   // Alternative: The Rocket components are children here. When they die, they call an internal addExplosion.
 
   const addExplosion = (position: THREE.Vector3, color: string) => {
@@ -81,14 +81,14 @@ export const FireworksManager: React.FC<FireworksManagerProps> = ({ rockets, rem
         (Math.random() - 0.5) * 10,
         (Math.random() - 0.5) * 10
       );
-      
+
       particles.current.push({
         position: position.clone(),
         velocity: velocity,
         color: baseColor,
         scale: 0.3 + Math.random() * 0.3,
         life: 1.0,
-        decay: 0.5 + Math.random() * 0.5
+        decay: 0.5 + Math.random() * 0.5,
       });
     }
   };
@@ -102,30 +102,30 @@ export const FireworksManager: React.FC<FireworksManagerProps> = ({ rockets, rem
       </instancedMesh>
 
       {/* Render Active Rockets */}
-      {rockets.map(rocket => (
-        <Rocket 
-          key={rocket.id} 
-          data={rocket} 
+      {rockets.map((rocket) => (
+        <Rocket
+          key={rocket.id}
+          data={rocket}
           onExplode={(pos, col) => {
-             addExplosion(pos, col);
-             removeRocket(rocket.id);
-          }} 
+            addExplosion(pos, col);
+            removeRocket(rocket.id);
+          }}
         />
       ))}
     </>
   );
 };
 
-const Rocket: React.FC<{ 
-  data: RocketData; 
-  onExplode: (pos: THREE.Vector3, color: string) => void 
+const Rocket: React.FC<{
+  data: RocketData;
+  onExplode: (pos: THREE.Vector3, color: string) => void;
 }> = ({ data, onExplode }) => {
   const ref = useRef<THREE.Group>(null);
   const speed = 15;
 
   useFrame((state, delta) => {
     if (!ref.current) return;
-    
+
     // Move up
     ref.current.position.y += speed * delta;
 
@@ -137,7 +137,13 @@ const Rocket: React.FC<{
 
   return (
     <group ref={ref} position={data.position}>
-      <Voxel position={[0, 0, 0]} scale={[0.4, 0.8, 0.4]} color={data.color} emissive={data.color} emissiveIntensity={2} />
+      <Voxel
+        position={[0, 0, 0]}
+        scale={[0.4, 0.8, 0.4]}
+        color={data.color}
+        emissive={data.color}
+        emissiveIntensity={2}
+      />
       {/* Trail */}
       <pointLight color={data.color} intensity={1} distance={3} decay={2} />
     </group>

@@ -17,17 +17,20 @@ function Scene() {
   const handleShootRocket = useCallback((startPos: THREE.Vector3, color: string) => {
     const id = Math.random().toString(36).substr(2, 9);
     const targetHeight = 15 + Math.random() * 10; // Explode between y=15 and y=25
-    
-    setRockets(prev => [...prev, {
-      id,
-      position: startPos,
-      color,
-      targetHeight
-    }]);
+
+    setRockets((prev) => [
+      ...prev,
+      {
+        id,
+        position: startPos,
+        color,
+        targetHeight,
+      },
+    ]);
   }, []);
 
   const removeRocket = useCallback((id: string) => {
-    setRockets(prev => prev.filter(r => r.id !== id));
+    setRockets((prev) => prev.filter((r) => r.id !== id));
   }, []);
 
   return (
@@ -38,55 +41,62 @@ function Scene() {
       {/* Lighting */}
       <ambientLight intensity={0.1} color="#000033" />
       <directionalLight position={[10, 20, 10]} intensity={0.2} color="#4444ff" castShadow />
-      
+
       {/* Environment */}
       <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-      <Cloud opacity={0.3} speed={0.4} bounds={[20, 2, 1.5]} segments={20} position={[0, 20, -10]} color="#111122"/>
-      
+      <Cloud
+        opacity={0.3}
+        speed={0.4}
+        bounds={[20, 2, 1.5]}
+        segments={20}
+        position={[0, 20, -10]}
+        color="#111122"
+      />
+
       <group position={[0, -2, 0]}>
         <Ground />
-        
+
         {/* Village Layout */}
-        <House 
-          position={[-8, 0, -8]} 
-          onShootRocket={handleShootRocket} 
-          rotation={Math.PI / 4} 
-          width={5} 
-          height={4} 
-          depth={5} 
+        <House
+          position={[-8, 0, -8]}
+          onShootRocket={handleShootRocket}
+          rotation={Math.PI / 4}
+          width={5}
+          height={4}
+          depth={5}
         />
-        <House 
-          position={[8, 0, -8]} 
-          onShootRocket={handleShootRocket} 
-          rotation={-Math.PI / 4} 
-          width={4} 
-          height={3} 
-          depth={6} 
+        <House
+          position={[8, 0, -8]}
+          onShootRocket={handleShootRocket}
+          rotation={-Math.PI / 4}
+          width={4}
+          height={3}
+          depth={6}
         />
-        <House 
-          position={[-8, 0, 8]} 
-          onShootRocket={handleShootRocket} 
-          rotation={Math.PI * 0.75} 
-          width={3} 
-          height={5} 
-          depth={3} 
+        <House
+          position={[-8, 0, 8]}
+          onShootRocket={handleShootRocket}
+          rotation={Math.PI * 0.75}
+          width={3}
+          height={5}
+          depth={3}
         />
-        <House 
-          position={[8, 0, 8]} 
-          onShootRocket={handleShootRocket} 
-          rotation={-Math.PI * 0.75} 
-          width={6} 
-          height={3} 
-          depth={4} 
+        <House
+          position={[8, 0, 8]}
+          onShootRocket={handleShootRocket}
+          rotation={-Math.PI * 0.75}
+          width={6}
+          height={3}
+          depth={4}
         />
-        <House 
-          position={[0, 0, -12]} 
-          onShootRocket={handleShootRocket} 
-          width={4} 
-          height={3} 
-          depth={4} 
+        <House
+          position={[0, 0, -12]}
+          onShootRocket={handleShootRocket}
+          width={4}
+          height={3}
+          depth={4}
         />
-        
+
         {/* Decorations */}
         <StreetLight position={[0, 0, 0]} />
         <StreetLight position={[-10, 0, 0]} />
@@ -110,14 +120,14 @@ function Scene() {
       {/* Fireworks System */}
       <FireworksManager rockets={rockets} removeRocket={removeRocket} />
 
-      <OrbitControls 
-        maxPolarAngle={Math.PI / 2 - 0.1} 
-        minDistance={10} 
-        maxDistance={40} 
-        autoRotate 
+      <OrbitControls
+        maxPolarAngle={Math.PI / 2 - 0.1}
+        minDistance={10}
+        maxDistance={40}
+        autoRotate
         autoRotateSpeed={0.5}
       />
-      
+
       {/* Post Processing for the "Glow" effect */}
       <EffectComposer enableNormalPass={false}>
         <Bloom luminanceThreshold={1} mipmapBlur intensity={1.5} radius={0.4} />

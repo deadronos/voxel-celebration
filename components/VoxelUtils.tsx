@@ -9,12 +9,18 @@ interface VoxelProps {
   scale?: [number, number, number];
 }
 
-export const Voxel: React.FC<VoxelProps> = ({ position, color, emissive, emissiveIntensity = 0, scale = [1, 1, 1] }) => {
+export const Voxel: React.FC<VoxelProps> = ({
+  position,
+  color,
+  emissive,
+  emissiveIntensity = 0,
+  scale = [1, 1, 1],
+}) => {
   return (
     <Box args={[1, 1, 1]} position={position} scale={scale} castShadow receiveShadow>
-      <meshStandardMaterial 
-        color={color} 
-        emissive={emissive} 
+      <meshStandardMaterial
+        color={color}
+        emissive={emissive}
         emissiveIntensity={emissiveIntensity}
         roughness={0.8}
       />
@@ -30,9 +36,7 @@ export const VoxelStack: React.FC<{
   const [x, y, z] = position;
   const blocks = [];
   for (let i = 0; i < height; i++) {
-    blocks.push(
-      <Voxel key={i} position={[x, y + i, z]} color={color} />
-    );
+    blocks.push(<Voxel key={i} position={[x, y + i, z]} color={color} />);
   }
   return <group>{blocks}</group>;
 };

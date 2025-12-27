@@ -17,7 +17,7 @@ export const COLORS = {
     '#00ffff', // Cyan
     '#ffffff', // White
     '#ffaa00', // Orange
-  ]
+  ],
 };
 
 export const HOUSE_CONFIG = {
