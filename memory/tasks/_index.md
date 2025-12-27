@@ -13,6 +13,7 @@
 - [TASK001] Backfill Memory Bank — Completed 2025-12-27
 - [TASK002] Add unit tests for `FireworksManager` and rocket lifecycle — Completed 2025-12-27
 - [TASK003] Create `memory/designs/fireworks.md` — Completed 2025-12-27
+- [TASK005] Add GitHub Pages deploy workflow — Completed 2025-12-27
 
 ## Abandoned
 
