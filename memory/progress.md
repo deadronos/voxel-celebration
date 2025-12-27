@@ -4,6 +4,8 @@
 
 - Project builds and runs locally (`npm install`, `npm run dev`).
 - Scene is implemented with core components: `House`, `FireworksManager`, `SkyLantern`, and `Environment` (see `src/`).
+- Static voxel scenery uses instanced meshes with shared geometry/material caching to reduce draw calls.
+- Fireworks particles reuse objects via pooling and avoid per-frame allocation in the update loop.
 - Basic unit tests exist (Vitest) — `tests/vitest/constants.test.ts` verifies shared constants.
 - Linting and formatting scripts are present (`eslint`, `prettier`).
 

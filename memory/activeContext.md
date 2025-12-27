@@ -2,12 +2,14 @@
 
 ## Current focus
 
+- Performance pass: introduce instanced voxel rendering + caching and particle pooling to reduce draw calls and per-frame allocations.
 - Backfilling the repository Memory Bank with core documentation files (`projectbrief.md`, `productContext.md`, `systemPatterns.md`, `techContext.md`, `activeContext.md`, `progress.md`, and `tasks/` entries). This work documents project intent and developer conventions so contributors can onboard quickly.
 
 ## Recent changes
 
 - Core scene components are present in `src/` including `House`, `FireworksManager`, `SkyLantern`, and `Environment` (see `src/` for component implementations).
 - Project uses TypeScript, Vite, R3F, and Vitest.
+- Static voxel scenery now uses instanced meshes with shared geometry/material caching, and fireworks particles use pooling to avoid churn.
 
 ## Next steps & immediate tasks
 

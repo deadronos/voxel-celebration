@@ -4,11 +4,11 @@ import { Voxel } from './VoxelUtils';
 import * as THREE from 'three';
 
 interface SkyLanternProps {
-  position: [number, number, number];
+  position: readonly [number, number, number];
   color?: string;
 }
 
-export const SkyLantern: React.FC<SkyLanternProps> = ({ position, color = '#ff5722' }) => {
+const SkyLanternComponent: React.FC<SkyLanternProps> = ({ position, color = '#ff5722' }) => {
   const groupRef = useRef<THREE.Group>(null);
   const lightRef = useRef<THREE.PointLight>(null);
   // Store initial X/Z to drift around them
@@ -72,3 +72,5 @@ export const SkyLantern: React.FC<SkyLanternProps> = ({ position, color = '#ff57
   );
 };
 
+export const SkyLantern = React.memo(SkyLanternComponent);
+SkyLantern.displayName = 'SkyLantern';

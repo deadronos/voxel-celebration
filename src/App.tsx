@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Stars, Stats, Cloud } from '@react-three/drei';
+import { OrbitControls, Stars, Cloud } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
 
@@ -10,6 +10,46 @@ import House from './components/House';
 import { FireworksManager } from './components/FireworksManager';
 import { SkyLantern } from './components/SkyLantern';
 import { RocketData } from './types';
+
+const HOUSES: ReadonlyArray<
+  Readonly<{
+    key: string;
+    position: readonly [number, number, number];
+    rotation?: number;
+    width?: number;
+    height?: number;
+    depth?: number;
+  }>
+> = [
+  { key: 'house-1', position: [-8, 0, -8], rotation: Math.PI / 4, width: 5, height: 4, depth: 5 },
+  { key: 'house-2', position: [8, 0, -8], rotation: -Math.PI / 4, width: 4, height: 3, depth: 6 },
+  { key: 'house-3', position: [-8, 0, 8], rotation: Math.PI * 0.75, width: 3, height: 5, depth: 3 },
+  { key: 'house-4', position: [8, 0, 8], rotation: -Math.PI * 0.75, width: 6, height: 3, depth: 4 },
+  { key: 'house-5', position: [0, 0, -12], width: 4, height: 3, depth: 4 },
+];
+
+const STREET_LIGHTS: ReadonlyArray<readonly [number, number, number]> = [
+  [0, 0, 0],
+  [-10, 0, 0],
+  [10, 0, 0],
+  [0, 0, 10],
+  [0, 0, -5],
+];
+
+const TREES: ReadonlyArray<readonly [number, number, number]> = [
+  [-5, 0, 5],
+  [5, 0, 5],
+  [-5, 0, -5],
+  [5, 0, -5],
+  [-12, 0, 0],
+  [12, 0, 0],
+];
+
+const SKY_LANTERNS: ReadonlyArray<readonly [number, number, number]> = [
+  [-5, 5, -5],
+  [5, 8, 2],
+  [0, 12, 8],
+];
 
 function Scene() {
   const [rockets, setRockets] = useState<RocketData[]>([]);
@@ -67,64 +107,31 @@ function Scene() {
         <Ground />
 
         {/* Village Layout */}
-        <House
-          position={[-8, 0, -8]}
-          onShootRocket={handleShootRocket}
-          rotation={Math.PI / 4}
-          width={5}
-          height={4}
-          depth={5}
-        />
-        <House
-          position={[8, 0, -8]}
-          onShootRocket={handleShootRocket}
-          rotation={-Math.PI / 4}
-          width={4}
-          height={3}
-          depth={6}
-        />
-        <House
-          position={[-8, 0, 8]}
-          onShootRocket={handleShootRocket}
-          rotation={Math.PI * 0.75}
-          width={3}
-          height={5}
-          depth={3}
-        />
-        <House
-          position={[8, 0, 8]}
-          onShootRocket={handleShootRocket}
-          rotation={-Math.PI * 0.75}
-          width={6}
-          height={3}
-          depth={4}
-        />
-        <House
-          position={[0, 0, -12]}
-          onShootRocket={handleShootRocket}
-          width={4}
-          height={3}
-          depth={4}
-        />
+        {HOUSES.map((house) => (
+          <House
+            key={house.key}
+            position={house.position}
+            onShootRocket={handleShootRocket}
+            rotation={house.rotation}
+            width={house.width}
+            height={house.height}
+            depth={house.depth}
+          />
+        ))}
 
         {/* Decorations */}
-        <StreetLight position={[0, 0, 0]} />
-        <StreetLight position={[-10, 0, 0]} />
-        <StreetLight position={[10, 0, 0]} />
-        <StreetLight position={[0, 0, 10]} />
-        <StreetLight position={[0, 0, -5]} />
+        {STREET_LIGHTS.map((pos) => (
+          <StreetLight key={pos.join(',')} position={pos} />
+        ))}
 
-        <Tree position={[-5, 0, 5]} />
-        <Tree position={[5, 0, 5]} />
-        <Tree position={[-5, 0, -5]} />
-        <Tree position={[5, 0, -5]} />
-        <Tree position={[-12, 0, 0]} />
-        <Tree position={[12, 0, 0]} />
+        {TREES.map((pos) => (
+          <Tree key={pos.join(',')} position={pos} />
+        ))}
 
         {/* Sky Lanterns */}
-        <SkyLantern position={[-5, 5, -5]} />
-        <SkyLantern position={[5, 8, 2]} />
-        <SkyLantern position={[0, 12, 8]} />
+        {SKY_LANTERNS.map((pos) => (
+          <SkyLantern key={pos.join(',')} position={pos} />
+        ))}
       </group>
 
       {/* Fireworks System */}
@@ -164,4 +171,3 @@ function App() {
 }
 
 export default App;
-

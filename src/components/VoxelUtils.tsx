@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box } from '@react-three/drei';
+import React, { useMemo } from 'react';
+import { getSharedBoxGeometry, getVoxelMaterial } from '@/utils/threeCache';
 
 interface VoxelProps {
   position: [number, number, number];
@@ -16,15 +16,16 @@ export const Voxel: React.FC<VoxelProps> = ({
   emissiveIntensity = 0,
   scale = [1, 1, 1],
 }) => {
+  const material = useMemo(
+    () => getVoxelMaterial({ color, emissive, emissiveIntensity }),
+    [color, emissive, emissiveIntensity]
+  );
+
   return (
-    <Box args={[1, 1, 1]} position={position} scale={scale} castShadow receiveShadow>
-      <meshStandardMaterial
-        color={color}
-        emissive={emissive}
-        emissiveIntensity={emissiveIntensity}
-        roughness={0.8}
-      />
-    </Box>
+    <mesh position={position} scale={scale} castShadow receiveShadow>
+      <primitive object={getSharedBoxGeometry()} attach="geometry" dispose={null} />
+      <primitive object={material} attach="material" dispose={null} />
+    </mesh>
   );
 };
 
@@ -40,4 +41,3 @@ export const VoxelStack: React.FC<{
   }
   return <group>{blocks}</group>;
 };
-

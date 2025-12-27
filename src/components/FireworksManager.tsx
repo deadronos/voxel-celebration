@@ -1,10 +1,11 @@
-import React, { useRef, useMemo, useState, useEffect } from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Voxel } from './VoxelUtils';
 import { ParticleData, RocketData } from '../types';
 import { createExplosionParticles } from '../utils/fireworks';
 import { stepRocketPosition } from '../utils/rocket';
+import { getFireworksParticleMaterial, getSharedBoxGeometry } from '@/utils/threeCache';
 
 interface FireworksManagerProps {
   rockets: RocketData[];
@@ -16,12 +17,30 @@ const tempColor = new THREE.Color();
 
 // Max number of simultaneous particles
 const MAX_PARTICLES = 2000;
+const FIREWORK_BRIGHTNESS = 10;
 
 export const FireworksManager: React.FC<FireworksManagerProps> = ({ rockets, removeRocket }) => {
   const meshRef = useRef<THREE.InstancedMesh>(null);
 
   // Particle State stored in refs for performance (no re-renders on update)
   const particles = useRef<ParticleData[]>([]);
+  const particlePool = useRef<ParticleData[]>([]);
+  const explosionScratch = useRef<ParticleData[]>([]);
+
+  useLayoutEffect(() => {
+    const mesh = meshRef.current;
+    if (!mesh) return;
+
+    mesh.count = 0;
+    mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+
+    if (!mesh.instanceColor) {
+      const colors = new Float32Array(MAX_PARTICLES * 3);
+      mesh.instanceColor = new THREE.InstancedBufferAttribute(colors, 3);
+      mesh.instanceColor.setUsage(THREE.DynamicDrawUsage);
+      mesh.instanceColor.needsUpdate = true;
+    }
+  }, []);
 
   useFrame((state, delta) => {
     // 1. Handle Rockets (Visuals handled by RocketComponent below, logic here is just cleanup if needed)
@@ -29,7 +48,8 @@ export const FireworksManager: React.FC<FireworksManagerProps> = ({ rockets, rem
     // but the EXPLOSION logic happens here.
 
     // 2. Handle Particles
-    if (meshRef.current) {
+    const mesh = meshRef.current;
+    if (mesh) {
       const activeParticles = particles.current;
       let i = 0;
       while (i < activeParticles.length) {
@@ -38,7 +58,7 @@ export const FireworksManager: React.FC<FireworksManagerProps> = ({ rockets, rem
         // Physics
         p.life -= delta * p.decay;
         p.velocity.y -= 9.8 * delta * 0.5; // Gravity
-        p.position.add(p.velocity.clone().multiplyScalar(delta));
+        p.position.addScaledVector(p.velocity, delta);
 
         // Update Instance
         if (p.life > 0 && p.position.y > 0) {
@@ -48,19 +68,21 @@ export const FireworksManager: React.FC<FireworksManagerProps> = ({ rockets, rem
           tempObject.scale.set(scale, scale, scale);
           tempObject.updateMatrix();
 
-          meshRef.current.setMatrixAt(i, tempObject.matrix);
-          meshRef.current.setColorAt(i, p.color);
+          mesh.setMatrixAt(i, tempObject.matrix);
+          tempColor.copy(p.color).multiplyScalar(FIREWORK_BRIGHTNESS);
+          mesh.setColorAt(i, tempColor);
           i++;
         } else {
           // Remove particle (swap with last and pop)
+          particlePool.current.push(p);
           activeParticles[i] = activeParticles[activeParticles.length - 1];
           activeParticles.pop();
         }
       }
 
-      meshRef.current.count = activeParticles.length;
-      meshRef.current.instanceMatrix.needsUpdate = true;
-      if (meshRef.current.instanceColor) meshRef.current.instanceColor.needsUpdate = true;
+      mesh.count = activeParticles.length;
+      mesh.instanceMatrix.needsUpdate = true;
+      if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
     }
   });
 
@@ -72,19 +94,32 @@ export const FireworksManager: React.FC<FireworksManagerProps> = ({ rockets, rem
 
   // Use helper to generate explosion particles (pure & testable)
   const addExplosion = (position: THREE.Vector3, color: string) => {
-    const newParticles = createExplosionParticles(position, color);
+    const available = MAX_PARTICLES - particles.current.length;
+    if (available <= 0) return;
+
+    const newParticles = createExplosionParticles(position, color, {
+      out: explosionScratch.current,
+      pool: particlePool.current,
+    });
+
     for (let i = 0; i < newParticles.length; i++) {
-      if (particles.current.length >= MAX_PARTICLES) break;
+      if (particles.current.length >= MAX_PARTICLES) {
+        particlePool.current.push(newParticles[i]);
+        continue;
+      }
+
       particles.current.push(newParticles[i]);
     }
+
+    explosionScratch.current.length = 0;
   };
 
   return (
     <>
       {/* The Particles Instanced Mesh */}
-      <instancedMesh ref={meshRef} args={[undefined, undefined, MAX_PARTICLES]}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshBasicMaterial toneMapped={false} vertexColors={false} />
+      <instancedMesh ref={meshRef} args={[undefined, undefined, MAX_PARTICLES]} frustumCulled={false}>
+        <primitive object={getSharedBoxGeometry()} attach="geometry" dispose={null} />
+        <primitive object={getFireworksParticleMaterial()} attach="material" dispose={null} />
       </instancedMesh>
 
       {/* Render Active Rockets */}
@@ -134,4 +169,3 @@ const Rocket: React.FC<{
     </group>
   );
 };
-
