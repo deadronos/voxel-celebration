@@ -1,0 +1,28 @@
+# Progress — Voxel New Years Celebration
+
+**What works (current state):**
+
+- Project builds and runs locally (`npm install`, `npm run dev`).
+- Scene is implemented with core components: `House`, `FireworksManager`, `SkyLantern`, and `Environment` (see `src/`).
+- Basic unit tests exist (Vitest) — `tests/vitest/constants.test.ts` verifies shared constants.
+- Linting and formatting scripts are present (`eslint`, `prettier`).
+
+**What's left to build / next priorities:**
+
+1. **Test coverage**: Add unit tests for rocket lifecycle, fireworks manager logic, and any pure helpers. (See `memory/tasks/TASK002-add-fireworks-tests.md`)
+2. **Design docs**: Fireworks design doc created at `memory/designs/fireworks.md` (see `memory/tasks/TASK003-fireworks-design.md` if further work is needed).
+3. **CI**: Add a simple workflow to run `lint`, `format:check`, and `test` on pull requests (See `memory/tasks/TASK004-add-ci-workflow.md`).
+4. **Performance tests / baselines**: Add a light performance checklist and guidance for profiling R3F scenes.
+5. **Developer docs**: Expand CONTRIBUTING.md or add short onboarding notes about local debugging and test runs.
+
+**Known issues / constraints:**
+
+- No automated CI defined yet (lint/test/format not run on PRs by default).
+- Visual tests are not present—visual regression would be a future improvement.
+- Some rendering behavior (particles) may be non-deterministic which makes snapshot testing more difficult; write deterministic helpers where possible.
+
+**Overall status:** _Active_ — core demo working, documentation being backfilled, tests to expand.
+
+---
+
+_Update this file as progress is made and tasks are completed._

@@ -1,0 +1,19 @@
+# Tasks Index
+
+## In Progress
+
+- None
+
+## Pending
+
+- [TASK002] Add unit tests for `FireworksManager` and rocket lifecycle
+- [TASK004] Add a minimal GitHub Actions workflow to run `lint`, `test`, and `format:check`
+
+## Completed
+
+- [TASK001] Backfill Memory Bank — Completed 2025-12-27
+- [TASK003] Create `memory/designs/fireworks.md` — Completed 2025-12-27
+
+## Abandoned
+
+- None
