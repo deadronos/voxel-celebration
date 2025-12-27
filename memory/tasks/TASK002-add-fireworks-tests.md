@@ -1,7 +1,8 @@
 # [TASK002] - Add unit tests for FireworksManager & rocket lifecycle
 
-**Status:** Not Started  
-**Added:** 2025-12-27
+**Status:** Completed  
+**Added:** 2025-12-27  
+**Updated:** 2025-12-27
 
 ## Goal
 
@@ -24,4 +25,10 @@ Improve test coverage by adding unit tests for fireworks-related behavior and ro
 
 ---
 
-*Assign, implement, and iterate on tests; follow-up could include integration or browser-based checks if necessary.*
+### Progress Log
+
+- Implemented pure helpers: `createExplosionParticles` and `stepRocketPosition`.
+- Added unit tests: `tests/vitest/fireworks.test.ts` and `tests/vitest/rocket.test.ts` and verified they pass locally with `npm run test`.
+- Updated `FireworksManager` and `Rocket` to use the pure helpers for testability.
+
+*Follow-ups: Add integration tests to validate `FireworksManager` rendering/instance updates if needed.*

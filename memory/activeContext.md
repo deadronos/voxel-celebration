@@ -13,7 +13,7 @@
 
 - Complete Memory Bank files and create `memory/tasks/TASK001-backfill-memory-bank.md` to track this work (in progress).
 - Add a `memory/designs/` placeholder and capture any design decisions for the fireworks system.
-- Add targeted unit tests for particle lifecycle and rocket manager logic.
+- Added targeted unit tests for particle generator and rocket step logic; next: consider integration tests for the full `FireworksManager` rendering lifecycle.
 - Consider small CI improvements to run `lint`, `test`, and `format:check` on PRs.
 
 ## Decisions & rationale

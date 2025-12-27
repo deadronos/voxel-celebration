@@ -3,6 +3,8 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Voxel } from './VoxelUtils';
 import { ParticleData, RocketData } from '../types';
+import { createExplosionParticles } from '../utils/fireworks';
+import { stepRocketPosition } from '../utils/rocket';
 
 interface FireworksManagerProps {
   rockets: RocketData[];
@@ -68,28 +70,12 @@ export const FireworksManager: React.FC<FireworksManagerProps> = ({ rockets, rem
 
   // Alternative: The Rocket components are children here. When they die, they call an internal addExplosion.
 
+  // Use helper to generate explosion particles (pure & testable)
   const addExplosion = (position: THREE.Vector3, color: string) => {
-    const count = 30 + Math.random() * 20; // Particles per explosion
-    const baseColor = new THREE.Color(color);
-
-    for (let i = 0; i < count; i++) {
+    const newParticles = createExplosionParticles(position, color);
+    for (let i = 0; i < newParticles.length; i++) {
       if (particles.current.length >= MAX_PARTICLES) break;
-
-      // Random spherical velocity
-      const velocity = new THREE.Vector3(
-        (Math.random() - 0.5) * 10,
-        (Math.random() - 0.5) * 10,
-        (Math.random() - 0.5) * 10
-      );
-
-      particles.current.push({
-        position: position.clone(),
-        velocity: velocity,
-        color: baseColor,
-        scale: 0.3 + Math.random() * 0.3,
-        life: 1.0,
-        decay: 0.5 + Math.random() * 0.5,
-      });
+      particles.current.push(newParticles[i]);
     }
   };
 
@@ -126,11 +112,10 @@ const Rocket: React.FC<{
   useFrame((state, delta) => {
     if (!ref.current) return;
 
-    // Move up
-    ref.current.position.y += speed * delta;
+    const { newY, exploded } = stepRocketPosition(ref.current.position.y, speed, delta, data.targetHeight);
+    ref.current.position.y = newY;
 
-    // Check height
-    if (ref.current.position.y >= data.targetHeight) {
+    if (exploded) {
       onExplode(ref.current.position, data.color);
     }
   });

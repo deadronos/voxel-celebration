@@ -9,7 +9,7 @@
 
 **What's left to build / next priorities:**
 
-1. **Test coverage**: Add unit tests for rocket lifecycle, fireworks manager logic, and any pure helpers. (See `memory/tasks/TASK002-add-fireworks-tests.md`)
+1. **Test coverage**: Added unit tests for explosion particle generator and rocket step logic; extend to integration tests (see `memory/tasks/TASK002-add-fireworks-tests.md`).
 2. **Design docs**: Fireworks design doc created at `memory/designs/fireworks.md` (see `memory/tasks/TASK003-fireworks-design.md` if further work is needed).
 3. **CI**: Add a simple workflow to run `lint`, `format:check`, and `test` on pull requests (See `memory/tasks/TASK004-add-ci-workflow.md`).
 4. **Performance tests / baselines**: Add a light performance checklist and guidance for profiling R3F scenes.
