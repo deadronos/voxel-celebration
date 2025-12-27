@@ -100,7 +100,16 @@ const House: React.FC<HouseProps> = ({
       ) : null}
 
       {/* Ambient glow from house if windows are lit */}
-      <pointLight position={[0, 2, depth / 2 + 1]} intensity={0.5} color="orange" distance={5} />
+      {litWindows.some((isLit) => isLit) && (
+        <pointLight
+          position={[0, height / 2, depth / 2]}
+          intensity={2}
+          distance={8}
+          decay={2}
+          color="#ffaa00"
+          castShadow={false}
+        />
+      )}
     </group>
   );
 };

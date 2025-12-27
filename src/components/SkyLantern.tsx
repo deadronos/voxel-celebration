@@ -31,13 +31,25 @@ const SkyLanternComponent: React.FC<SkyLanternProps> = ({ position, color = '#ff
       groupRef.current.position.y = -5;
     }
 
-    // Organic Horizontal drift using sine waves
-    groupRef.current.position.x = initialPos.x + Math.sin(time * 0.5) * 2;
-    groupRef.current.position.z = initialPos.z + Math.cos(time * 0.3) * 2;
+    // Generic organic drift (noise-like)
+    const driftX = Math.sin(time * 0.3) * 1.5 + Math.cos(time * 0.7) * 0.5;
+    const driftZ = Math.cos(time * 0.2) * 1.5 + Math.sin(time * 0.5) * 0.5;
 
-    // Gentle sway rotation
-    groupRef.current.rotation.z = Math.sin(time * 1) * 0.05;
-    groupRef.current.rotation.x = Math.cos(time * 0.8) * 0.05;
+    groupRef.current.position.x = initialPos.x + driftX;
+    groupRef.current.position.z = initialPos.z + driftZ;
+
+    // Bobbing motion integrated into sway
+    // Apply speed
+    groupRef.current.position.y += speed * delta;
+    // Add bob to visual y position without affecting the base trajectory too much?
+    // Actually, let's just add it to the rotation/sway to keep upward movement clean,
+    // OR just modulate the Y slightly.
+    // Let's keep Y linear for "rising" but maybe sway rotation is key.
+
+    // Better: Sway/Tilt as if caught in wind
+    // When moving X, tilt Z. When moving Z, tilt X.
+    groupRef.current.rotation.z = Math.cos(time * 0.5) * 0.15; // Rocking left/right
+    groupRef.current.rotation.x = Math.sin(time * 0.3) * 0.15; // Rocking forward/back
 
     // Light Burst logic
     if (lightRef.current) {
