@@ -84,7 +84,7 @@ npm run format
 ## Deployment 🚀
 
 - This repository includes a GitHub Actions workflow at `.github/workflows/deploy-pages.yml` that builds the site via `npm run build`, uploads the generated `dist/` artifact with `actions/upload-pages-artifact@v3`, and deploys it using `actions/deploy-pages@v4`.
-- The workflow triggers on pushes to `main` and can be executed manually via the Actions UI (`workflow_dispatch`).
+- The workflow **runs when a tag matching `v*`** (for example `v1.0.0`) is pushed to the repository — a tag push will trigger a build and deployment.
 - Make sure your repository Pages settings allow deployments from GitHub Actions (the action will create a Pages deployment). If you prefer, you can protect the `github-pages` environment in repository settings.
 - After a successful deployment the site should be available at: `https://deadronos.github.io/voxel-celebration/` (production builds use the repo-path base).
 - The `vite` config is set so production builds will use the base `'/voxel-celebration/'` (the dev server still uses `/`).

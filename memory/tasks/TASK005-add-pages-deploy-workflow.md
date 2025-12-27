@@ -13,9 +13,12 @@ Add a GitHub Actions workflow to build and deploy the site to GitHub Pages, and 
 - A workflow exists at `.github/workflows/deploy-pages.yml` which builds (`npm run build`) and deploys the `dist/` output to Pages using official, supported Actions (`actions/upload-pages-artifact@v3` and `actions/deploy-pages@v4`).
 - `vite.config.ts` is configured so production builds use base `'/voxel-celebration/'` and the dev server keeps `/`.
 - Local `npm run build` succeeds and produces `dist/`.
+- The workflow triggers when a tag matching `v*` is pushed (e.g., `v1.0.0`).
 - README updated with a short `Deployment` section describing the workflow and Pages URL.
 
 ## Implementation notes
+
+- Used GitHub's recommended actions: `actions/checkout@v4`, `actions/setup-node@v4`, `actions/upload-pages-artifact@v3`, and `actions/deploy-pages@v4`.
 
 - Used GitHub's recommended actions: `actions/checkout@v4`, `actions/setup-node@v4`, `actions/upload-pages-artifact@v3`, and `actions/deploy-pages@v4`.
 - Added a `concurrency` group to prevent overlapping deployments.
@@ -27,6 +30,7 @@ Add a GitHub Actions workflow to build and deploy the site to GitHub Pages, and 
 
 - 2025-12-27: Researched recommended Pages Actions and implemented workflow.
 - 2025-12-27: Updated `vite.config.ts` and README, ran build and tests.
+- 2025-12-27: Modified workflow to trigger only on tag pushes matching `v*`.
 
 ---
 
