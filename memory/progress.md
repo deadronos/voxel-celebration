@@ -8,6 +8,7 @@
 - Fireworks particles reuse objects via pooling and avoid per-frame allocation in the update loop.
 - Basic unit tests exist (Vitest) — `tests/vitest/constants.test.ts` verifies shared constants.
 - Linting and formatting scripts are present (`eslint`, `prettier`).
+- Tailwind CSS is configured locally via the Tailwind v4 Vite plugin, using the `@import "tailwindcss";` entrypoint in `src/index.css`.
 
 **What's left to build / next priorities:**
 
@@ -19,7 +20,7 @@
 
 **Known issues / constraints:**
 
-- No automated CI defined yet (lint/test/format not run on PRs by default).
+- `npm run lint` currently fails due to `@ts-ignore` and unsafe access warnings in `src/components/AuroraSky.tsx`.
 - Visual tests are not present—visual regression would be a future improvement.
 - Some rendering behavior (particles) may be non-deterministic which makes snapshot testing more difficult; write deterministic helpers where possible.
 

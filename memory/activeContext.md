@@ -10,6 +10,7 @@
 - Core scene components are present in `src/` including `House`, `FireworksManager`, `SkyLantern`, and `Environment` (see `src/` for component implementations).
 - Project uses TypeScript, Vite, R3F, and Vitest.
 - Static voxel scenery now uses instanced meshes with shared geometry/material caching, and fireworks particles use pooling to avoid churn.
+- Tailwind CSS is on v4 and now wired through the Vite plugin, using the v4 `@import "tailwindcss";` entrypoint in `src/index.css`.
 
 ## Next steps & immediate tasks
 
