@@ -98,6 +98,9 @@ npm run format
 1. Open an issue describing the feature or bug.
 2. Create a PR with a clear description and add tests for logic changes.
 3. Ensure `npm test`, `npm run lint`, and `npm run typecheck` pass locally before requesting review.
+
+> Note: A minimal GitHub Actions CI workflow (`.github/workflows/ci.yml`) runs on pull requests and pushes to `main` to validate `lint`, `format:check`, `typecheck`, and `test` automatically.
+
 4. Update `memory/` with designs or task notes for non-trivial changes.
 
 ---

@@ -13,7 +13,7 @@
 
 1. **Test coverage**: Added unit tests for explosion particle generator and rocket step logic; extend to integration tests (see `memory/tasks/TASK002-add-fireworks-tests.md`).
 2. **Design docs**: Fireworks design doc created at `memory/designs/fireworks.md` (see `memory/tasks/TASK003-fireworks-design.md` if further work is needed).
-3. **CI**: Add a simple workflow to run `lint`, `format:check`, and `test` on pull requests (See `memory/tasks/TASK004-add-ci-workflow.md`).
+3. **CI**: A minimal CI workflow was added at `.github/workflows/ci.yml` (runs on PRs and pushes to `main`) to execute `lint`, `format:check`, `typecheck`, and `test`. Follow-up: consider adding visual smoke tests and pipeline caching improvements.
 4. **Performance tests / baselines**: Add a light performance checklist and guidance for profiling R3F scenes.
 5. **Developer docs**: Expand CONTRIBUTING.md or add short onboarding notes about local debugging and test runs.
 
