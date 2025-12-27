@@ -11,6 +11,7 @@ import { FireworksManager } from './components/FireworksManager';
 import { SkyLantern } from './components/SkyLantern';
 import { AuroraSky } from './components/AuroraSky';
 import { RocketData } from './types';
+import { DynamicResScaler } from './components/DynamicResScaler';
 
 const HOUSES: ReadonlyArray<
   Readonly<{
@@ -77,6 +78,10 @@ function Scene() {
   return (
     <>
       <color attach="background" args={['#050510']} />
+      
+      {/* Dynamic Resolution Scaling */}
+      <DynamicResScaler />
+
       {/* Volumetric-ish Fog - Deep Midnight Purple */}
       <fog attach="fog" args={['#0b0026', 15, 60]} />
 
