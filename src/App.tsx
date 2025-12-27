@@ -9,6 +9,7 @@ import { Ground, Tree, StreetLight } from './components/Environment';
 import House from './components/House';
 import { FireworksManager } from './components/FireworksManager';
 import { SkyLantern } from './components/SkyLantern';
+import { AuroraSky } from './components/AuroraSky';
 import { RocketData } from './types';
 
 const HOUSES: ReadonlyArray<
@@ -56,7 +57,7 @@ function Scene() {
 
   const handleShootRocket = useCallback((startPos: THREE.Vector3, color: string) => {
     const id = Math.random().toString(36).substr(2, 9);
-    const targetHeight = 8 + Math.random() * 7; // Explode between y=8 and y=15 (lower)
+    const targetHeight = 8 + Math.random() * 7;
 
     setRockets((prev) => [
       ...prev,
@@ -76,31 +77,43 @@ function Scene() {
   return (
     <>
       <color attach="background" args={['#050510']} />
-      <fog attach="fog" args={['#050510', 10, 50]} />
+      {/* Volumetric-ish Fog - Deep Midnight Purple */}
+      <fog attach="fog" args={['#0b0026', 15, 60]} />
 
-      {/* Lighting */}
-      <ambientLight intensity={0.2} color="#222244" />
-      <hemisphereLight intensity={0.3} groundColor="#000000" color="#222244" />
-      <directionalLight position={[10, 20, 10]} intensity={0.4} color="#6666ff" castShadow />
-      {/* Moon Light (Rim) */}
+      {/* Lighting Overhaul */}
+      <ambientLight intensity={0.4} color="#332255" /> 
+      <hemisphereLight intensity={0.5} groundColor="#000022" color="#5533aa" />
+      <directionalLight position={[10, 20, 10]} intensity={0.8} color="#8888ff" castShadow />
+      
+      {/* Moon Light (Rim) - Stronger Blue/Cyan for contrast */}
       <spotLight
-        position={[-20, 20, -20]}
-        intensity={2.5}
-        color="#aaddff"
-        angle={0.6}
-        penumbra={1}
+        position={[-20, 30, -20]}
+        intensity={4}
+        color="#00ffff"
+        angle={0.8}
+        penumbra={0.5}
         castShadow
       />
 
-      {/* Environment */}
-      <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+      {/* Atmospheric Effects */}
+      <AuroraSky />
+      <Stars 
+        radius={100} 
+        depth={60} 
+        count={8000} 
+        factor={6} 
+        saturation={0.9} 
+        fade 
+        speed={2} 
+      />
+      
       <Cloud
-        opacity={0.3}
-        speed={0.4}
-        bounds={[20, 2, 1.5]}
-        segments={20}
-        position={[0, 20, -10]}
-        color="#111122"
+        opacity={0.4}
+        speed={0.2}
+        bounds={[40, 6, 4]} // Widen bounds
+        segments={30}
+        position={[0, 25, -20]}
+        color="#221133" // Darker purple cloud
       />
 
       <group position={[0, -2, 0]}>
@@ -140,14 +153,14 @@ function Scene() {
       <OrbitControls
         maxPolarAngle={Math.PI / 2 - 0.1}
         minDistance={10}
-        maxDistance={40}
+        maxDistance={60}
         autoRotate
-        autoRotateSpeed={0.5}
+        autoRotateSpeed={0.3}
       />
 
-      {/* Post Processing for the "Glow" effect */}
+      {/* Post Processing */}
       <EffectComposer enableNormalPass={false}>
-        <Bloom luminanceThreshold={1} mipmapBlur intensity={1.5} radius={0.4} />
+        <Bloom luminanceThreshold={0.8} mipmapBlur intensity={1.8} radius={0.5} />
       </EffectComposer>
     </>
   );
