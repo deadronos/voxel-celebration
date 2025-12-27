@@ -84,7 +84,7 @@ export const FireworksManager: React.FC<FireworksManagerProps> = ({ rockets, rem
       {/* The Particles Instanced Mesh */}
       <instancedMesh ref={meshRef} args={[undefined, undefined, MAX_PARTICLES]}>
         <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial emissiveIntensity={1.5} toneMapped={false} vertexColors />
+        <meshBasicMaterial toneMapped={false} vertexColors={false} />
       </instancedMesh>
 
       {/* Render Active Rockets */}
@@ -127,10 +127,10 @@ const Rocket: React.FC<{
         scale={[0.4, 0.8, 0.4]}
         color={data.color}
         emissive={data.color}
-        emissiveIntensity={2}
+        emissiveIntensity={4}
       />
       {/* Trail */}
-      <pointLight color={data.color} intensity={1} distance={3} decay={2} />
+      <pointLight color={data.color} intensity={2} distance={3} decay={2} />
     </group>
   );
 };

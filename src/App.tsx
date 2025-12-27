@@ -16,7 +16,7 @@ function Scene() {
 
   const handleShootRocket = useCallback((startPos: THREE.Vector3, color: string) => {
     const id = Math.random().toString(36).substr(2, 9);
-    const targetHeight = 15 + Math.random() * 10; // Explode between y=15 and y=25
+    const targetHeight = 8 + Math.random() * 7; // Explode between y=8 and y=15 (lower)
 
     setRockets((prev) => [
       ...prev,
@@ -39,8 +39,18 @@ function Scene() {
       <fog attach="fog" args={['#050510', 10, 50]} />
 
       {/* Lighting */}
-      <ambientLight intensity={0.1} color="#000033" />
-      <directionalLight position={[10, 20, 10]} intensity={0.2} color="#4444ff" castShadow />
+      <ambientLight intensity={0.2} color="#222244" />
+      <hemisphereLight intensity={0.3} groundColor="#000000" color="#222244" />
+      <directionalLight position={[10, 20, 10]} intensity={0.4} color="#6666ff" castShadow />
+      {/* Moon Light (Rim) */}
+      <spotLight
+        position={[-20, 20, -20]}
+        intensity={2.5}
+        color="#aaddff"
+        angle={0.6}
+        penumbra={1}
+        castShadow
+      />
 
       {/* Environment */}
       <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />

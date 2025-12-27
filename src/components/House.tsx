@@ -23,7 +23,7 @@ const House: React.FC<HouseProps> = ({
 }) => {
   const [x, y, z] = position;
   const [litWindows, setLitWindows] = useState<boolean[]>([]);
-  const nextShootTime = useRef(Math.random() * 5 + 2); // Random start delay
+  const nextShootTime = useRef(Math.random() * 4 + 2); // Random start delay
 
   // Initialize random windows
   useEffect(() => {

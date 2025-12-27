@@ -10,7 +10,7 @@ export function createExplosionParticles(
 ): ParticleData[] {
   const rand: RandomFn = opts?.random ?? Math.random;
   const count = typeof opts?.count === 'number' ? opts.count : Math.floor(30 + rand() * 20);
-  const baseColor = new THREE.Color(color);
+  const baseColor = new THREE.Color(color).multiplyScalar(10);
 
   const particles: ParticleData[] = [];
   for (let i = 0; i < count; i++) {

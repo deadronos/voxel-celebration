@@ -34,8 +34,8 @@ export const StreetLight: React.FC<{ position: [number, number, number] }> = ({ 
       <Voxel position={[0, 3, 0]} color={COLORS.stone} />
 
       {/* Light fixture */}
-      <Voxel position={[0, 4, 0]} color="#ffffff" emissive="#fffacd" emissiveIntensity={2} />
-      <pointLight position={[0, 5, 0]} intensity={1.5} distance={10} color="#fffacd" decay={2} />
+      <Voxel position={[0, 4, 0]} color="#ffffff" emissive="#fffacd" emissiveIntensity={1} />
+      <pointLight position={[0, 5, 0]} intensity={0.8} distance={10} color="#fffacd" decay={2} />
     </group>
   );
 };
