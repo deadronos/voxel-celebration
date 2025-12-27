@@ -40,7 +40,8 @@ const StreetLightComponent: React.FC<{ position: readonly [number, number, numbe
   );
 
   const fixtureInstances = useMemo<readonly VoxelInstance[]>(() => [{ position: [0, 4, 0], color: '#ffffff' }], []);
-  const fixtureMaterial = getVoxelMaterial({ emissive: '#fffacd', emissiveIntensity: 1 });
+  // High intensity for Bloom
+  const fixtureMaterial = getVoxelMaterial({ emissive: '#fffacd', emissiveIntensity: 5 });
 
   return (
     <group position={position}>
