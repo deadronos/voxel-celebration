@@ -23,6 +23,7 @@ export default defineConfig(({ mode }) => {
     test: {
       include: ['tests/vitest/**/*.test.{ts,tsx}', 'tests/vitest/**/*.spec.{ts,tsx}'],
       environment: 'jsdom',
+      setupFiles: ['./tests/vitest/setup.ts'],
       coverage: {
         provider: 'v8',
         reporter: ['text', 'lcov', 'html'],
