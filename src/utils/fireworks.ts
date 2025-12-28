@@ -5,6 +5,8 @@ export type RandomFn = () => number;
 
 type ShapeType = 'burst' | 'sphere' | 'ring';
 
+const tempBaseColor = new THREE.Color();
+
 function getParticle(pool: ParticleData[] | undefined): ParticleData {
   return (
     pool?.pop() ??
@@ -27,7 +29,7 @@ export function createExplosionParticles(
   const rand: RandomFn = opts?.random ?? Math.random;
   // Increase default count for better shapes
   const count = typeof opts?.count === 'number' ? opts.count : Math.floor(50 + rand() * 50);
-  const baseColor = new THREE.Color(color);
+  const baseColor = tempBaseColor.set(color);
 
   const particles = opts?.out ?? [];
   particles.length = 0;

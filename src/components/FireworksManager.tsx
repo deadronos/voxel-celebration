@@ -12,12 +12,10 @@ interface FireworksManagerProps {
   removeRocket: (id: string) => void;
 }
 
-const tempObject = new THREE.Object3D();
-const tempColor = new THREE.Color();
-
 // Max number of simultaneous particles
 const MAX_PARTICLES = 2000;
 const FIREWORK_BRIGHTNESS = 10;
+const GRAVITY = 9.8 * 0.5;
 
 export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRocket }) => {
   const meshRef = useRef<THREE.InstancedMesh>(null);
@@ -26,6 +24,13 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
   const particles = useRef<ParticleData[]>([]);
   const particlePool = useRef<ParticleData[]>([]);
   const explosionScratch = useRef<ParticleData[]>([]);
+
+  const instanceMatrixAttrRef = useRef<THREE.InstancedBufferAttribute | null>(null);
+  const instanceMatrixArrayRef = useRef<Float32Array | null>(null);
+  const instanceColorAttrRef = useRef<THREE.InstancedBufferAttribute | null>(null);
+  const instanceColorArrayRef = useRef<Float32Array | null>(null);
+  const matrixUpdateRangeRef = useRef({ start: 0, count: 0 });
+  const colorUpdateRangeRef = useRef({ start: 0, count: 0 });
 
   useLayoutEffect(() => {
     const mesh = meshRef.current;
@@ -40,9 +45,27 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
       mesh.instanceColor.setUsage(THREE.DynamicDrawUsage);
       mesh.instanceColor.needsUpdate = true;
     }
+
+    instanceMatrixAttrRef.current = mesh.instanceMatrix;
+    instanceMatrixArrayRef.current = mesh.instanceMatrix.array as Float32Array;
+    instanceColorAttrRef.current = mesh.instanceColor;
+    instanceColorArrayRef.current = mesh.instanceColor.array as Float32Array;
+
+    const pool = particlePool.current;
+    const missing = MAX_PARTICLES - pool.length;
+    for (let i = 0; i < missing; i++) {
+      pool.push({
+        position: new THREE.Vector3(),
+        velocity: new THREE.Vector3(),
+        color: new THREE.Color(),
+        scale: 0,
+        life: 0,
+        decay: 0,
+      });
+    }
   }, []);
 
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     // 1. Handle Rockets (Visuals handled by RocketComponent below, logic here is just cleanup if needed)
     // Actually, we will render rockets as individual components for simplicity of animation,
     // but the EXPLOSION logic happens here.
@@ -50,6 +73,23 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
     // 2. Handle Particles
     const mesh = meshRef.current;
     if (mesh) {
+      if (!instanceMatrixAttrRef.current) {
+        instanceMatrixAttrRef.current = mesh.instanceMatrix;
+        instanceMatrixArrayRef.current = mesh.instanceMatrix.array as Float32Array;
+      }
+
+      if (!instanceColorAttrRef.current && mesh.instanceColor) {
+        instanceColorAttrRef.current = mesh.instanceColor;
+        instanceColorArrayRef.current = mesh.instanceColor.array as Float32Array;
+      }
+
+      const instanceMatrix = instanceMatrixAttrRef.current;
+      const instanceMatrixArray = instanceMatrixArrayRef.current;
+      const instanceColor = instanceColorAttrRef.current;
+      const instanceColorArray = instanceColorArrayRef.current;
+
+      if (!instanceMatrix || !instanceMatrixArray) return;
+
       const activeParticles = particles.current;
       let i = 0;
       while (i < activeParticles.length) {
@@ -57,20 +97,40 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
 
         // Physics
         p.life -= delta * p.decay;
-        p.velocity.y -= 9.8 * delta * 0.5; // Gravity
-        p.position.addScaledVector(p.velocity, delta);
+        p.velocity.y -= GRAVITY * delta;
+        p.position.x += p.velocity.x * delta;
+        p.position.y += p.velocity.y * delta;
+        p.position.z += p.velocity.z * delta;
 
         // Update Instance
         if (p.life > 0 && p.position.y > 0) {
-          tempObject.position.copy(p.position);
-          // Scale down as life fades
           const scale = p.scale * p.life;
-          tempObject.scale.set(scale, scale, scale);
-          tempObject.updateMatrix();
 
-          mesh.setMatrixAt(i, tempObject.matrix);
-          tempColor.copy(p.color).multiplyScalar(FIREWORK_BRIGHTNESS);
-          mesh.setColorAt(i, tempColor);
+          const m = i * 16;
+          instanceMatrixArray[m] = scale;
+          instanceMatrixArray[m + 1] = 0;
+          instanceMatrixArray[m + 2] = 0;
+          instanceMatrixArray[m + 3] = 0;
+          instanceMatrixArray[m + 4] = 0;
+          instanceMatrixArray[m + 5] = scale;
+          instanceMatrixArray[m + 6] = 0;
+          instanceMatrixArray[m + 7] = 0;
+          instanceMatrixArray[m + 8] = 0;
+          instanceMatrixArray[m + 9] = 0;
+          instanceMatrixArray[m + 10] = scale;
+          instanceMatrixArray[m + 11] = 0;
+          instanceMatrixArray[m + 12] = p.position.x;
+          instanceMatrixArray[m + 13] = p.position.y;
+          instanceMatrixArray[m + 14] = p.position.z;
+          instanceMatrixArray[m + 15] = 1;
+
+          if (instanceColor && instanceColorArray) {
+            const c = p.color;
+            const o = i * 3;
+            instanceColorArray[o] = c.r * FIREWORK_BRIGHTNESS;
+            instanceColorArray[o + 1] = c.g * FIREWORK_BRIGHTNESS;
+            instanceColorArray[o + 2] = c.b * FIREWORK_BRIGHTNESS;
+          }
           i++;
         } else {
           // Remove particle (swap with last and pop)
@@ -81,8 +141,22 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
       }
 
       mesh.count = activeParticles.length;
-      mesh.instanceMatrix.needsUpdate = true;
-      if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+
+      if (mesh.count > 0) {
+        const matrixRange = matrixUpdateRangeRef.current;
+        matrixRange.start = 0;
+        matrixRange.count = mesh.count * 16;
+        instanceMatrix.updateRanges.push(matrixRange);
+        instanceMatrix.needsUpdate = true;
+
+        if (instanceColor && instanceColorArray) {
+          const colorRange = colorUpdateRangeRef.current;
+          colorRange.start = 0;
+          colorRange.count = mesh.count * 3;
+          instanceColor.updateRanges.push(colorRange);
+          instanceColor.needsUpdate = true;
+        }
+      }
     }
   });
 

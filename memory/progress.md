@@ -5,10 +5,11 @@
 - Project builds and runs locally (`npm install`, `npm run dev`).
 - Scene is implemented with core components: `House`, `FireworksManager`, `SkyLantern`, and `Environment` (see `src/`).
 - Static voxel scenery uses instanced meshes with shared geometry/material caching to reduce draw calls.
-- Fireworks particles reuse objects via pooling and avoid per-frame allocation in the update loop.
+- Fireworks particles reuse objects via pooling and update instanced buffers directly to keep the per-frame loop lean.
 - The 3D scene is code-split and lazy-loaded to improve initial page render time.
 - Scene hydration is staged (first-paint ground/sky, then world, atmosphere, lanterns, fireworks, postprocessing) with idle prefetching to keep startup smooth.
 - WebGL context loss handling and a lower initial DPR help reduce GPU pressure during load.
+- Ice lake reflections use a tuned reflector resolution (scaled by DPR) to reduce GPU cost.
 - Basic unit tests exist (Vitest) — `tests/vitest/constants.test.ts` verifies shared constants.
 - SceneCanvas coverage now exercises idle scheduling, context loss overlay behavior, and rocket add/remove flows.
 - Linting and formatting scripts are present (`eslint`, `prettier`).
@@ -25,7 +26,6 @@
 
 **Known issues / constraints:**
 
-- `npm run lint` currently fails due to `@ts-ignore` and unsafe access warnings in `src/components/AuroraSky.tsx`.
 - Visual tests are not present—visual regression would be a future improvement.
 - Some rendering behavior (particles) may be non-deterministic which makes snapshot testing more difficult; write deterministic helpers where possible.
 
