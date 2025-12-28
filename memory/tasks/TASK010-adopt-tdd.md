@@ -24,8 +24,8 @@ The repository already has a strong testing culture (Vitest, Playwright) and a s
 
 ### Pilot: `DynamicResScaler`
 
-- Red: Add failing unit test(s) that capture accepted behavior (e.g., `minDpr`/`maxDpr` props and boundary behavior).  
-- Green: Implement minimal code changes to satisfy tests (add props and use them).  
+- Red: Add failing unit test(s) that capture accepted behavior (e.g., `minDpr`/`maxDpr` props and boundary behavior).
+- Green: Implement minimal code changes to satisfy tests (add props and use them).
 - Refactor: Extract DPR math into a pure helper with unit tests and ensure all tests pass.
 
 ## Progress Tracking
@@ -46,9 +46,9 @@ The repository already has a strong testing culture (Vitest, Playwright) and a s
 
 ### 2025-12-28
 
-- Created design file `DES005-tdd-adoption.md`.  
-- Created task file `TASK010-adopt-tdd.md`.  
-- Drafted `tdd.instructions.md` with examples.  
+- Created design file `DES005-tdd-adoption.md`.
+- Created task file `TASK010-adopt-tdd.md`.
+- Drafted `tdd.instructions.md` with examples.
 - Added failing TDD pilot tests for `DynamicResScaler` (Red step).
 - Updated TDD guidance in instruction files and added TASK010 to the tasks index.
 - Implemented Green step for `DynamicResScaler` (minDpr/maxDpr clamping) and verified tests pass locally.
@@ -63,4 +63,4 @@ The repository already has a strong testing culture (Vitest, Playwright) and a s
 
 ---
 
-*Task created by automation on 2025-12-28.*
+_Task created by automation on 2025-12-28._

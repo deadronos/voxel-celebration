@@ -57,7 +57,7 @@ export function MyComponent({ name }: { name: string }) {
 ## Commit & PR Conventions
 
 - Prefer separate commits for Red, Green, and Refactor (helps reviewers). Example:
-  - `test: add failing test for feature X`  (Red)
+  - `test: add failing test for feature X` (Red)
   - `feat: implement minimal feature X to satisfy tests` (Green)
   - `refactor: extract helper and add unit tests` (Refactor)
 - In the PR description, add a short section documenting the TDD steps with commit references or explanations.
@@ -86,4 +86,4 @@ export function MyComponent({ name }: { name: string }) {
 
 ---
 
-*Short TDD guide created 2025-12-28.*
+_Short TDD guide created 2025-12-28._

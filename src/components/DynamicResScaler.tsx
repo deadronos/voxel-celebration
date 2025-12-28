@@ -50,7 +50,8 @@ export function computeNextDpr({
 export function DynamicResScaler({ minDpr, maxDpr }: DynamicResScalerProps) {
   const setDpr = useThree((state) => state.setDpr);
 
-  const deviceMaxDpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio ?? 1, 2) : 1;
+  const deviceMaxDpr =
+    typeof window !== 'undefined' ? Math.min(window.devicePixelRatio ?? 1, 2) : 1;
   const effectiveMaxDpr = clamp(maxDpr ?? MAX_DPR, MIN_DPR, deviceMaxDpr);
   const effectiveMinDpr = clamp(minDpr ?? MIN_DPR, MIN_DPR, effectiveMaxDpr);
   const initialDpr = clamp(START_DPR, effectiveMinDpr, effectiveMaxDpr);
