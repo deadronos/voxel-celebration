@@ -23,7 +23,7 @@ Initial page load was dominated by Three.js/R3F/postprocessing bundles and GPU-h
    - Enable chunks in a timed, idle-friendly sequence (world → atmosphere → lanterns → fireworks → postprocessing).
 3. **Idle prefetch** of chunk modules after the initial render to reduce interaction stalls.
 4. **GPU pressure reduction**:
-   - Start with conservative DPR (`dpr=1`) and allow `DynamicResScaler` to ramp up.
+   - Start with conservative DPR (`0.5`) via `DynamicResScaler` and allow it to ramp up under sustained high FPS.
    - Defer Bloom/postprocessing until later in the hydration sequence.
 5. **WebGL context loss handling**:
    - Listen for `webglcontextlost` and present a user-visible overlay recommending reload.

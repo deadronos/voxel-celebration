@@ -6,8 +6,9 @@ const TARGET_FPS = 60;
 const CHECK_INTERVAL = 500; // Check every 500ms
 const FPS_TOLERANCE = 5; // Allow 55-65 FPS before adjusting
 const MIN_DPR = 0.5;
-const MAX_DPR = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 2) : 1;
-const START_DPR = Math.min(1, MAX_DPR);
+const MAX_DPR =
+  typeof window !== 'undefined' ? Math.min(window.devicePixelRatio ?? 1, 2) : 1;
+const START_DPR = Math.min(MIN_DPR, MAX_DPR);
 const STEP = 0.1;
 
 type DynamicResScalerProps = {
