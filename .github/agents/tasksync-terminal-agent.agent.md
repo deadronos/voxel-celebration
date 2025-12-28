@@ -1,17 +1,7 @@
 ---
 name: TaskSync Terminal Agent
 description: 'Opt-in terminal-driven workflow: request tasks via PowerShell Read-Host and execute iteratively until user types stop/end/terminate/quit.'
-tools:
-  [
-    'runCommands',
-    'runTasks',
-    'problems',
-    'changes',
-    'search',
-    'usages',
-    'edit',
-    'todos',
-  ]
+tools: ['runCommands', 'runTasks', 'problems', 'changes', 'search', 'usages', 'edit', 'todos']
 ---
 
 # TaskSync Terminal Agent (Opt-in)

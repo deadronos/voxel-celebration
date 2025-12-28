@@ -333,14 +333,12 @@ Performance isn't just a buzzword—it's the difference between a product people
 ```javascript
 // BAD: Triggers API call on every keystroke
 input.addEventListener('input', (e) => {
-
   fetch(`/search?q=${e.target.value}`);
 });
 
 // GOOD: Debounce API calls
 let timeout;
 input.addEventListener('input', (e) => {
-
   clearTimeout(timeout);
   timeout = setTimeout(() => {
     fetch(`/search?q=${e.target.value}`);
@@ -421,7 +419,6 @@ p.sort_stats('cumulative').print_stats(10)
 const redis = require('redis');
 const client = redis.createClient();
 
-
 function getCachedData(key, fetchFunction) {
   return new Promise((resolve, reject) => {
     client.get(key, (err, data) => {
@@ -465,4 +462,3 @@ function getCachedData(key, fetchFunction) {
 ## Conclusion
 
 Performance optimization is an ongoing process. Always measure, profile, and iterate. Use these best practices, checklists, and troubleshooting tips to guide your development and code reviews for high-performance, scalable, and efficient software. If you have new tips or lessons learned, add them here—let's keep this guide growing!
-

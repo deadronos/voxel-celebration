@@ -41,30 +41,30 @@ Adopt a lightweight Test-Driven Development (TDD) practice across the repository
 
 ## Pilot Plan
 
-- Candidate: `DynamicResScaler` component (see TASK010 for details).  
-  - Red: Add failing tests that express expected behaviors (props for `minDpr`/`maxDpr`, and boundary guarantees).  
-  - Green: Implement minimal support for props and pass tests.  
+- Candidate: `DynamicResScaler` component (see TASK010 for details).
+  - Red: Add failing tests that express expected behaviors (props for `minDpr`/`maxDpr`, and boundary guarantees).
+  - Green: Implement minimal support for props and pass tests.
   - Refactor: Extract DPR decision math to a small pure function with unit tests, improve naming and add comments.
 
 - Success metrics: pilot uses TDD; tests added for the feature; coverage for target module increases; CI remains stable.
 
 ## Rollout & Training
 
-- Create `.github/instructions/tdd.instructions.md` as a short how-to and examples file.  
-- Run a 1-hour pairing session to demonstrate TDD on the pilot PR.  
+- Create `.github/instructions/tdd.instructions.md` as a short how-to and examples file.
+- Run a 1-hour pairing session to demonstrate TDD on the pilot PR.
 - Update PR template and `memory/tasks/_index.md` to include the adopt-TDD task and status.
 
 ## Risks & Mitigations
 
-- Risk: TDD can slow initial velocity — mitigate with training, pairing, and starting with low-risk pilots.  
+- Risk: TDD can slow initial velocity — mitigate with training, pairing, and starting with low-risk pilots.
 - Risk: Legacy code may be hard to test — mitigate with incremental refactors, test harnesses, and test doubles.
 
 ## Acceptance Criteria
 
-- This design file is added to `memory/designs` (DES005).  
-- A task file (TASK010) is created and the pilot PR is opened.  
+- This design file is added to `memory/designs` (DES005).
+- A task file (TASK010) is created and the pilot PR is opened.
 - At least one feature is implemented and merged following Red → Green → Refactor (pilot proof of concept).
 
 ---
 
-*Design created 2025-12-28.*
+_Design created 2025-12-28._
