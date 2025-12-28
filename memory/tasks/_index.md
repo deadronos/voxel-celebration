@@ -2,7 +2,7 @@
 
 ## In Progress
 
-- None
+- [TASK010] Adopt TDD (Red-Green-Refactor) — In progress: draft design and pilot
 
 ## Pending
 

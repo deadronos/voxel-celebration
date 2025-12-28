@@ -99,6 +99,7 @@ End.
 
 **Checklist:**
 
+- [ ] Prefer test-first work: Red → Green → Refactor. Record the Red (failing test), Green (minimal implementation), and Refactor commits in the PR when possible.
 - [ ] Code in small, testable increments. - Document each increment with code changes, results, and test links.
 - [ ] Implement from dependencies upward. - Document resolution order, justification, and verification.
 - [ ] Follow conventions. - Document adherence and any deviations with a Decision Record.

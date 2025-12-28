@@ -68,6 +68,7 @@ Find specialized guidance for different aspects of development:
 
 - **`memory-bank.instructions.md`** - How to use the memory bank system
 - **`spec-driven-workflow-v1.instructions.md`** - Specification-driven development
+- **`tdd.instructions.md`** - Test-Driven Development (Red → Green → Refactor) guide
 - **`taming-copilot.instructions.md`** - Controlling AI behavior
 - **`tasksync.instructions.md`** - Task synchronization protocol
 

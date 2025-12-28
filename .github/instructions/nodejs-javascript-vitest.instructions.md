@@ -22,7 +22,16 @@ applyTo: '**/*.js, **/*.mjs, **/*.cjs'
 - Use Vitest for testing
 - Write tests for all new features and bug fixes
 - Ensure tests cover edge cases and error handling
-- NEVER change the original code to make it easier to test, instead, write tests that cover the original code as it is
+- Prefer writing tests first when feasible (TDD: Red → Green → Refactor). When code must be changed to make it testable or to improve maintainability, make small, well-documented refactors in a separate commit **after** adding failing tests; ensure the behavior remains covered by tests.
+
+### Test-Driven Development (TDD)
+
+- Follow the Red → Green → Refactor cycle for features, bug fixes, and refactors:
+  - **Red**: add a focused failing test that captures the acceptance criteria (unit, integration, or E2E as appropriate).
+  - **Green**: implement the smallest change necessary to make the test pass.
+  - **Refactor**: clean up, extract helpers, and improve design while keeping tests green.
+- Prefer separate commits for Red, Green, and Refactor to make reviews easy — squash only if project conventions require it.
+- Use `npm run test:watch` during local iteration.
 
 ## Documentation
 
