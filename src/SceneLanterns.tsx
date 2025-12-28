@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { SkyLantern } from './components/SkyLantern';
 
 const SKY_LANTERNS: ReadonlyArray<readonly [number, number, number]> = [

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState, memo, type FC } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Voxel } from './VoxelUtils';
 import * as THREE from 'three';
@@ -8,7 +8,7 @@ interface SkyLanternProps {
   color?: string;
 }
 
-const SkyLanternComponent: React.FC<SkyLanternProps> = ({ position, color = '#ff5722' }) => {
+const SkyLanternComponent: FC<SkyLanternProps> = ({ position, color = '#ff5722' }) => {
   const groupRef = useRef<THREE.Group>(null);
   const lightRef = useRef<THREE.PointLight>(null);
   // Store initial X/Z to drift around them
@@ -84,5 +84,5 @@ const SkyLanternComponent: React.FC<SkyLanternProps> = ({ position, color = '#ff
   );
 };
 
-export const SkyLantern = React.memo(SkyLanternComponent);
+export const SkyLantern = memo(SkyLanternComponent);
 SkyLantern.displayName = 'SkyLantern';

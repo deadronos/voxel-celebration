@@ -1,16 +1,16 @@
-import React, { Suspense, useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState, lazy } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
 import { DynamicResScaler } from './components/DynamicResScaler';
 import { RocketData } from './types';
 
-const SceneWorld = React.lazy(() => import('./SceneWorld'));
-const SceneAtmosphere = React.lazy(() => import('./SceneAtmosphere'));
-const SceneLanterns = React.lazy(() => import('./SceneLanterns'));
-const ScenePostProcessing = React.lazy(() => import('./ScenePostProcessing'));
-const SceneControls = React.lazy(() => import('./SceneControls'));
-const FireworksManager = React.lazy(() =>
+const SceneWorld = lazy(() => import('./SceneWorld'));
+const SceneAtmosphere = lazy(() => import('./SceneAtmosphere'));
+const SceneLanterns = lazy(() => import('./SceneLanterns'));
+const ScenePostProcessing = lazy(() => import('./ScenePostProcessing'));
+const SceneControls = lazy(() => import('./SceneControls'));
+const FireworksManager = lazy(() =>
   import('./components/FireworksManager').then((module) => ({ default: module.FireworksManager }))
 );
 

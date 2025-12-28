@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useRef, type FC } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Voxel } from './VoxelUtils';
@@ -19,7 +19,7 @@ const tempColor = new THREE.Color();
 const MAX_PARTICLES = 2000;
 const FIREWORK_BRIGHTNESS = 10;
 
-export const FireworksManager: React.FC<FireworksManagerProps> = ({ rockets, removeRocket }) => {
+export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRocket }) => {
   const meshRef = useRef<THREE.InstancedMesh>(null);
 
   // Particle State stored in refs for performance (no re-renders on update)
@@ -139,7 +139,7 @@ export const FireworksManager: React.FC<FireworksManagerProps> = ({ rockets, rem
   );
 };
 
-const Rocket: React.FC<{
+const Rocket: FC<{
   data: RocketData;
   onExplode: (pos: THREE.Vector3, color: string) => void;
 }> = ({ data, onExplode }) => {
