@@ -15,7 +15,7 @@ interface InstancedVoxelsProps {
   receiveShadow?: boolean;
 }
 
-export const InstancedVoxels: FC<InstancedVoxelsProps> = ({ 
+export const InstancedVoxels: FC<InstancedVoxelsProps> = ({
   instances,
   material,
   castShadow = true,

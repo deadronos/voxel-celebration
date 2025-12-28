@@ -24,7 +24,7 @@ const runFrames = (count: number, delta = 1 / 60) => {
 describe('DynamicResScaler', () => {
   const originalEnv = process.env.NODE_ENV;
   const maxDpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio ?? 1, 2) : 1;
-  const startDpr = Math.min(1, maxDpr);
+  const startDpr = 0.5;
 
   beforeEach(() => {
     frameCallbacks.length = 0;
@@ -50,19 +50,24 @@ describe('DynamicResScaler', () => {
     render(<DynamicResScaler />);
     expect(setDprSpy).toHaveBeenCalledWith(startDpr);
 
-    // Drive multiple low-FPS intervals: 10 frames over 500ms => 20 FPS
-    for (let step = 0; step < 10; step++) {
-      // each iteration: advance time by 50ms per frame for 10 frames
-      for (let i = 0; i < 10; i++) {
-        t += 50;
-        runFrames(1);
-      }
+    // First force a high-FPS interval to increase DPR above the minimum.
+    for (let i = 0; i < 80; i++) {
+      t += 500 / 80;
+      runFrames(1);
     }
 
-    // DPR should have decreased, but not below 0.5
-    const calls = setDprSpy.mock.calls.map((c) => c[0] as number);
-    expect(calls.at(-1)).toBeGreaterThanOrEqual(0.5);
-    expect(calls.at(-1)).toBeLessThan(1);
+    const afterHigh = setDprSpy.mock.calls.map((c) => c[0] as number).at(-1) ?? 0;
+    expect(afterHigh).toBeGreaterThan(startDpr);
+
+    // Then drive a low-FPS interval: 10 frames over 500ms => 20 FPS.
+    for (let i = 0; i < 10; i++) {
+      t += 50;
+      runFrames(1);
+    }
+
+    const afterLow = setDprSpy.mock.calls.map((c) => c[0] as number).at(-1) ?? 0;
+    expect(afterLow).toBeLessThanOrEqual(afterHigh);
+    expect(afterLow).toBeGreaterThanOrEqual(0.5);
   });
 
   it('increases DPR when FPS is high (up to MAX_DPR)', () => {
@@ -100,9 +105,9 @@ describe('DynamicResScaler', () => {
     vi.spyOn(performance, 'now').mockImplementation(() => t);
 
     render(<DynamicResScaler />);
-    // Trigger one low-FPS adjustment
-    for (let i = 0; i < 10; i++) {
-      t += 50;
+    // Trigger one high-FPS adjustment
+    for (let i = 0; i < 80; i++) {
+      t += 500 / 80;
       runFrames(1);
     }
 

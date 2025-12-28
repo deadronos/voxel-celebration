@@ -17,7 +17,9 @@
 
 ## Current implementation
 
-- At present, the code exposes a pure helper `createExplosionParticles(position, color, opts?)` in `src/utils/fireworks.ts`. It generates `count` particles (default: `Math.floor(30 + rand()*20)`) and accepts an optional `random` function and `out`/`pool` arrays for pooling. There is no preset configuration file yet; `FireworksManager` calls the helper directly when rockets explode.
+- The code exposes a pure helper `createExplosionParticles(position, color, opts?)` in `src/utils/fireworks.ts`. It generates `count` particles (default: `Math.floor(50 + rand() * 50)`) and accepts an optional `random` function and `out`/`pool` arrays for pooling.
+- The runtime path in `FireworksManager` uses typed-buffer simulation (SoA) and fills explosions via `writeExplosionParticles(...)` to avoid per-explosion allocations while keeping tests and preset work ergonomic.
+- There is no preset configuration file yet; see TASK006 for the planned preset config + tests.
 
 ## Performance guidance
 

@@ -46,7 +46,7 @@ const StreetLightComponent: FC<{ position: readonly [number, number, number] }> 
     []
   );
   // High intensity for Bloom
-  const fixtureMaterial = getVoxelMaterial({ emissive: '#fffacd', emissiveIntensity: 5 });
+  const fixtureMaterial = getVoxelMaterial({ emissive: '#fffacd', emissiveIntensity: 0.8 });
 
   return (
     <group position={position}>
@@ -60,7 +60,8 @@ const StreetLightComponent: FC<{ position: readonly [number, number, number] }> 
 export const StreetLight = memo(StreetLightComponent);
 StreetLight.displayName = 'StreetLight';
 
-const GroundComponent: FC = () => {  const instances = useMemo<readonly VoxelInstance[]>(() => {
+const GroundComponent: FC = () => {
+  const instances = useMemo<readonly VoxelInstance[]>(() => {
     const size = 30;
     const step = 2;
     const voxels: VoxelInstance[] = [];

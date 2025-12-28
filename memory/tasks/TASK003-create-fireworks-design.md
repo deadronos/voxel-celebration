@@ -6,11 +6,11 @@
 
 ## Summary
 
-Created `memory/designs/fireworks.md` to capture presets, recommended fields, and performance guidance for the Fireworks system.
+Created `memory/designs/DES001-fireworks.md` to capture presets, recommended fields, and performance guidance for the Fireworks system.
 
 ## Acceptance
 
-- A design doc exists at `memory/designs/fireworks.md`.
+- A design doc exists at `memory/designs/DES001-fireworks.md`.
 - Design doc contains recommended preset fields and performance guidance.
 
 ---

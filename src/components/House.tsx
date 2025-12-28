@@ -16,7 +16,7 @@ interface HouseProps {
 
 const yAxis = new THREE.Vector3(0, 1, 0);
 
-const House: FC<HouseProps> = ({ 
+const House: FC<HouseProps> = ({
   position,
   onShootRocket,
   rotation = 0,

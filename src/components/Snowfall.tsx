@@ -1,4 +1,4 @@
-import { useMemo, useRef, type FC } from 'react';
+import { useLayoutEffect, useMemo, useRef, type FC } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
@@ -7,13 +7,15 @@ const RANGE = 60; // Spread of snow
 
 export const Snowfall: FC = () => {
   const pointsRef = useRef<THREE.Points>(null);
+  const positionAttrRef = useRef<THREE.BufferAttribute | null>(null);
+  const positionArrayRef = useRef<Float32Array | null>(null);
 
   // Create initial positions
   const positions = useMemo(() => {
     const pos = new Float32Array(SNOW_COUNT * 3);
     for (let i = 0; i < SNOW_COUNT; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * RANGE;     // x
-      pos[i * 3 + 1] = Math.random() * 30;            // y
+      pos[i * 3] = (Math.random() - 0.5) * RANGE; // x
+      pos[i * 3 + 1] = Math.random() * 30; // y
       pos[i * 3 + 2] = (Math.random() - 0.5) * RANGE; // z
     }
     return pos;
@@ -28,23 +30,29 @@ export const Snowfall: FC = () => {
     return s;
   }, []);
 
-  useFrame((state, delta) => {
-    if (!pointsRef.current) return;
+  useLayoutEffect(() => {
+    const points = pointsRef.current;
+    if (!points) return;
 
-    // We can access the buffer attribute directly
-    const geom = pointsRef.current.geometry;
-    const posAttr = geom.attributes.position as THREE.BufferAttribute;
-    const posArray = posAttr.array as Float32Array;
+    const posAttr = points.geometry.getAttribute('position') as THREE.BufferAttribute;
+    positionAttrRef.current = posAttr;
+    positionArrayRef.current = posAttr.array as Float32Array;
+  }, []);
 
-    for (let i = 0; i < SNOW_COUNT; i++) {
+  useFrame((_state, delta) => {
+    const posAttr = positionAttrRef.current;
+    const posArray = positionArrayRef.current;
+    if (!posAttr || !posArray) return;
+
+    for (let i = 0, j = 0; i < SNOW_COUNT; i++, j += 3) {
       // Update Y
-      posArray[i * 3 + 1] -= speeds[i] * delta;
+      posArray[j + 1] -= speeds[i] * delta;
 
       // Reset if below ground (assuming ground is around y=0 or -1, let's reset at -2)
-      if (posArray[i * 3 + 1] < -2) {
-        posArray[i * 3 + 1] = 30; // Reset to top
-        posArray[i * 3] = (Math.random() - 0.5) * RANGE; // Randomize X slightly?
-        posArray[i * 3 + 2] = (Math.random() - 0.5) * RANGE; // Randomize Z slightly?
+      if (posArray[j + 1] < -2) {
+        posArray[j + 1] = 30; // Reset to top
+        posArray[j] = (Math.random() - 0.5) * RANGE;
+        posArray[j + 2] = (Math.random() - 0.5) * RANGE;
       }
     }
 
