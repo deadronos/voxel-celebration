@@ -1,12 +1,13 @@
 import { vi, beforeAll, afterAll } from 'vitest';
 
 // Mock ResizeObserver for jsdom
-class ResizeObserverMock {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
+class ResizeObserverMock implements ResizeObserver {
+  observe(_target?: Element | Document | null): void {}
+  unobserve(_target?: Element | Document | null): void {}
+  disconnect(): void {}
 }
-global.ResizeObserver = ResizeObserverMock as any;
+// JSDOM doesn't implement ResizeObserver by default; define it explicitly
+Object.defineProperty(globalThis, 'ResizeObserver', { value: ResizeObserverMock, configurable: true });
 
 // Mock WebGL context with comprehensive API coverage for Three.js
 HTMLCanvasElement.prototype.getContext = vi.fn().mockImplementation((contextType) => {
@@ -125,15 +126,16 @@ HTMLCanvasElement.prototype.getContext = vi.fn().mockImplementation((contextType
 // Suppress console errors for expected warnings during tests
 const originalError = console.error;
 beforeAll(() => {
-  console.error = (...args: any[]) => {
+  console.error = (...args: unknown[]): void => {
+    const first = args[0];
     if (
-      typeof args[0] === 'string' &&
-      (args[0].includes('Not implemented: HTMLFormElement.prototype.requestSubmit') ||
-        args[0].includes('Could not parse CSS stylesheet'))
+      typeof first === 'string' &&
+      (first.includes('Not implemented: HTMLFormElement.prototype.requestSubmit') ||
+        first.includes('Could not parse CSS stylesheet'))
     ) {
       return;
     }
-    originalError.call(console, ...args);
+    (originalError as (...args: unknown[]) => void).apply(console, args);
   };
 });
 

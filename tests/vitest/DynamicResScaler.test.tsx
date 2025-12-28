@@ -9,13 +9,17 @@ const renderInCanvas = (component: React.ReactElement) => {
 };
 
 describe('DynamicResScaler', () => {
-  let originalPerformanceNow: typeof performance.now;
+  let originalPerformanceNow: () => number;
 
   beforeEach(() => {
-    originalPerformanceNow = performance.now;
+    // Capture the original function and wrap it so we can restore it safely later
+    // It's safe to capture here because we restore the original in afterEach
+    /* eslint-disable-next-line @typescript-eslint/unbound-method */
+    const origNow = performance.now as () => number;
+    originalPerformanceNow = () => origNow.call(performance) as number;
     // Mock performance.now for deterministic testing
     let time = 0;
-    performance.now = vi.fn(() => {
+    performance.now = vi.fn<() => number>(() => {
       time += 100; // Advance by 100ms per call
       return time;
     });
@@ -66,7 +70,7 @@ describe('DynamicResScaler', () => {
   it('handles edge case - rapid frame updates', () => {
     // Fast time progression should trigger FPS calculations
     let time = 0;
-    performance.now = vi.fn(() => {
+    performance.now = vi.fn<() => number>(() => {
       time += 1; // Very fast (1ms per call)
       return time;
     });
@@ -78,7 +82,7 @@ describe('DynamicResScaler', () => {
   it('handles edge case - slow frame updates', () => {
     // Slow time progression
     let time = 0;
-    performance.now = vi.fn(() => {
+    performance.now = vi.fn<() => number>(() => {
       time += 1000; // Very slow (1000ms per call)
       return time;
     });
@@ -96,7 +100,7 @@ describe('DynamicResScaler', () => {
   it('handles CHECK_INTERVAL timing', () => {
     // Component checks every 500ms
     let time = 0;
-    performance.now = vi.fn(() => {
+    performance.now = vi.fn<() => number>(() => {
       time += 500; // Match CHECK_INTERVAL
       return time;
     });

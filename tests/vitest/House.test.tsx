@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import { Canvas } from '@react-three/fiber';
 import House from '@/components/House';
-import * as THREE from 'three';
 
 // Helper to render R3F components
 const renderInCanvas = (component: React.ReactElement) => {
