@@ -47,6 +47,7 @@ The main copilot instructions file is located at:
 **[`.github/copilot-instructions.md`](.github/copilot-instructions.md)**
 
 This file contains:
+
 - Project overview and technology stack
 - Development workflow and commands
 - Code style and standards

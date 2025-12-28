@@ -21,4 +21,4 @@ Add a small set of named explosion presets and tests so `FireworksManager` can o
 
 ---
 
-*This task is intended to be small and test-first: add the presets and tests first, then integrate into the scene in a follow-up change.*
+_This task is intended to be small and test-first: add the presets and tests first, then integrate into the scene in a follow-up change._

@@ -35,4 +35,4 @@
 
 ---
 
-*Update this file to reflect current work and immediate next actions.*
+_Update this file to reflect current work and immediate next actions._

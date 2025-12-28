@@ -9,7 +9,8 @@ vi.mock('@react-three/fiber', () => ({
   useFrame: (cb: (state: unknown, delta: number) => void) => {
     frameCallbacks.push(cb);
   },
-  useThree: (selector: (state: { setDpr: (dpr: number) => void }) => unknown) => selector({ setDpr: setDprSpy }),
+  useThree: (selector: (state: { setDpr: (dpr: number) => void }) => unknown) =>
+    selector({ setDpr: setDprSpy }),
 }));
 
 import { DynamicResScaler } from '@/components/DynamicResScaler';

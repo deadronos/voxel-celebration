@@ -15,4 +15,4 @@ Created `memory/designs/fireworks.md` to capture presets, recommended fields, an
 
 ---
 
-*This task was completed as part of TASK001 (backfilling the Memory Bank).*
+_This task was completed as part of TASK001 (backfilling the Memory Bank)._

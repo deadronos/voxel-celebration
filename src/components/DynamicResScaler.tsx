@@ -12,7 +12,7 @@ const STEP = 0.1;
 
 export function DynamicResScaler() {
   const setDpr = useThree((state) => state.setDpr);
-  
+
   // Refs to store state without triggering re-renders for the logic loop
   const frameCount = useRef(0);
   const lastTime = useRef(performance.now());
@@ -30,7 +30,7 @@ export function DynamicResScaler() {
 
     if (elapsed >= CHECK_INTERVAL) {
       const fps = Math.round((frameCount.current * 1000) / elapsed);
-      
+
       // Reset counters
       frameCount.current = 0;
       lastTime.current = time;
@@ -51,7 +51,7 @@ export function DynamicResScaler() {
         dprRef.current = newDpr;
         setDpr(newDpr);
         if (process.env.NODE_ENV === 'development') {
-           console.log(`[DynamicResScaler] FPS: ${fps}, Adjusting DPR to: ${newDpr.toFixed(2)}`);
+          console.log(`[DynamicResScaler] FPS: ${fps}, Adjusting DPR to: ${newDpr.toFixed(2)}`);
         }
       }
     }

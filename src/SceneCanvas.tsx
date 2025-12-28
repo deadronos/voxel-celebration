@@ -17,7 +17,10 @@ const FireworksManager = React.lazy(() =>
 type IdleDeadline = { timeRemaining: () => number; didTimeout: boolean };
 type IdleCallbackHandle = number;
 type IdleWindow = Window & {
-  requestIdleCallback?: (callback: (deadline: IdleDeadline) => void, options?: { timeout: number }) => IdleCallbackHandle;
+  requestIdleCallback?: (
+    callback: (deadline: IdleDeadline) => void,
+    options?: { timeout: number }
+  ) => IdleCallbackHandle;
   cancelIdleCallback?: (handle: IdleCallbackHandle) => void;
 };
 

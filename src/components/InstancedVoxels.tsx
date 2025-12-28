@@ -68,7 +68,6 @@ export const InstancedVoxels: React.FC<InstancedVoxelsProps> = ({
       castShadow={castShadow}
       receiveShadow={receiveShadow}
       dispose={null}
-    >
-    </instancedMesh>
+    ></instancedMesh>
   );
 };

@@ -54,7 +54,9 @@ describe('Voxel', () => {
     rerender(<Voxel position={[0, 0, 0]} color="#ffffff" emissive="#000000" />);
     expect(getVoxelMaterialSpy).toHaveBeenCalledTimes(1);
 
-    rerender(<Voxel position={[0, 0, 0]} color="#ffffff" emissive="#000000" emissiveIntensity={2} />);
+    rerender(
+      <Voxel position={[0, 0, 0]} color="#ffffff" emissive="#000000" emissiveIntensity={2} />
+    );
     expect(getVoxelMaterialSpy).toHaveBeenCalledTimes(2);
   });
 });

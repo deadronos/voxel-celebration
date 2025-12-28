@@ -52,4 +52,4 @@ This document captures the high-level architecture, component responsibilities, 
 
 ---
 
-*Keep this file updated as architecture evolves and when major design decisions are made.*
+_Keep this file updated as architecture evolves and when major design decisions are made._

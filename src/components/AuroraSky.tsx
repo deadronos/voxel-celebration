@@ -83,7 +83,7 @@ void main() {
 
 export function AuroraSky() {
   const mesh = useRef<THREE.Mesh>(null);
-  
+
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
@@ -96,12 +96,12 @@ export function AuroraSky() {
 
   useFrame((state) => {
     if (mesh.current) {
-        const material = mesh.current.material as THREE.ShaderMaterial & {
-          uniforms?: { uTime?: { value: number } };
-        };
-        if (material.uniforms?.uTime) {
-          material.uniforms.uTime.value = state.clock.getElapsedTime();
-        }
+      const material = mesh.current.material as THREE.ShaderMaterial & {
+        uniforms?: { uTime?: { value: number } };
+      };
+      if (material.uniforms?.uTime) {
+        material.uniforms.uTime.value = state.clock.getElapsedTime();
+      }
     }
   });
 

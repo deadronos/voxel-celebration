@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import * as THREE from 'three';
-import { getSharedBoxGeometry, getVoxelMaterial, getFireworksParticleMaterial } from '@/utils/threeCache';
+import {
+  getSharedBoxGeometry,
+  getVoxelMaterial,
+  getFireworksParticleMaterial,
+} from '@/utils/threeCache';
 
 describe('threeCache', () => {
   it('returns a shared box geometry', () => {

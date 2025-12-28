@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 
 const sharedBoxGeometry = new THREE.BoxGeometry(1, 1, 1);
-const sharedBoxVertexColors = new Float32Array(sharedBoxGeometry.attributes.position.count * 3).fill(1);
+const sharedBoxVertexColors = new Float32Array(
+  sharedBoxGeometry.attributes.position.count * 3
+).fill(1);
 sharedBoxGeometry.setAttribute('color', new THREE.Float32BufferAttribute(sharedBoxVertexColors, 3));
 
 type VoxelMaterialOptions = Readonly<{

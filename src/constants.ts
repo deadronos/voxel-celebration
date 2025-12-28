@@ -27,4 +27,3 @@ export const HOUSE_CONFIG = {
 };
 
 export const VOXEL_SIZE = 1;
-

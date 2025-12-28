@@ -35,14 +35,22 @@ const House: React.FC<HouseProps> = ({
       { position: [0, height / 2, 0], scale: [width, height, depth], color: COLORS.wood },
       { position: [0, height + 0.5, 0], scale: [width + 0.6, 1, depth + 0.6], color: COLORS.roof },
       { position: [0, height + 1.5, 0], scale: [width * 0.7, 1, depth * 0.7], color: COLORS.roof },
-      { position: [0, height + 2.25, 0], scale: [width * 0.4, 0.5, depth * 0.4], color: COLORS.roof },
+      {
+        position: [0, height + 2.25, 0],
+        scale: [width * 0.4, 0.5, depth * 0.4],
+        color: COLORS.roof,
+      },
       { position: [width / 4, height + 1.5, depth / 4], scale: [1, 2, 1], color: COLORS.stone },
       { position: [0, 1, depth / 2 + 0.05], scale: [width * 0.25, 2, 0.1], color: '#3e2723' },
     ];
 
     const lit: VoxelInstance[] = [];
 
-    const windows: Array<{ position: [number, number, number]; scale: [number, number, number]; lit: boolean }> = [
+    const windows: Array<{
+      position: [number, number, number];
+      scale: [number, number, number];
+      lit: boolean;
+    }> = [
       {
         position: [-width / 4, height * 0.6, depth / 2 + 0.05],
         scale: [width * 0.2, height * 0.25, 0.1],

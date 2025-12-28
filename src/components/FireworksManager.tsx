@@ -149,7 +149,12 @@ const Rocket: React.FC<{
   useFrame((state, delta) => {
     if (!ref.current) return;
 
-    const { newY, exploded } = stepRocketPosition(ref.current.position.y, speed, delta, data.targetHeight);
+    const { newY, exploded } = stepRocketPosition(
+      ref.current.position.y,
+      speed,
+      delta,
+      data.targetHeight
+    );
     ref.current.position.y = newY;
 
     if (exploded) {
