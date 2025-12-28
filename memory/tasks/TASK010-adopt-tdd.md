@@ -32,7 +32,7 @@ The repository already has a strong testing culture (Vitest, Playwright) and a s
 
 ## Progress Tracking
 
-**Overall Status:** In Progress - Green step completed for pilot (DynamicResScaler)
+**Overall Status:** In Progress - Red + Green + Refactor completed for pilot (DynamicResScaler)
 
 ### Subtasks
 
@@ -40,7 +40,7 @@ The repository already has a strong testing culture (Vitest, Playwright) and a s
 - 1.2 **Create task (`TASK010`)** — **Completed** (2025-12-28) — This file
 - 1.3 **Write `tdd.instructions.md`** — **Completed** (2025-12-28) — Short how-to and examples
 - 1.4 **Edit existing instruction files** — **Not Started** — Plan and proposed edits ready
-- 1.5 **Pilot (DynamicResScaler)** — **In Progress** — Red + Green done (clamping props); next Refactor (extract helper)
+- 1.5 **Pilot (DynamicResScaler)** — **Completed** — Red + Green + Refactor (helper + unit tests)
 - 1.6 **PR template and CI automation** — **Not Started** — Optional, team decision needed
 - 1.7 **Training & metrics** — **Not Started** — Pairing session proposal
 
@@ -54,7 +54,7 @@ The repository already has a strong testing culture (Vitest, Playwright) and a s
 - Added failing TDD pilot tests for `DynamicResScaler` (Red step).
 - Updated TDD guidance in instruction files and added TASK010 to the tasks index.
 - Implemented Green step for `DynamicResScaler` (minDpr/maxDpr clamping) and verified tests pass locally.
-- Next: Refactor step — extract DPR math to a pure helper and keep tests green.
+- Completed Refactor step: extracted DPR math to `computeNextDpr` helper and added unit tests; all DynamicResScaler tests pass.
 
 ---
 

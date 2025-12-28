@@ -17,6 +17,36 @@ type DynamicResScalerProps = {
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
+type DprAdjustParams = {
+  fps: number;
+  currentDpr: number;
+  minDpr: number;
+  maxDpr: number;
+  step: number;
+  targetFps: number;
+  fpsTolerance: number;
+};
+
+export function computeNextDpr({
+  fps,
+  currentDpr,
+  minDpr,
+  maxDpr,
+  step,
+  targetFps,
+  fpsTolerance,
+}: DprAdjustParams) {
+  let next = currentDpr;
+
+  if (fps < targetFps - fpsTolerance) {
+    next = clamp(currentDpr - step, minDpr, maxDpr);
+  } else if (fps > targetFps + fpsTolerance) {
+    next = clamp(currentDpr + step, minDpr, maxDpr);
+  }
+
+  return next;
+}
+
 export function DynamicResScaler({ minDpr, maxDpr }: DynamicResScalerProps) {
   const setDpr = useThree((state) => state.setDpr);
 
@@ -48,15 +78,15 @@ export function DynamicResScaler({ minDpr, maxDpr }: DynamicResScalerProps) {
       lastTime.current = time;
 
       // Logic to adjust DPR
-      let newDpr = dprRef.current;
-
-      if (fps < TARGET_FPS - FPS_TOLERANCE) {
-        // Performance is low, reduce resolution
-        newDpr = clamp(dprRef.current - STEP, effectiveMinDpr, effectiveMaxDpr);
-      } else if (fps > TARGET_FPS + FPS_TOLERANCE) {
-        // Performance is good, increase resolution
-        newDpr = clamp(dprRef.current + STEP, effectiveMinDpr, effectiveMaxDpr);
-      }
+      const newDpr = computeNextDpr({
+        fps,
+        currentDpr: dprRef.current,
+        minDpr: effectiveMinDpr,
+        maxDpr: effectiveMaxDpr,
+        step: STEP,
+        targetFps: TARGET_FPS,
+        fpsTolerance: FPS_TOLERANCE,
+      });
 
       // Apply change if needed
       if (newDpr !== dprRef.current) {
