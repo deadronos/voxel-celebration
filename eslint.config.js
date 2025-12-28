@@ -34,6 +34,7 @@ export default defineConfig([
       '.vscode/**',
       '*.min.js',
       '.github/**',
+      'skills/**',
     ],
   },
 

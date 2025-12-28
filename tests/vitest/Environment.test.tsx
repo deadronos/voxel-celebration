@@ -53,7 +53,7 @@ describe('StreetLight', () => {
 
     // fixture material should be created with emissive properties
     expect(getVoxelMaterialSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ emissive: '#fffacd', emissiveIntensity: 5 })
+      expect.objectContaining({ emissive: '#fffacd', emissiveIntensity: 0.8 })
     );
   });
 

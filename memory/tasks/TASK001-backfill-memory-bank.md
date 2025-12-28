@@ -47,7 +47,7 @@ The project had a minimal README and source files for a voxel New Year demo. To 
 - Created `memory/projectbrief.md`, `memory/productContext.md`, `memory/systemPatterns.md`, `memory/techContext.md`, `memory/activeContext.md`, `memory/progress.md`.
 - Created `memory/tasks/_index.md` and this task file to track the work.
 - Fixed small lint issues in memory markdown files (headings / emphasis style / trailing newline).
-- Created `memory/designs/fireworks.md`.
+- Created `memory/designs/DES001-fireworks.md`.
 - Created follow-up tasks: `TASK002` (add tests) and `TASK004` (add CI).
 
 ---
