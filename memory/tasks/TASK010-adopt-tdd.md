@@ -1,6 +1,6 @@
 # TASK010: Adopt TDD (Red → Green → Refactor)
 
-**Status:** In Progress  
+**Status:** Completed  
 **Added:** 2025-12-28  
 **Updated:** 2025-12-28
 
@@ -17,12 +17,10 @@ The repository already has a strong testing culture (Vitest, Playwright) and a s
 - [x] **DES005** — Create TDD design doc (`memory/designs/DES005-tdd-adoption.md`).
 - [x] **Add Task** — Create this task file (`TASK010-adopt-tdd.md`).
 - [x] **Docs** — Create `.github/instructions/tdd.instructions.md` (short how-to and examples).
-- [ ] **Instruction Edits** — Update `nodejs-javascript-vitest.instructions.md` and `spec-driven-workflow-v1.instructions.md` to explicitly mention Red→Green→Refactor and test-first guidance.
-- [ ] **PR Template** — Add TDD checklist entry to PR template and minor code-review guidance (verify failing test commit or explanation).
-- [ ] **Pilot (DynamicResScaler)** — Implement a failing test, make it pass, then refactor and merge. (See sub-steps below.)
-- [ ] **Training** — Run a short pairing session and record notes in `memory/progress.md`.
-- [ ] **Automation (optional)** — Add optional non-blocking CI step to warn on missing tests when source files change.
-- [ ] **Metrics & Retrospective** — Measure pilot success, gather feedback, and update design as needed.
+- [x] **Instruction Edits** — Update `nodejs-javascript-vitest.instructions.md` and `spec-driven-workflow-v1.instructions.md` to explicitly mention Red→Green→Refactor and test-first guidance.
+- [x] **Pilot (DynamicResScaler)** — Implement a failing test, make it pass, then refactor.
+- [x] **Examples** — Add a short helper/examples doc for Vitest/Playwright.
+- [x] **Retrospective** — Add a short retrospective entry in `memory/progress.md`.
 
 ### Pilot: `DynamicResScaler`
 
@@ -32,17 +30,17 @@ The repository already has a strong testing culture (Vitest, Playwright) and a s
 
 ## Progress Tracking
 
-**Overall Status:** In Progress - Red + Green + Refactor completed for pilot (DynamicResScaler)
+**Overall Status:** Completed - TDD docs + pilot + retrospective
 
 ### Subtasks
 
 - 1.1 **Draft design (`DES005`)** — **Completed** (2025-12-28) — Design added to `memory/designs`
 - 1.2 **Create task (`TASK010`)** — **Completed** (2025-12-28) — This file
 - 1.3 **Write `tdd.instructions.md`** — **Completed** (2025-12-28) — Short how-to and examples
-- 1.4 **Edit existing instruction files** — **Not Started** — Plan and proposed edits ready
+- 1.4 **Edit existing instruction files** — **Completed** (2025-12-28) — Codified Red → Green → Refactor guidance
 - 1.5 **Pilot (DynamicResScaler)** — **Completed** — Red + Green + Refactor (helper + unit tests)
-- 1.6 **PR template and CI automation** — **Not Started** — Optional, team decision needed
-- 1.7 **Training & metrics** — **Not Started** — Pairing session proposal
+- 1.6 **Examples doc** — **Completed** (2025-12-28) — Added Vitest/Playwright patterns
+- 1.7 **Retrospective entry** — **Completed** (2025-12-28) — Added to `memory/progress.md`
 
 ## Progress Log
 
@@ -55,6 +53,13 @@ The repository already has a strong testing culture (Vitest, Playwright) and a s
 - Updated TDD guidance in instruction files and added TASK010 to the tasks index.
 - Implemented Green step for `DynamicResScaler` (minDpr/maxDpr clamping) and verified tests pass locally.
 - Completed Refactor step: extracted DPR math to `computeNextDpr` helper and added unit tests; all DynamicResScaler tests pass.
+- Added testing examples doc for Vitest/Playwright and recorded a short retrospective entry.
+
+## Follow-ups (optional)
+
+- Add a PR template checklist for TDD (verify failing test or explanation).
+- Add a non-blocking CI warning when `src/` changes land without test updates.
+- Run a short pairing session to onboard contributors to the flow.
 
 ---
 

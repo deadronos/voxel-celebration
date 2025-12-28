@@ -113,7 +113,7 @@ describe('DynamicResScaler', () => {
     let t = 0;
     vi.spyOn(performance, 'now').mockImplementation(() => t);
 
-    render(<DynamicResScaler {...({ minDpr: 0.8, maxDpr: 1.2 } as any)} />);
+    render(<DynamicResScaler minDpr={0.8} maxDpr={1.2} />);
 
     // Drive several low-FPS intervals (20 FPS equivalent) to force multiple reductions.
     for (let step = 0; step < 6; step++) {
@@ -124,17 +124,16 @@ describe('DynamicResScaler', () => {
     }
 
     const calls = setDprSpy.mock.calls.map((c) => c[0] as number);
-    const last = calls.at(-1);
-
-    expect(last).toBeDefined();
-    expect(last!).toBeGreaterThanOrEqual(0.8);
+    expect(calls.length).toBeGreaterThan(0);
+    const last = calls[calls.length - 1];
+    expect(last).toBeGreaterThanOrEqual(0.8);
   });
 
   it('clamps DPR to provided maxDpr when FPS is high', () => {
     let t = 0;
     vi.spyOn(performance, 'now').mockImplementation(() => t);
 
-    render(<DynamicResScaler {...({ minDpr: 0.5, maxDpr: 0.9 } as any)} />);
+    render(<DynamicResScaler minDpr={0.5} maxDpr={0.9} />);
 
     // First drop DPR with low FPS to ensure we later ramp upward.
     for (let step = 0; step < 4; step++) {
@@ -144,7 +143,9 @@ describe('DynamicResScaler', () => {
       }
     }
 
-    const afterLow = setDprSpy.mock.calls.map((c) => c[0] as number).at(-1);
+    const callsAfterLow = setDprSpy.mock.calls.map((c) => c[0] as number);
+    expect(callsAfterLow.length).toBeGreaterThan(0);
+    const afterLow = callsAfterLow[callsAfterLow.length - 1];
 
     // Then simulate very high FPS to trigger increases.
     for (let i = 0; i < 80; i++) {
@@ -152,11 +153,11 @@ describe('DynamicResScaler', () => {
       runFrames(1);
     }
 
-    const afterHigh = setDprSpy.mock.calls.map((c) => c[0] as number).at(-1);
+    const callsAfterHigh = setDprSpy.mock.calls.map((c) => c[0] as number);
+    expect(callsAfterHigh.length).toBeGreaterThan(0);
+    const afterHigh = callsAfterHigh[callsAfterHigh.length - 1];
 
-    expect(afterLow).toBeDefined();
-    expect(afterHigh).toBeDefined();
-    expect(afterHigh!).toBeGreaterThan(afterLow ?? 0);
-    expect(afterHigh!).toBeLessThanOrEqual(0.9);
+    expect(afterHigh).toBeGreaterThan(afterLow);
+    expect(afterHigh).toBeLessThanOrEqual(0.9);
   });
 });

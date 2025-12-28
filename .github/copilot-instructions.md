@@ -34,6 +34,13 @@ After making code changes, always validate by running:
 2. `npm run lint` - Ensure no linting errors
 3. `npm run typecheck` - Ensure no TypeScript errors
 
+## Autonomy and Clarifications
+
+- Default behavior: proceed autonomously and make the smallest safe, test-backed change that satisfies the request.
+- Ask clarifying questions only when confidence in the correct implementation is **< 80%** or when requirements are genuinely ambiguous (e.g., multiple valid behaviors with different user-visible outcomes).
+- If confidence is **≥ 80%**, make reasonable defaults/assumptions, state them briefly, and continue without pausing for input.
+- When questions are required, ask 1–3 highly specific questions (not broad checklists) and avoid blocking progress if safe work can continue in parallel.
+
 ## Code Style and Standards
 
 ### TypeScript

@@ -197,15 +197,16 @@ voxel-celebration/
 ## Best Practices for Agents
 
 1. **Context First**: Always review memory bank files before starting work
-2. **Minimal Changes**: Make the smallest changes necessary to achieve the goal
-3. **Test Driven**: Write or update tests for new functionality
-4. **Document Decisions**: Update memory bank with architectural decisions
-5. **Validate Everything**: Run test, lint, and typecheck before finishing
-6. **Use Subagents**: Delegate to specialized agents when appropriate
-7. **Follow Patterns**: Match existing code patterns and conventions
-8. **Performance Aware**: Consider 3D rendering performance impact
-9. **Type Safe**: Maintain strict TypeScript typing
-10. **Incremental Progress**: Make small commits with clear messages
+2. **Autonomy First**: If confidence is ≥ 80%, proceed with sensible defaults and state assumptions briefly; ask clarifying questions only when confidence is < 80% or requirements are genuinely ambiguous
+3. **Minimal Changes**: Make the smallest changes necessary to achieve the goal
+4. **Test Driven**: Write or update tests for new functionality
+5. **Document Decisions**: Update memory bank with architectural decisions
+6. **Validate Everything**: Run test, lint, and typecheck before finishing
+7. **Use Subagents**: Delegate to specialized agents when appropriate
+8. **Follow Patterns**: Match existing code patterns and conventions
+9. **Performance Aware**: Consider 3D rendering performance impact
+10. **Type Safe**: Maintain strict TypeScript typing
+11. **Incremental Progress**: Make small commits with clear messages
 
 ## Getting Help
 
