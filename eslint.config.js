@@ -1,4 +1,4 @@
-import { defineConfig, globalIgnores } from 'eslint/config';
+import { defineConfig } from 'eslint/config';
 import { FlatCompat } from '@eslint/eslintrc';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -23,8 +23,10 @@ export default defineConfig([
   ),
   ...tsTypeCheckingConfigs,
 
-  // global ignores
-  globalIgnores(['node_modules/**', 'dist/**', 'build/**', 'public/**', 'coverage/**', '.github/**']),
+  // Top-level ignore patterns migrated from .eslintignore
+  {
+    ignores: ['node_modules/**', 'dist/**', 'build/**', 'public/**', 'coverage/**', '.vscode/**', '*.min.js', '.github/**'],
+  },
 
   // TypeScript files (parser + type-aware rules)
   {
