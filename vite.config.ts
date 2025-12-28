@@ -22,6 +22,14 @@ export default defineConfig(({ mode }) => {
     },
     test: {
       include: ['tests/vitest/**/*.test.{ts,tsx}', 'tests/vitest/**/*.spec.{ts,tsx}'],
+      environment: 'jsdom',
+      coverage: {
+        provider: 'v8',
+        reporter: ['text', 'lcov', 'html'],
+        include: ['src/**/*.{ts,tsx}'],
+        exclude: ['tests/**', 'src/**/*.d.ts'],
+        all: true,
+      },
     },
   };
 });

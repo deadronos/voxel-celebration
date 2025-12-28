@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/utils/fireworks.ts</title>
+    <title>Code coverage report for src/components/VoxelUtils.tsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/utils</a> fireworks.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/components</a> VoxelUtils.tsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>17/17</span>
+                <span class='fraction'>0/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/8</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>16/16</span>
+                <span class='fraction'>0/10</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -116,82 +116,82 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">75x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">75x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">75x</span>
-<span class="cline-any cline-yes">75x</span>
-<span class="cline-any cline-yes">75x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">75x</span>
-<span class="cline-any cline-yes">75x</span>
-<span class="cline-any cline-yes">75x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">75x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import * as THREE from 'three';
-import type { ParticleData } from '../types';
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useMemo } from 'react';
+import { getSharedBoxGeometry, getVoxelMaterial } from '@/utils/threeCache';
 &nbsp;
-export type RandomFn = () =&gt; number;
-&nbsp;
-export function createExplosionParticles(
-  position: THREE.Vector3,
-  color: string,
-  opts?: { random?: RandomFn; count?: number; out?: ParticleData[]; pool?: ParticleData[] }
-): ParticleData[] {
-  const rand: RandomFn = opts?.random ?? <span class="branch-1 cbranch-no" title="branch not covered" >Math.random;</span>
-  const count = typeof opts?.count === 'number' ? opts.count : Math.floor(30 + rand() * 20);
-  const baseColor = new THREE.Color(color);
-&nbsp;
-  const particles = opts?.out ?? [];
-  particles.length = 0;
-&nbsp;
-  for (let i = 0; i &lt; count; i++) {
-    const pooled = opts?.pool?.pop();
-    const particle: ParticleData =
-      pooled ??
-      ({
-        position: new THREE.Vector3(),
-        velocity: new THREE.Vector3(),
-        color: new THREE.Color(),
-        scale: 0,
-        life: 0,
-        decay: 0,
-      } satisfies ParticleData);
-&nbsp;
-    particle.position.copy(position);
-    particle.velocity.set((rand() - 0.5) * 10, (rand() - 0.5) * 10, (rand() - 0.5) * 10);
-    particle.color.copy(baseColor);
-&nbsp;
-    particle.scale = 0.3 + rand() * 0.3;
-    particle.life = 1.0;
-    particle.decay = 0.5 + rand() * 0.5;
-&nbsp;
-    particles.push(particle);
-  }
-&nbsp;
-  return particles;
+interface VoxelProps {
+  position: [number, number, number];
+  color: string;
+  emissive?: string;
+  emissiveIntensity?: number;
+  scale?: [number, number, number];
 }
+&nbsp;
+export const Voxel: React.FC&lt;VoxelProps&gt; = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >({</span></span>
+  position,
+  color,
+  emissive,
+  emissiveIntensity = <span class="branch-0 cbranch-no" title="branch not covered" >0,</span>
+  scale = <span class="branch-0 cbranch-no" title="branch not covered" >[1, 1, 1],</span>
+}) =&gt; {
+  const <span class="cstat-no" title="statement not covered" >material = useMemo(</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >    () =&gt; g</span>etVoxelMaterial({ color, emissive, emissiveIntensity }),</span>
+    [color, emissive, emissiveIntensity]
+  );
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return (</span>
+    &lt;mesh position={position} scale={scale} castShadow receiveShadow&gt;
+      &lt;primitive object={getSharedBoxGeometry()} attach="geometry" dispose={null} /&gt;
+      &lt;primitive object={material} attach="material" dispose={null} /&gt;
+    &lt;/mesh&gt;
+  );
+};
+&nbsp;
+export const VoxelStack: React.FC&lt;{
+  position: [number, number, number];
+  height: number;
+  color: string;
+}&gt; = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >({</span> position, height, color }) =&gt; {</span>
+  const [x, y, z] = <span class="cstat-no" title="statement not covered" >position;</span>
+  const blocks = <span class="cstat-no" title="statement not covered" >[];</span>
+<span class="cstat-no" title="statement not covered" >  for (let i = <span class="cstat-no" title="statement not covered" >0; i</span> &lt; height; i++) {</span>
+<span class="cstat-no" title="statement not covered" >    blocks.push(&lt;Voxel key={i} position={[x, y + i, z]} color={color} /&gt;);</span>
+  }
+<span class="cstat-no" title="statement not covered" >  return &lt;group&gt;{blocks}&lt;/group&gt;;</span>
+};
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
