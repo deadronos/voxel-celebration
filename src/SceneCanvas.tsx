@@ -24,7 +24,7 @@ type IdleWindow = Window & {
   cancelIdleCallback?: (handle: IdleCallbackHandle) => void;
 };
 
-const scheduleIdle = (callback: () => void, timeout: number): (() => void) => {
+export const scheduleIdle = (callback: () => void, timeout: number): (() => void) => {
   if (typeof window === 'undefined') {
     callback();
     return () => {};

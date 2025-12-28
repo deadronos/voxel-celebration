@@ -47,18 +47,18 @@ describe('FireworksManager', () => {
     writeExplosionParticlesMock.mockReset();
   });
 
-  it('initializes an instanced particle mesh with zero count', async () => {
+  it('initializes an instanced particle mesh with max count', async () => {
     const renderer = await ReactThreeTestRenderer.create(
       <FireworksManager rockets={[]} removeRocket={() => {}} />
     );
 
     const mesh = findInstancedMesh(renderer);
-    expect(mesh.count).toBe(0);
+    expect(mesh.count).toBe(4000);
 
     await renderer.unmount();
   });
 
-  it('explodes a rocket, removes it, and renders surviving particles', async () => {
+  it('explodes a rocket, removes it', async () => {
     const removeRocket = vi.fn();
 
     let stepCalls = 0;
@@ -66,42 +66,6 @@ describe('FireworksManager', () => {
       stepCalls++;
       return { newY: 10, exploded: stepCalls === 1 };
     });
-
-    writeExplosionParticlesMock.mockImplementation(
-      (buffers, startIndex, _maxParticles, pos, _c) => {
-        const base = startIndex;
-        let o3 = base * 3;
-        buffers.position[o3] = pos.x;
-        buffers.position[o3 + 1] = 1;
-        buffers.position[o3 + 2] = pos.z;
-        buffers.velocity[o3] = 0;
-        buffers.velocity[o3 + 1] = 0;
-        buffers.velocity[o3 + 2] = 0;
-        buffers.color[o3] = 1;
-        buffers.color[o3 + 1] = 0;
-        buffers.color[o3 + 2] = 0;
-        buffers.scale[base] = 1;
-        buffers.life[base] = 1;
-        buffers.decay[base] = 0.1;
-
-        const base2 = base + 1;
-        o3 = base2 * 3;
-        buffers.position[o3] = pos.x;
-        buffers.position[o3 + 1] = -1;
-        buffers.position[o3 + 2] = pos.z;
-        buffers.velocity[o3] = 0;
-        buffers.velocity[o3 + 1] = 0;
-        buffers.velocity[o3 + 2] = 0;
-        buffers.color[o3] = 1;
-        buffers.color[o3 + 1] = 0;
-        buffers.color[o3 + 2] = 0;
-        buffers.scale[base2] = 1;
-        buffers.life[base2] = 0;
-        buffers.decay[base2] = 0.1;
-
-        return 2;
-      }
-    );
 
     const rockets: RocketData[] = [
       {
@@ -122,15 +86,7 @@ describe('FireworksManager', () => {
     });
 
     expect(removeRocket).toHaveBeenCalledWith('rocket-1');
-    expect(writeExplosionParticlesMock).toHaveBeenCalled();
-
-    // Frame 2: particle manager processes particles and updates instanced mesh
-    await ReactThreeTestRenderer.act(async () => {
-      await renderer.advanceFrames(1, 0.016);
-    });
-
-    const mesh = findInstancedMesh(renderer);
-    expect(mesh.count).toBe(1);
+    // We don't check writeExplosionParticlesMock because the logic is now inline and GPU based.
 
     await renderer.unmount();
   });

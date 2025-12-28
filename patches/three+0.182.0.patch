@@ -1,0 +1,35 @@
+diff --git a/node_modules/three/build/three.core.js b/node_modules/three/build/three.core.js
+index 7116812..6d32386 100644
+--- a/node_modules/three/build/three.core.js
++++ b/node_modules/three/build/three.core.js
+@@ -59063,7 +59063,12 @@ if ( typeof __THREE_DEVTOOLS__ !== 'undefined' ) {
+ 
+ if ( typeof window !== 'undefined' ) {
+ 
+-	if ( window.__THREE__ ) {
++
++	// In test environments we suppress this check because multiple transforms/workers
++	// can trigger harmless duplicate module evaluations which are noisy in CI.
++	if ( typeof process !== 'undefined' && ( process.env.NODE_ENV === 'test' || typeof process.env.VITEST !== 'undefined' ) ) {
++		window.__THREE__ = REVISION;
++	} else if ( window.__THREE__ && String( window.__THREE__ ) !== String( REVISION ) ) {
+ 
+ 		warn( 'WARNING: Multiple instances of Three.js being imported.' );
+ 
+diff --git a/node_modules/three/src/Three.Core.js b/node_modules/three/src/Three.Core.js
+index 1e37212..c32596c 100644
+--- a/node_modules/three/src/Three.Core.js
++++ b/node_modules/three/src/Three.Core.js
+@@ -173,7 +173,11 @@ if ( typeof __THREE_DEVTOOLS__ !== 'undefined' ) {
+ 
+ if ( typeof window !== 'undefined' ) {
+ 
+-	if ( window.__THREE__ ) {
++	// In test environments we suppress this check because multiple transforms/workers
++	// can trigger harmless duplicate module evaluations which are noisy in CI.
++	if ( typeof process !== 'undefined' && ( process.env.NODE_ENV === 'test' || typeof process.env.VITEST !== 'undefined' ) ) {
++		window.__THREE__ = REVISION;
++	} else if ( window.__THREE__ && String( window.__THREE__ ) !== String( REVISION ) ) {
+ 
+ 		warn( 'WARNING: Multiple instances of Three.js being imported.' );
+ 
