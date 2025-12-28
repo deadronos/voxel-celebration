@@ -46,7 +46,7 @@ const StreetLightComponent: FC<{ position: readonly [number, number, number] }> 
     []
   );
   // High intensity for Bloom
-  const fixtureMaterial = getVoxelMaterial({ emissive: '#fffacd', emissiveIntensity: 5 });
+  const fixtureMaterial = getVoxelMaterial({ emissive: '#fffacd', emissiveIntensity: 0.8 });
 
   return (
     <group position={position}>
