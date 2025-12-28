@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import { useMemo, useRef, memo, type FC } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { InstancedVoxels, type VoxelInstance } from './InstancedVoxels';
 import { COLORS } from '../constants';
@@ -16,7 +16,7 @@ interface HouseProps {
 
 const yAxis = new THREE.Vector3(0, 1, 0);
 
-const House: React.FC<HouseProps> = ({
+const House: FC<HouseProps> = ({ 
   position,
   onShootRocket,
   rotation = 0,
@@ -122,4 +122,4 @@ const House: React.FC<HouseProps> = ({
   );
 };
 
-export default React.memo(House);
+export default memo(House);

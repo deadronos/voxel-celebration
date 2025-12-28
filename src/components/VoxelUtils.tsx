@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo, type FC } from 'react';
 import { getSharedBoxGeometry, getVoxelMaterial } from '@/utils/threeCache';
 
 interface VoxelProps {
@@ -9,7 +9,7 @@ interface VoxelProps {
   scale?: [number, number, number];
 }
 
-export const Voxel: React.FC<VoxelProps> = ({
+export const Voxel: FC<VoxelProps> = ({ 
   position,
   color,
   emissive,
@@ -29,7 +29,7 @@ export const Voxel: React.FC<VoxelProps> = ({
   );
 };
 
-export const VoxelStack: React.FC<{
+export const VoxelStack: FC<{
   position: [number, number, number];
   height: number;
   color: string;

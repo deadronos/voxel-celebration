@@ -20,6 +20,9 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, 'src'),
       },
     },
+    optimizeDeps: {
+      include: ['react', 'react-dom']
+    },
     test: {
       include: ['tests/vitest/**/*.test.{ts,tsx}', 'tests/vitest/**/*.spec.{ts,tsx}'],
       environment: 'jsdom',

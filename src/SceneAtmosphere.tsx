@@ -1,12 +1,13 @@
-import React from 'react';
 import { Cloud, Stars } from '@react-three/drei';
 
 import { AuroraSky } from './components/AuroraSky';
+import { Snowfall } from './components/Snowfall';
 
 export default function SceneAtmosphere() {
   return (
     <>
       <AuroraSky />
+      <Snowfall />
       <Stars radius={100} depth={60} count={8000} factor={6} saturation={0.9} fade speed={2} />
       <Cloud
         opacity={0.4}

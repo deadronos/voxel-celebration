@@ -1,6 +1,6 @@
-import React, { Suspense } from 'react';
+import { Suspense, lazy } from 'react';
 
-const SceneCanvas = React.lazy(() => import('./SceneCanvas'));
+const SceneCanvas = lazy(() => import('./SceneCanvas'));
 
 function App() {
   return (
