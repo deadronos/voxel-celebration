@@ -16,6 +16,7 @@
 - [TASK004] Add a minimal GitHub Actions workflow to run `lint`, `test`, and `format:check` — Completed 2025-12-27
 - [TASK005] Add GitHub Pages deploy workflow — Completed 2025-12-27
 - [TASK007] Atmospheric Overhaul Implementation — Completed 2025-12-27
+- [TASK009] Page load optimization (lazy scene hydration) — Completed 2025-12-28
 
 ## Abandoned
 
