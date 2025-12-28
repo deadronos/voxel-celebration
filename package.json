@@ -25,6 +25,7 @@
     "three": "^0.182.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@react-three/test-renderer": "^9.1.0",
     "@tailwindcss/vite": "^4.1.18",
     "@testing-library/jest-dom": "^6.9.1",
@@ -40,10 +41,14 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "jsdom": "^27.4.0",
+    "patch-package": "^8.0.1",
     "prettier": "^3.7.4",
     "tailwindcss": "^4.1.18",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "vite": "^7.3.0",
     "vitest": "^4.0.16"
+  },
+  "overrides": {
+    "stats-gl": "3.8.0"
   }
 }
