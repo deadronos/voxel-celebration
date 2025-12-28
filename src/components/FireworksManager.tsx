@@ -117,10 +117,12 @@ export const FireworksManager: React.FC<FireworksManagerProps> = ({ rockets, rem
   return (
     <>
       {/* The Particles Instanced Mesh */}
-      <instancedMesh ref={meshRef} args={[undefined, undefined, MAX_PARTICLES]} frustumCulled={false}>
-        <primitive object={getSharedBoxGeometry()} attach="geometry" dispose={null} />
-        <primitive object={getFireworksParticleMaterial()} attach="material" dispose={null} />
-      </instancedMesh>
+      <instancedMesh
+        ref={meshRef}
+        args={[getSharedBoxGeometry(), getFireworksParticleMaterial(), MAX_PARTICLES]}
+        frustumCulled={false}
+        dispose={null}
+      />
 
       {/* Render Active Rockets */}
       {rockets.map((rocket) => (
@@ -156,7 +158,7 @@ const Rocket: React.FC<{
   });
 
   return (
-    <group ref={ref} position={data.position}>
+    <group ref={ref} position={[data.position.x, data.position.y, data.position.z]}>
       <Voxel
         position={[0, 0, 0]}
         scale={[0.4, 0.8, 0.4]}

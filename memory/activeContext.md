@@ -15,6 +15,7 @@
 - Tailwind CSS is on v4 and now wired through the Vite plugin, using the v4 `@import "tailwindcss";` entrypoint in `src/index.css`.
 - The 3D scene is now code-split and lazy-loaded (`SceneCanvas`), so initial HTML/CSS renders before heavy Three.js bundles.
 - Added staged scene hydration (world, atmosphere, lanterns, fireworks, postprocessing) plus WebGL context loss handling and a lower initial DPR to reduce GPU pressure.
+- Added SceneCanvas tests that exercise idle scheduling, WebGL context loss handling, and rocket add/remove behavior.
 
 ## Next steps & immediate tasks
 

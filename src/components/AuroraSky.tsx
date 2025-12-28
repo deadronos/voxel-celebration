@@ -96,8 +96,12 @@ export function AuroraSky() {
 
   useFrame((state) => {
     if (mesh.current) {
-        // @ts-ignore
-        mesh.current.material.uniforms.uTime.value = state.clock.getElapsedTime();
+        const material = mesh.current.material as THREE.ShaderMaterial & {
+          uniforms?: { uTime?: { value: number } };
+        };
+        if (material.uniforms?.uTime) {
+          material.uniforms.uTime.value = state.clock.getElapsedTime();
+        }
     }
   });
 
