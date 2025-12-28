@@ -1,10 +1,10 @@
-import { useLayoutEffect, useRef, type FC } from 'react';
+import { useLayoutEffect, useMemo, useRef, type FC } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Voxel } from './VoxelUtils';
-import { ParticleData, RocketData } from '../types';
-import { createExplosionParticles } from '../utils/fireworks';
-import { stepRocketPosition } from '../utils/rocket';
+import { RocketData } from '@/types';
+import { writeExplosionParticles, type ParticleSoABuffers } from '@/utils/fireworks';
+import { stepRocketPosition } from '@/utils/rocket';
 import { getFireworksParticleMaterial, getSharedBoxGeometry } from '@/utils/threeCache';
 
 interface FireworksManagerProps {
@@ -20,10 +20,19 @@ const GRAVITY = 9.8 * 0.5;
 export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRocket }) => {
   const meshRef = useRef<THREE.InstancedMesh>(null);
 
-  // Particle State stored in refs for performance (no re-renders on update)
-  const particles = useRef<ParticleData[]>([]);
-  const particlePool = useRef<ParticleData[]>([]);
-  const explosionScratch = useRef<ParticleData[]>([]);
+  const particleCountRef = useRef(0);
+  const particleBuffers = useMemo(
+    () =>
+      ({
+        position: new Float32Array(MAX_PARTICLES * 3),
+        velocity: new Float32Array(MAX_PARTICLES * 3),
+        color: new Float32Array(MAX_PARTICLES * 3),
+        scale: new Float32Array(MAX_PARTICLES),
+        life: new Float32Array(MAX_PARTICLES),
+        decay: new Float32Array(MAX_PARTICLES),
+      }) satisfies ParticleSoABuffers,
+    []
+  );
 
   const instanceMatrixAttrRef = useRef<THREE.InstancedBufferAttribute | null>(null);
   const instanceMatrixArrayRef = useRef<Float32Array | null>(null);
@@ -50,19 +59,6 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
     instanceMatrixArrayRef.current = mesh.instanceMatrix.array as Float32Array;
     instanceColorAttrRef.current = mesh.instanceColor;
     instanceColorArrayRef.current = mesh.instanceColor.array as Float32Array;
-
-    const pool = particlePool.current;
-    const missing = MAX_PARTICLES - pool.length;
-    for (let i = 0; i < missing; i++) {
-      pool.push({
-        position: new THREE.Vector3(),
-        velocity: new THREE.Vector3(),
-        color: new THREE.Color(),
-        scale: 0,
-        life: 0,
-        decay: 0,
-      });
-    }
   }, []);
 
   useFrame((_state, delta) => {
@@ -90,21 +86,30 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
 
       if (!instanceMatrix || !instanceMatrixArray) return;
 
-      const activeParticles = particles.current;
+      const positions = particleBuffers.position;
+      const velocities = particleBuffers.velocity;
+      const colors = particleBuffers.color;
+      const scales = particleBuffers.scale;
+      const lifes = particleBuffers.life;
+      const decays = particleBuffers.decay;
+
+      let count = particleCountRef.current;
       let i = 0;
-      while (i < activeParticles.length) {
-        const p = activeParticles[i];
+      while (i < count) {
+        const i3 = i * 3;
 
         // Physics
-        p.life -= delta * p.decay;
-        p.velocity.y -= GRAVITY * delta;
-        p.position.x += p.velocity.x * delta;
-        p.position.y += p.velocity.y * delta;
-        p.position.z += p.velocity.z * delta;
+        const nextLife = lifes[i] - delta * decays[i];
+        lifes[i] = nextLife;
 
-        // Update Instance
-        if (p.life > 0 && p.position.y > 0) {
-          const scale = p.scale * p.life;
+        velocities[i3 + 1] -= GRAVITY * delta;
+
+        positions[i3] += velocities[i3] * delta;
+        positions[i3 + 1] += velocities[i3 + 1] * delta;
+        positions[i3 + 2] += velocities[i3 + 2] * delta;
+
+        if (nextLife > 0 && positions[i3 + 1] > 0) {
+          const scale = scales[i] * nextLife;
 
           const m = i * 16;
           instanceMatrixArray[m] = scale;
@@ -119,28 +124,45 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
           instanceMatrixArray[m + 9] = 0;
           instanceMatrixArray[m + 10] = scale;
           instanceMatrixArray[m + 11] = 0;
-          instanceMatrixArray[m + 12] = p.position.x;
-          instanceMatrixArray[m + 13] = p.position.y;
-          instanceMatrixArray[m + 14] = p.position.z;
+          instanceMatrixArray[m + 12] = positions[i3];
+          instanceMatrixArray[m + 13] = positions[i3 + 1];
+          instanceMatrixArray[m + 14] = positions[i3 + 2];
           instanceMatrixArray[m + 15] = 1;
 
           if (instanceColor && instanceColorArray) {
-            const c = p.color;
             const o = i * 3;
-            instanceColorArray[o] = c.r * FIREWORK_BRIGHTNESS;
-            instanceColorArray[o + 1] = c.g * FIREWORK_BRIGHTNESS;
-            instanceColorArray[o + 2] = c.b * FIREWORK_BRIGHTNESS;
+            instanceColorArray[o] = colors[i3] * FIREWORK_BRIGHTNESS;
+            instanceColorArray[o + 1] = colors[i3 + 1] * FIREWORK_BRIGHTNESS;
+            instanceColorArray[o + 2] = colors[i3 + 2] * FIREWORK_BRIGHTNESS;
           }
           i++;
         } else {
-          // Remove particle (swap with last and pop)
-          particlePool.current.push(p);
-          activeParticles[i] = activeParticles[activeParticles.length - 1];
-          activeParticles.pop();
+          const last = count - 1;
+          if (i !== last) {
+            const last3 = last * 3;
+            positions[i3] = positions[last3];
+            positions[i3 + 1] = positions[last3 + 1];
+            positions[i3 + 2] = positions[last3 + 2];
+
+            velocities[i3] = velocities[last3];
+            velocities[i3 + 1] = velocities[last3 + 1];
+            velocities[i3 + 2] = velocities[last3 + 2];
+
+            colors[i3] = colors[last3];
+            colors[i3 + 1] = colors[last3 + 1];
+            colors[i3 + 2] = colors[last3 + 2];
+
+            scales[i] = scales[last];
+            lifes[i] = lifes[last];
+            decays[i] = decays[last];
+          }
+
+          count--;
         }
       }
 
-      mesh.count = activeParticles.length;
+      particleCountRef.current = count;
+      mesh.count = count;
 
       if (mesh.count > 0) {
         const matrixRange = matrixUpdateRangeRef.current;
@@ -166,26 +188,12 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
 
   // Alternative: The Rocket components are children here. When they die, they call an internal addExplosion.
 
-  // Use helper to generate explosion particles (pure & testable)
   const addExplosion = (position: THREE.Vector3, color: string) => {
-    const available = MAX_PARTICLES - particles.current.length;
-    if (available <= 0) return;
+    const start = particleCountRef.current;
+    if (start >= MAX_PARTICLES) return;
 
-    const newParticles = createExplosionParticles(position, color, {
-      out: explosionScratch.current,
-      pool: particlePool.current,
-    });
-
-    for (let i = 0; i < newParticles.length; i++) {
-      if (particles.current.length >= MAX_PARTICLES) {
-        particlePool.current.push(newParticles[i]);
-        continue;
-      }
-
-      particles.current.push(newParticles[i]);
-    }
-
-    explosionScratch.current.length = 0;
+    const written = writeExplosionParticles(particleBuffers, start, MAX_PARTICLES, position, color);
+    particleCountRef.current = start + written;
   };
 
   return (
@@ -220,7 +228,7 @@ const Rocket: FC<{
   const ref = useRef<THREE.Group>(null);
   const speed = 15;
 
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     if (!ref.current) return;
 
     const { newY, exploded } = stepRocketPosition(

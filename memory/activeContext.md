@@ -2,7 +2,7 @@
 
 ## Current focus
 
-- Performance pass: deepen instancing + caching + pooling (direct instanced buffer writes for fireworks, prewarmed particle pool, and tuned reflector resolution) to reduce draw calls, GPU cost, and per-frame overhead.
+- Performance pass: deepen instancing + caching + typed-buffer simulation (SoA) (direct instanced buffer writes for fireworks, plus tuned reflector resolution) to reduce draw calls, GPU cost, and per-frame overhead.
 - Improve initial load time by splitting heavy 3D scene code into a lazy-loaded chunk with a lightweight fallback.
 - Further load-time work: staged scene hydration (first-paint ground/sky, then world, atmosphere, lanterns, fireworks, postprocessing) plus idle prefetching of lazy chunks.
 - Backfilling the repository Memory Bank with core documentation files (`projectbrief.md`, `productContext.md`, `systemPatterns.md`, `techContext.md`, `activeContext.md`, `progress.md`, and `tasks/` entries). This work documents project intent and developer conventions so contributors can onboard quickly.
@@ -16,7 +16,7 @@
 - The 3D scene is now code-split and lazy-loaded (`SceneCanvas`), so initial HTML/CSS renders before heavy Three.js bundles.
 - Added staged scene hydration (world, atmosphere, lanterns, fireworks, postprocessing) plus WebGL context loss handling and a lower initial DPR to reduce GPU pressure.
 - Added SceneCanvas tests that exercise idle scheduling, WebGL context loss handling, and rocket add/remove behavior.
-- Fireworks particle rendering now writes matrices/colors directly into instanced attributes and prewarms the pool to avoid runtime allocations.
+- Fireworks now uses a packed struct-of-arrays simulation (typed buffers) and writes matrices/colors directly into instanced attributes to minimize per-frame overhead and GC churn.
 - Ice lake reflections now scale reflector resolution with DPR and use a cheaper blur for better GPU performance.
 
 ## Next steps & immediate tasks

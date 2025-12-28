@@ -1,8 +1,8 @@
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import ReactThreeTestRenderer from '@react-three/test-renderer';
-import { Color, type InstancedMesh, Vector3 } from 'three';
-import type { ParticleData, RocketData } from '@/types';
+import { type InstancedMesh, Vector3 } from 'three';
+import type { RocketData } from '@/types';
 
 type StepRocketPosition = (
   y: number,
@@ -11,22 +11,24 @@ type StepRocketPosition = (
   targetHeight: number
 ) => { newY: number; exploded: boolean };
 
-type ExplosionOpts = {
-  out: ParticleData[];
-  pool: ParticleData[];
-  count?: number;
-  spread?: number;
-};
-
-type CreateExplosionParticles = (
+type WriteExplosionParticles = (
+  buffers: {
+    position: Float32Array;
+    velocity: Float32Array;
+    color: Float32Array;
+    scale: Float32Array;
+    life: Float32Array;
+    decay: Float32Array;
+  },
+  startIndex: number,
+  maxParticles: number,
   pos: Vector3,
-  color: string,
-  opts: ExplosionOpts
-) => ParticleData[];
+  color: string
+) => number;
 
-const { stepRocketPositionMock, createExplosionParticlesMock } = vi.hoisted(() => ({
+const { stepRocketPositionMock, writeExplosionParticlesMock } = vi.hoisted(() => ({
   stepRocketPositionMock: vi.fn<StepRocketPosition>(),
-  createExplosionParticlesMock: vi.fn<CreateExplosionParticles>(),
+  writeExplosionParticlesMock: vi.fn<WriteExplosionParticles>(),
 }));
 
 vi.mock('@/utils/rocket', () => ({
@@ -34,7 +36,7 @@ vi.mock('@/utils/rocket', () => ({
 }));
 
 vi.mock('@/utils/fireworks', () => ({
-  createExplosionParticles: createExplosionParticlesMock,
+  writeExplosionParticles: writeExplosionParticlesMock,
 }));
 
 import { FireworksManager } from '@/components/FireworksManager';
@@ -42,7 +44,7 @@ import { FireworksManager } from '@/components/FireworksManager';
 describe('FireworksManager', () => {
   beforeEach(() => {
     stepRocketPositionMock.mockReset();
-    createExplosionParticlesMock.mockReset();
+    writeExplosionParticlesMock.mockReset();
   });
 
   it('initializes an instanced particle mesh with zero count', async () => {
@@ -58,34 +60,45 @@ describe('FireworksManager', () => {
 
   it('explodes a rocket, removes it, and renders surviving particles', async () => {
     const removeRocket = vi.fn();
-    let poolRef: ParticleData[] | undefined;
 
-    stepRocketPositionMock.mockImplementation(
-      (_y: number, _speed: number, _delta: number, _target: number) => ({
-        newY: 10,
-        exploded: true,
-      })
-    );
+    let stepCalls = 0;
+    stepRocketPositionMock.mockImplementation((_y, _speed, _delta, _target) => {
+      stepCalls++;
+      return { newY: 10, exploded: stepCalls === 1 };
+    });
 
-    createExplosionParticlesMock.mockImplementation((pos, color, opts) => {
-      poolRef = opts.pool;
-      const p1: ParticleData = {
-        position: pos.clone().setY(1),
-        velocity: new Vector3(0, 0, 0),
-        color: new Color(color),
-        scale: 1,
-        life: 1,
-        decay: 0.1,
-      };
-      const p2: ParticleData = {
-        position: pos.clone().setY(-1),
-        velocity: new Vector3(0, 0, 0),
-        color: new Color(color),
-        scale: 1,
-        life: 0,
-        decay: 0.1,
-      };
-      return [p1, p2];
+    writeExplosionParticlesMock.mockImplementation((buffers, startIndex, _maxParticles, pos, _c) => {
+      const base = startIndex;
+      let o3 = base * 3;
+      buffers.position[o3] = pos.x;
+      buffers.position[o3 + 1] = 1;
+      buffers.position[o3 + 2] = pos.z;
+      buffers.velocity[o3] = 0;
+      buffers.velocity[o3 + 1] = 0;
+      buffers.velocity[o3 + 2] = 0;
+      buffers.color[o3] = 1;
+      buffers.color[o3 + 1] = 0;
+      buffers.color[o3 + 2] = 0;
+      buffers.scale[base] = 1;
+      buffers.life[base] = 1;
+      buffers.decay[base] = 0.1;
+
+      const base2 = base + 1;
+      o3 = base2 * 3;
+      buffers.position[o3] = pos.x;
+      buffers.position[o3 + 1] = -1;
+      buffers.position[o3 + 2] = pos.z;
+      buffers.velocity[o3] = 0;
+      buffers.velocity[o3 + 1] = 0;
+      buffers.velocity[o3 + 2] = 0;
+      buffers.color[o3] = 1;
+      buffers.color[o3 + 1] = 0;
+      buffers.color[o3 + 2] = 0;
+      buffers.scale[base2] = 1;
+      buffers.life[base2] = 0;
+      buffers.decay[base2] = 0.1;
+
+      return 2;
     });
 
     const rockets: RocketData[] = [
@@ -107,7 +120,7 @@ describe('FireworksManager', () => {
     });
 
     expect(removeRocket).toHaveBeenCalledWith('rocket-1');
-    expect(createExplosionParticlesMock).toHaveBeenCalled();
+    expect(writeExplosionParticlesMock).toHaveBeenCalled();
 
     // Frame 2: particle manager processes particles and updates instanced mesh
     await ReactThreeTestRenderer.act(async () => {
@@ -115,9 +128,7 @@ describe('FireworksManager', () => {
     });
 
     const mesh = findInstancedMesh(renderer);
-    expect(poolRef).toBeDefined();
-    expect(poolRef?.length).toBeGreaterThanOrEqual(1);
-    expect(mesh.count).toBeLessThanOrEqual(2);
+    expect(mesh.count).toBe(1);
 
     await renderer.unmount();
   });
