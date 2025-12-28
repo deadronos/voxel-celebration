@@ -80,7 +80,10 @@ describe('writeExplosionParticles', () => {
     const rand: RandomFn = () => 0.5;
     const pos = new THREE.Vector3(1, 2, 3);
 
-    const written = writeExplosionParticles(buffers, 0, 10, pos, '#ff0000', { random: rand, count: 2 });
+    const written = writeExplosionParticles(buffers, 0, 10, pos, '#ff0000', {
+      random: rand,
+      count: 2,
+    });
     expect(written).toBe(2);
 
     // Position copied into buffers (index 0)
@@ -114,7 +117,10 @@ describe('writeExplosionParticles', () => {
     };
 
     const pos = new THREE.Vector3(0, 0, 0);
-    const written = writeExplosionParticles(buffers, 9, 10, pos, '#00ff00', { random: () => 0, count: 5 });
+    const written = writeExplosionParticles(buffers, 9, 10, pos, '#00ff00', {
+      random: () => 0,
+      count: 5,
+    });
     expect(written).toBe(1);
     expect(buffers.life[9]).toBeCloseTo(1);
   });

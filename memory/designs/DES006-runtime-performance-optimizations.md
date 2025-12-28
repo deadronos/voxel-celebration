@@ -104,4 +104,3 @@ Rationale:
 - Consider moving color variation to a small deterministic tweak (or fixed palettes) to improve predictability.
 - If we need significantly more particles, explore GPU-driven particles (custom shader + buffer textures / transform feedback / compute-like approaches).
 - Consolidate the explosion-shape logic to avoid drift between `createExplosionParticles` and `writeExplosionParticles`.
-

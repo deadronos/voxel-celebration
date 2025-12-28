@@ -46,14 +46,14 @@ The most impactful changes were the ones that reduce work per particle and remov
 
 **Overall Status:** Completed — 100%
 
-| ID  | Description                                   | Status   | Updated    | Notes |
-| --- | --------------------------------------------- | -------- | ---------- | ----- |
-| 11.1 | Profile hotpaths and allocation sites         | Complete | 2025-12-28 | Fireworks, snow, aurora, reflector |
-| 11.2 | Implement SoA buffers + explosion writer      | Complete | 2025-12-28 | `writeExplosionParticles` |
-| 11.3 | Refactor `FireworksManager` to SoA pipeline   | Complete | 2025-12-28 | Swap-remove compaction |
-| 11.4 | Optimize snowfall/aurora per-frame updates    | Complete | 2025-12-28 | Cached attrs + direct uniforms |
-| 11.5 | Tune ice reflector resolution/blur by DPR     | Complete | 2025-12-28 | Reduced GPU cost |
-| 11.6 | Update tests + validate                        | Complete | 2025-12-28 | Vitest + lint + typecheck |
+| ID   | Description                                 | Status   | Updated    | Notes                              |
+| ---- | ------------------------------------------- | -------- | ---------- | ---------------------------------- |
+| 11.1 | Profile hotpaths and allocation sites       | Complete | 2025-12-28 | Fireworks, snow, aurora, reflector |
+| 11.2 | Implement SoA buffers + explosion writer    | Complete | 2025-12-28 | `writeExplosionParticles`          |
+| 11.3 | Refactor `FireworksManager` to SoA pipeline | Complete | 2025-12-28 | Swap-remove compaction             |
+| 11.4 | Optimize snowfall/aurora per-frame updates  | Complete | 2025-12-28 | Cached attrs + direct uniforms     |
+| 11.5 | Tune ice reflector resolution/blur by DPR   | Complete | 2025-12-28 | Reduced GPU cost                   |
+| 11.6 | Update tests + validate                     | Complete | 2025-12-28 | Vitest + lint + typecheck          |
 
 ## Progress Log
 
@@ -65,4 +65,3 @@ The most impactful changes were the ones that reduce work per particle and remov
 - Tuned ice lake reflector resolution/blur for better GPU performance.
 - Updated tests to cover the new writer and pipeline.
 - Added design documentation in `DES006`.
-
