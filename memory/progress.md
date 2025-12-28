@@ -6,6 +6,9 @@
 - Scene is implemented with core components: `House`, `FireworksManager`, `SkyLantern`, and `Environment` (see `src/`).
 - Static voxel scenery uses instanced meshes with shared geometry/material caching to reduce draw calls.
 - Fireworks particles reuse objects via pooling and avoid per-frame allocation in the update loop.
+- The 3D scene is code-split and lazy-loaded to improve initial page render time.
+- Scene hydration is staged (first-paint ground/sky, then world, atmosphere, lanterns, fireworks, postprocessing) with idle prefetching to keep startup smooth.
+- WebGL context loss handling and a lower initial DPR help reduce GPU pressure during load.
 - Basic unit tests exist (Vitest) — `tests/vitest/constants.test.ts` verifies shared constants.
 - Linting and formatting scripts are present (`eslint`, `prettier`).
 - Tailwind CSS is configured locally via the Tailwind v4 Vite plugin, using the `@import "tailwindcss";` entrypoint in `src/index.css`.
