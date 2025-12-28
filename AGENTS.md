@@ -70,7 +70,10 @@ Find specialized guidance for different aspects of development:
 - **`spec-driven-workflow-v1.instructions.md`** - Specification-driven development
 - **`tdd.instructions.md`** - Test-Driven Development (Red → Green → Refactor) guide
 - **`taming-copilot.instructions.md`** - Controlling AI behavior
-- **`tasksync.instructions.md`** - Task synchronization protocol
+
+### TaskSync (Opt-in)
+
+- **`.github/agents/tasksync-terminal-agent.agent.md`** - Terminal-driven TaskSync loop (select this agent explicitly)
 
 ### Quality & Security
 

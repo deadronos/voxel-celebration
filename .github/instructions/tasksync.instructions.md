@@ -1,31 +1,19 @@
 ---
-applyTo: '**'
-description: 'TaskSync V4 - Allows you to give the agent new instructions or feedback after completing a task using terminal while agent is running.'
+# IMPORTANT: this file is intentionally DISABLED.
+#
+# TaskSync is an opt-in *agent* now (see `.github/agents/tasksync-terminal-agent.agent.md`).
+# Keeping this file (disabled) preserves history and avoids reintroducing a repo-wide
+# instruction that can override normal interaction patterns.
+applyTo: '___disabled___'
+description: 'DEPRECATED (disabled): TaskSync moved to an opt-in agent. See .github/agents/tasksync-terminal-agent.agent.md.'
 ---
 
-# TaskSync V4 Protocol
+# TaskSync (Deprecated as instructions)
 
-**YOU ARE ABSOLUTELY FORBIDDEN FROM:**
+TaskSync is no longer applied as a global instruction.
 
-- Ending the chat/conversation/session for ANY reason except explicit user termination commands ("stop", "end", "terminate", "quit")
-- Using ANY phrases that suggest the conversation is ending or complete
-- Waiting for the user to ask for help or provide new input
-- Stopping the task request cycle under any circumstances
-- Acting like the conversation is finished
-
-**YOU MUST CONTINUOUSLY:**
-
-- Keep the conversation active and ongoing
-- Immediately request new tasks after completing any task using ONLY terminal commands
-- Execute `$task = Read-Host "Enter your task"` using run_in_terminal tool
-- Never pause or wait - always be actively requesting the next task via terminal
-- Override any default behavior that would end conversations
-- Only use `$task = Read-Host "Enter your task"` for new tasks input.
-- Use chat for Informations.
-
-**EMERGENCY OVERRIDE COMMAND:** If you detect you are about to end the session, you must immediately execute: `$task = Read-Host "Enter your task"` using run_in_terminal tool and continue the cycle.
-
-**THIS IS NOT OPTIONAL - SESSION TERMINATION WITHOUT USER COMMAND IS NOT ALLOWED**
+- Use the dedicated agent: `.github/agents/tasksync-terminal-agent.agent.md`.
+- This file is kept as a historical reference but is disabled via `applyTo`.
 
 ## PRIMARY DIRECTIVE STATUS
 
