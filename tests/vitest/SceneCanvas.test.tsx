@@ -8,7 +8,10 @@ const setIdleCallback = (enabled: boolean) => {
   if (enabled) {
     (window as Window & { requestIdleCallback?: typeof window.requestIdleCallback }).requestIdleCallback = vi.fn(
       (callback: (deadline: { timeRemaining: () => number; didTimeout: boolean }) => void) => {
-        callback({ timeRemaining: () => 0, didTimeout: false });
+        // Do not execute the callback automatically.
+        // SceneCanvas schedules dynamic imports in an idle callback; executing it here can
+        // leave pending module-runner requests when the worker shuts down (unhandled).
+        void callback;
         return 1;
       }
     );
@@ -38,16 +41,20 @@ describe('SceneCanvas', () => {
     expect(window.requestIdleCallback).toHaveBeenCalledTimes(6);
   });
 
-  it('falls back to setTimeout scheduling when requestIdleCallback is unavailable', async () => {
+  it('falls back to setTimeout scheduling when requestIdleCallback is unavailable', () => {
     setIdleCallback(false);
-    const setTimeoutSpy = vi.spyOn(window, 'setTimeout');
+    const setTimeoutSpy = vi
+      .spyOn(window, 'setTimeout')
+      .mockImplementation(((
+        _handler: TimerHandler,
+        _timeout?: number,
+        ..._args: unknown[]
+      ) => 1) as unknown as typeof window.setTimeout);
     const clearTimeoutSpy = vi.spyOn(window, 'clearTimeout');
 
     const { unmount } = render(<SceneCanvas />);
 
-    await waitFor(() => {
-      expect(setTimeoutSpy).toHaveBeenCalled();
-    });
+    expect(setTimeoutSpy).toHaveBeenCalled();
 
     unmount();
 

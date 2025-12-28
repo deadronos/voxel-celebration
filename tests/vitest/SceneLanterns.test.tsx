@@ -1,56 +1,30 @@
-import { describe, expect, it } from 'vitest';
+import React from 'react';
+import { describe, expect, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
-import { Canvas } from '@react-three/fiber';
-import SceneLanterns from '@/SceneLanterns';
 
-// Helper to render R3F components
-const renderInCanvas = (component: React.ReactElement) => {
-  return render(<Canvas>{component}</Canvas>);
-};
+const lanternPositions: Array<readonly [number, number, number]> = [];
+
+vi.mock('@/components/SkyLantern', () => ({
+  SkyLantern: ({ position }: { position: readonly [number, number, number] }) => {
+    lanternPositions.push(position);
+    return <div data-testid="lantern" />;
+  },
+}));
+
+import SceneLanterns from '@/SceneLanterns';
 
 describe('SceneLanterns', () => {
   it('renders without crashing - happy path', () => {
-    const { container } = renderInCanvas(<SceneLanterns />);
-    expect(container).toBeTruthy();
+    const { container } = render(<SceneLanterns />);
+    expect(container.querySelector('group')).toBeTruthy();
   });
 
-  it('renders multiple sky lanterns', () => {
-    // SceneLanterns renders 3 lanterns by default
-    const { container } = renderInCanvas(<SceneLanterns />);
-    expect(container).toBeTruthy();
-  });
+  it('renders 3 lanterns at the expected positions', () => {
+    lanternPositions.length = 0;
 
-  it('renders lanterns in a group', () => {
-    const { container } = renderInCanvas(<SceneLanterns />);
-    expect(container).toBeTruthy();
-  });
+    render(<SceneLanterns />);
 
-  it('positions group correctly', () => {
-    // Group is positioned at [0, -2, 0]
-    const { container } = renderInCanvas(<SceneLanterns />);
-    expect(container).toBeTruthy();
-  });
-
-  it('lanterns have unique keys', () => {
-    // Each lantern has a unique key based on position
-    const { container } = renderInCanvas(<SceneLanterns />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles multiple renders', () => {
-    const { rerender, container } = renderInCanvas(<SceneLanterns />);
-    expect(container).toBeTruthy();
-    rerender(
-      <Canvas>
-        <SceneLanterns />
-      </Canvas>
-    );
-    expect(container).toBeTruthy();
-  });
-
-  it('renders all three lantern positions', () => {
-    // Lanterns at [-5, 5, -5], [5, 8, 2], [0, 12, 8]
-    const { container } = renderInCanvas(<SceneLanterns />);
-    expect(container).toBeTruthy();
+    const unique = Array.from(new Set(lanternPositions.map((p) => p.join(',')))).sort();
+    expect(unique).toEqual(['-5,5,-5', '0,12,8', '5,8,2']);
   });
 });

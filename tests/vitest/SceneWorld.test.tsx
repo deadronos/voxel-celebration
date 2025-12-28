@@ -1,116 +1,67 @@
+import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
-import { Canvas } from '@react-three/fiber';
-import SceneWorld from '@/SceneWorld';
 
-// Helper to render R3F components
-const renderInCanvas = (component: React.ReactElement) => {
-  return render(<Canvas>{component}</Canvas>);
-};
+const houseProps: Array<Record<string, unknown>> = [];
+const streetLightProps: Array<Record<string, unknown>> = [];
+const treeProps: Array<Record<string, unknown>> = [];
+let groundRendered = 0;
+
+vi.mock('@/components/Environment', () => ({
+  Ground: () => {
+    groundRendered++;
+    return <div data-testid="ground" />;
+  },
+  StreetLight: (props: Record<string, unknown>) => {
+    streetLightProps.push(props);
+    return <div data-testid="streetlight" />;
+  },
+  Tree: (props: Record<string, unknown>) => {
+    treeProps.push(props);
+    return <div data-testid="tree" />;
+  },
+}));
+
+vi.mock('@/components/House', () => ({
+  default: (props: Record<string, unknown>) => {
+    houseProps.push(props);
+    return <div data-testid="house" />;
+  },
+}));
+
+import SceneWorld from '@/SceneWorld';
 
 describe('SceneWorld', () => {
   const mockOnShootRocket = vi.fn();
 
   it('renders without crashing - happy path', () => {
-    const { container } = renderInCanvas(<SceneWorld onShootRocket={mockOnShootRocket} />);
-    expect(container).toBeTruthy();
+    const { container } = render(<SceneWorld onShootRocket={mockOnShootRocket} />);
+    expect(container.querySelector('group')).toBeTruthy();
   });
 
-  it('renders Ground component', () => {
-    const { container } = renderInCanvas(<SceneWorld onShootRocket={mockOnShootRocket} />);
-    expect(container).toBeTruthy();
-  });
+  it('renders expected counts and wires onShootRocket into houses', () => {
+    houseProps.length = 0;
+    streetLightProps.length = 0;
+    treeProps.length = 0;
+    groundRendered = 0;
 
-  it('renders multiple House components', () => {
-    // SceneWorld renders 5 houses by default
-    const { container } = renderInCanvas(<SceneWorld onShootRocket={mockOnShootRocket} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('renders multiple StreetLight components', () => {
-    // SceneWorld renders 5 street lights
-    const { container } = renderInCanvas(<SceneWorld onShootRocket={mockOnShootRocket} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('renders multiple Tree components', () => {
-    // SceneWorld renders 6 trees
-    const { container } = renderInCanvas(<SceneWorld onShootRocket={mockOnShootRocket} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('positions group correctly', () => {
-    // Group is positioned at [0, -2, 0]
-    const { container } = renderInCanvas(<SceneWorld onShootRocket={mockOnShootRocket} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('houses have unique keys', () => {
-    const { container } = renderInCanvas(<SceneWorld onShootRocket={mockOnShootRocket} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('houses have different configurations', () => {
-    // Each house has different rotation, width, height, depth
-    const { container } = renderInCanvas(<SceneWorld onShootRocket={mockOnShootRocket} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('street lights have unique positions', () => {
-    const { container } = renderInCanvas(<SceneWorld onShootRocket={mockOnShootRocket} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('trees have unique positions', () => {
-    const { container } = renderInCanvas(<SceneWorld onShootRocket={mockOnShootRocket} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('passes onShootRocket callback to houses', () => {
     const callback = vi.fn();
-    const { container } = renderInCanvas(<SceneWorld onShootRocket={callback} />);
-    expect(container).toBeTruthy();
-    // Callback will be invoked by houses when they shoot rockets
-  });
+    const { container } = render(<SceneWorld onShootRocket={callback} />);
 
-  it('handles multiple renders', () => {
-    const { rerender, container } = renderInCanvas(<SceneWorld onShootRocket={mockOnShootRocket} />);
-    expect(container).toBeTruthy();
-    rerender(
-      <Canvas>
-        <SceneWorld onShootRocket={mockOnShootRocket} />
-      </Canvas>
-    );
-    expect(container).toBeTruthy();
-  });
+    // Group wrapper exists
+    const group = container.querySelector('group');
+    expect(group).toBeTruthy();
 
-  it('houses are positioned at different locations', () => {
-    // Houses at various x, y, z coordinates
-    const { container } = renderInCanvas(<SceneWorld onShootRocket={mockOnShootRocket} />);
-    expect(container).toBeTruthy();
-  });
+    expect(groundRendered).toBeGreaterThanOrEqual(1);
 
-  it('houses have different rotations', () => {
-    // Houses rotated at different angles
-    const { container } = renderInCanvas(<SceneWorld onShootRocket={mockOnShootRocket} />);
-    expect(container).toBeTruthy();
-  });
+    const uniqHousePos = new Set(houseProps.map((p) => (p.position as number[]).join(',')));
+    const uniqLightPos = new Set(streetLightProps.map((p) => (p.position as number[]).join(',')));
+    const uniqTreePos = new Set(treeProps.map((p) => (p.position as number[]).join(',')));
 
-  it('houses have custom dimensions', () => {
-    // Houses with different widths, heights, depths
-    const { container } = renderInCanvas(<SceneWorld onShootRocket={mockOnShootRocket} />);
-    expect(container).toBeTruthy();
-  });
+    expect(uniqHousePos.size).toBe(5);
+    expect(uniqLightPos.size).toBe(5);
+    expect(uniqTreePos.size).toBe(6);
 
-  it('street lights positioned around center', () => {
-    // Street lights at [0,0,0], [-10,0,0], [10,0,0], [0,0,10], [0,0,-5]
-    const { container } = renderInCanvas(<SceneWorld onShootRocket={mockOnShootRocket} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('trees positioned around perimeter', () => {
-    // Trees at various positions forming a perimeter
-    const { container } = renderInCanvas(<SceneWorld onShootRocket={mockOnShootRocket} />);
-    expect(container).toBeTruthy();
+    expect(houseProps.every((p) => p.onShootRocket === callback)).toBe(true);
   });
 });

@@ -64,12 +64,11 @@ export const InstancedVoxels: React.FC<InstancedVoxelsProps> = ({
   return (
     <instancedMesh
       ref={meshRef}
-      args={[undefined, undefined, instances.length]}
+      args={[sharedGeometry, sharedMaterial, instances.length]}
       castShadow={castShadow}
       receiveShadow={receiveShadow}
+      dispose={null}
     >
-      <primitive object={sharedGeometry} attach="geometry" dispose={null} />
-      <primitive object={sharedMaterial} attach="material" dispose={null} />
     </instancedMesh>
   );
 };
