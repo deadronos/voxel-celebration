@@ -1,42 +1,43 @@
+import React from 'react';
 import { describe, expect, it } from 'vitest';
-import { render } from '@testing-library/react';
-import { Canvas } from '@react-three/fiber';
+import ReactThreeTestRenderer from '@react-three/test-renderer';
 import { AuroraSky } from '@/components/AuroraSky';
-
-// Helper to render R3F components
-const renderInCanvas = (component: React.ReactElement) => {
-  return render(<Canvas>{component}</Canvas>);
-};
+import type { Mesh, ShaderMaterial } from 'three';
 
 describe('AuroraSky', () => {
-  it('renders without crashing - happy path', () => {
-    const { container } = renderInCanvas(<AuroraSky />);
-    expect(container).toBeTruthy();
+  it('creates a mesh with a ShaderMaterial and uniforms', async () => {
+    const renderer = await ReactThreeTestRenderer.create(<AuroraSky />);
+
+    const mesh = renderer.scene.findByType('Mesh');
+    const meshObj = mesh.instance as unknown as Mesh;
+    const material = meshObj.material as unknown as ShaderMaterial & {
+      uniforms?: Record<string, { value: unknown }>;
+    };
+
+    expect(material.uniforms).toBeTruthy();
+    expect(material.uniforms?.uTime).toBeTruthy();
+    expect(material.uniforms?.uColor1).toBeTruthy();
+    expect(material.uniforms?.uColor2).toBeTruthy();
+    expect(material.uniforms?.uColor3).toBeTruthy();
+
+    await renderer.unmount();
   });
 
-  it('renders with shader material', () => {
-    const { container } = renderInCanvas(<AuroraSky />);
-    expect(container).toBeTruthy();
-  });
+  it('updates uTime on frame advances', async () => {
+    const renderer = await ReactThreeTestRenderer.create(<AuroraSky />);
+    const mesh = renderer.scene.findByType('Mesh');
+    const meshObj = mesh.instance as unknown as Mesh;
+    const material = meshObj.material as unknown as ShaderMaterial & {
+      uniforms: { uTime: { value: number } };
+    };
 
-  it('initializes with uniforms', () => {
-    const { container } = renderInCanvas(<AuroraSky />);
-    expect(container).toBeTruthy();
-  });
+    material.uniforms.uTime.value = 123;
 
-  it('handles animation frame updates', () => {
-    const { container } = renderInCanvas(<AuroraSky />);
-    // Component uses useFrame hook which will be called by R3F
-    expect(container).toBeTruthy();
-  });
+    await ReactThreeTestRenderer.act(async () => {
+      await renderer.advanceFrames(2, 0.5);
+    });
 
-  it('renders multiple instances without conflict', () => {
-    const { container } = renderInCanvas(
-      <>
-        <AuroraSky />
-        <AuroraSky />
-      </>
-    );
-    expect(container).toBeTruthy();
+    expect(material.uniforms.uTime.value).not.toBe(123);
+    await renderer.unmount();
   });
 });

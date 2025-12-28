@@ -1,5 +1,20 @@
 import { vi, beforeAll, afterAll } from 'vitest';
 
+// React 18+/19: enable act() semantics for tests (used by RTL and @react-three/test-renderer)
+// https://react.dev/reference/react-dom/test-utils/act
+(globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+
+// Avoid background idle-callback work (SceneCanvas schedules lazy imports in idle time).
+// In unit tests this can resolve outside of act() and cause noisy React warnings.
+if (typeof window !== 'undefined') {
+  (window as Window & { requestIdleCallback?: typeof window.requestIdleCallback }).requestIdleCallback =
+    vi.fn((callback: IdleRequestCallback) => {
+      void callback;
+      return 1;
+    });
+  (window as Window & { cancelIdleCallback?: (handle: number) => void }).cancelIdleCallback = vi.fn();
+}
+
 // Mock ResizeObserver for jsdom
 class ResizeObserverMock implements ResizeObserver {
   observe(_target?: Element | Document | null): void {}

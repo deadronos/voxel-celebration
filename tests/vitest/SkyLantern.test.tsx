@@ -1,68 +1,56 @@
-import { describe, expect, it } from 'vitest';
-import { render } from '@testing-library/react';
-import { Canvas } from '@react-three/fiber';
+import React from 'react';
+import { describe, expect, it, vi } from 'vitest';
+import ReactThreeTestRenderer from '@react-three/test-renderer';
 import { SkyLantern } from '@/components/SkyLantern';
-
-// Helper to render R3F components
-const renderInCanvas = (component: React.ReactElement) => {
-  return render(<Canvas>{component}</Canvas>);
-};
+import type { Group, PointLight } from 'three';
 
 describe('SkyLantern', () => {
-  it('renders without crashing - happy path', () => {
-    const { container } = renderInCanvas(<SkyLantern position={[0, 0, 0]} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('renders with default color', () => {
-    const { container } = renderInCanvas(<SkyLantern position={[5, 10, -5]} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('renders with custom color', () => {
-    const { container } = renderInCanvas(<SkyLantern position={[0, 5, 0]} color="#00ff00" />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles different positions', () => {
-    const { container } = renderInCanvas(<SkyLantern position={[-10, 20, 15]} color="#0000ff" />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles edge case - negative position', () => {
-    const { container } = renderInCanvas(<SkyLantern position={[-5, -10, -15]} color="#ff00ff" />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles edge case - zero position', () => {
-    const { container } = renderInCanvas(<SkyLantern position={[0, 0, 0]} color="#ffffff" />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles edge case - very large position values', () => {
-    const { container } = renderInCanvas(<SkyLantern position={[1000, 2000, 3000]} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('renders multiple lanterns without conflict', () => {
-    const { container } = renderInCanvas(
-      <>
-        <SkyLantern position={[0, 5, 0]} color="#ff0000" />
-        <SkyLantern position={[5, 10, 5]} color="#00ff00" />
-        <SkyLantern position={[-5, 15, -5]} color="#0000ff" />
-      </>
-    );
-    expect(container).toBeTruthy();
-  });
-
   it('has proper displayName for debugging', () => {
     expect(SkyLantern.displayName).toBe('SkyLantern');
   });
 
-  it('handles animation with useFrame hook', () => {
-    // The component uses useFrame for animation
-    // This test ensures it doesn't crash during rendering
-    const { container } = renderInCanvas(<SkyLantern position={[0, 0, 0]} />);
-    expect(container).toBeTruthy();
+  it('moves upward and updates light intensity on frames', async () => {
+    // Make randomOffset/speed deterministic and remove per-frame noise
+    vi.spyOn(Math, 'random')
+      .mockReturnValueOnce(0) // randomOffset
+      .mockReturnValueOnce(0) // speed (0.5)
+      .mockReturnValue(0.5); // per-frame flicker noise
+
+    const renderer = await ReactThreeTestRenderer.create(<SkyLantern position={[0, 0, 0]} />);
+    const groupNode = renderer.scene.findByType('Group');
+    const lightNode = renderer.scene.findByType('PointLight');
+    const group = groupNode.instance as unknown as Group;
+    const light = lightNode.instance as unknown as PointLight;
+
+    const y0 = group.position.y;
+
+    await ReactThreeTestRenderer.act(async () => {
+      await renderer.advanceFrames(2, 1);
+    });
+
+    // SkyLantern applies upward speed twice per frame
+    expect(group.position.y).toBeGreaterThan(y0);
+    expect(light.intensity).toBeGreaterThan(0);
+
+    await renderer.unmount();
+  });
+
+  it('wraps back to bottom after exceeding max height', async () => {
+    vi.spyOn(Math, 'random')
+      .mockReturnValueOnce(0) // randomOffset
+      .mockReturnValueOnce(0) // speed
+      .mockReturnValue(0.5);
+
+    const renderer = await ReactThreeTestRenderer.create(<SkyLantern position={[0, 41, 0]} />);
+    const groupNode = renderer.scene.findByType('Group');
+    const group = groupNode.instance as unknown as Group;
+
+    await ReactThreeTestRenderer.act(async () => {
+      await renderer.advanceFrames(1, 1);
+    });
+
+    // After reset, y should be near -5 (plus one additional speed increment)
+    expect(group.position.y).toBeLessThan(0);
+    await renderer.unmount();
   });
 });
