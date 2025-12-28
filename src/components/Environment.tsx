@@ -60,7 +60,8 @@ const StreetLightComponent: FC<{ position: readonly [number, number, number] }> 
 export const StreetLight = memo(StreetLightComponent);
 StreetLight.displayName = 'StreetLight';
 
-const GroundComponent: FC = () => {  const instances = useMemo<readonly VoxelInstance[]>(() => {
+const GroundComponent: FC = () => {
+  const instances = useMemo<readonly VoxelInstance[]>(() => {
     const size = 30;
     const step = 2;
     const voxels: VoxelInstance[] = [];

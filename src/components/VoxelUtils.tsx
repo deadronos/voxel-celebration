@@ -9,7 +9,7 @@ interface VoxelProps {
   scale?: [number, number, number];
 }
 
-export const Voxel: FC<VoxelProps> = ({ 
+export const Voxel: FC<VoxelProps> = ({
   position,
   color,
   emissive,

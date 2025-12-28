@@ -29,39 +29,39 @@ describe('createExplosionParticles', () => {
   });
 
   it('generates sphere distribution when rand > 0.7', () => {
-     const pos = new THREE.Vector3();
-     // Use a mock random that returns 0.8 initially for shape selection
-     // then other values
-     let callCount = 0;
-     const mockRand = () => {
-         callCount++;
-         if (callCount === 1) return 0.8; // Shape: sphere
-         return 0.5;
-     };
+    const pos = new THREE.Vector3();
+    // Use a mock random that returns 0.8 initially for shape selection
+    // then other values
+    let callCount = 0;
+    const mockRand = () => {
+      callCount++;
+      if (callCount === 1) return 0.8; // Shape: sphere
+      return 0.5;
+    };
 
-     const parts = createExplosionParticles(pos, '#00ff00', { random: mockRand, count: 10 });
-     expect(parts.length).toBe(10);
-     // Sphere logic: x, y, z set by spherical coords
-     // Just verify they are not all 0 or infinity
-     parts.forEach(p => {
-         expect(p.velocity.length()).toBeGreaterThan(0);
-     });
+    const parts = createExplosionParticles(pos, '#00ff00', { random: mockRand, count: 10 });
+    expect(parts.length).toBe(10);
+    // Sphere logic: x, y, z set by spherical coords
+    // Just verify they are not all 0 or infinity
+    parts.forEach((p) => {
+      expect(p.velocity.length()).toBeGreaterThan(0);
+    });
   });
 
-    it('generates ring distribution when rand is between 0.4 and 0.7', () => {
-     const pos = new THREE.Vector3();
-     // Use a mock random that returns 0.5 initially for shape selection
-     let callCount = 0;
-     const mockRand = () => {
-         callCount++;
-         if (callCount === 1) return 0.5; // Shape: ring
-         return 0.5;
-     };
+  it('generates ring distribution when rand is between 0.4 and 0.7', () => {
+    const pos = new THREE.Vector3();
+    // Use a mock random that returns 0.5 initially for shape selection
+    let callCount = 0;
+    const mockRand = () => {
+      callCount++;
+      if (callCount === 1) return 0.5; // Shape: ring
+      return 0.5;
+    };
 
-     const parts = createExplosionParticles(pos, '#00ff00', { random: mockRand, count: 10 });
-     expect(parts.length).toBe(10);
-     parts.forEach(p => {
-          expect(p.velocity.length()).toBeGreaterThan(0);
-     });
+    const parts = createExplosionParticles(pos, '#00ff00', { random: mockRand, count: 10 });
+    expect(parts.length).toBe(10);
+    parts.forEach((p) => {
+      expect(p.velocity.length()).toBeGreaterThan(0);
+    });
   });
 });

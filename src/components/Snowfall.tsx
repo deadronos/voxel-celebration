@@ -12,8 +12,8 @@ export const Snowfall: FC = () => {
   const positions = useMemo(() => {
     const pos = new Float32Array(SNOW_COUNT * 3);
     for (let i = 0; i < SNOW_COUNT; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * RANGE;     // x
-      pos[i * 3 + 1] = Math.random() * 30;            // y
+      pos[i * 3] = (Math.random() - 0.5) * RANGE; // x
+      pos[i * 3 + 1] = Math.random() * 30; // y
       pos[i * 3 + 2] = (Math.random() - 0.5) * RANGE; // z
     }
     return pos;

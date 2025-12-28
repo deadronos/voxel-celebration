@@ -10,7 +10,7 @@ export const IceLake: FC = () => {
         resolution={1024}
         mixBlur={1}
         mixStrength={40} // Increased for more visible reflections
-        roughness={0.1}  // Low roughness for ice
+        roughness={0.1} // Low roughness for ice
         depthScale={1.2}
         minDepthThreshold={0.4}
         maxDepthThreshold={1.4}
