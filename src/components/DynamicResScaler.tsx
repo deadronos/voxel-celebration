@@ -7,6 +7,7 @@ const CHECK_INTERVAL = 500; // Check every 500ms
 const FPS_TOLERANCE = 5; // Allow 55-65 FPS before adjusting
 const MIN_DPR = 0.5;
 const MAX_DPR = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 2) : 1;
+const START_DPR = Math.min(1, MAX_DPR);
 const STEP = 0.1;
 
 export function DynamicResScaler() {
@@ -15,7 +16,7 @@ export function DynamicResScaler() {
   // Refs to store state without triggering re-renders for the logic loop
   const frameCount = useRef(0);
   const lastTime = useRef(performance.now());
-  const dprRef = useRef(MAX_DPR); // Start at max quality
+  const dprRef = useRef(START_DPR); // Start conservative to reduce GPU pressure
 
   // We'll just set the initial DPR once on mount to ensure we start at a known state
   useEffect(() => {
