@@ -49,4 +49,4 @@
 
 ---
 
-*Update this file if dependencies or commands change.*
+_Update this file if dependencies or commands change._

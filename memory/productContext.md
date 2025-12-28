@@ -33,4 +33,4 @@ This project is an educational and showcase app that demonstrates how to build a
 
 ---
 
-*Use this file to align feature and design decisions with user needs.*
+_Use this file to align feature and design decisions with user needs._

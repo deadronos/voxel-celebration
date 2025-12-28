@@ -13,6 +13,7 @@
 - SceneCanvas coverage now exercises idle scheduling, context loss overlay behavior, and rocket add/remove flows.
 - Linting and formatting scripts are present (`eslint`, `prettier`).
 - Tailwind CSS is configured locally via the Tailwind v4 Vite plugin, using the `@import "tailwindcss";` entrypoint in `src/index.css`.
+- TDD adoption kickstarted: design doc + task plan added, plus a working Red → Green → Refactor pilot on `DynamicResScaler`.
 
 **What's left to build / next priorities:**
 
@@ -29,6 +30,12 @@
 - Some rendering behavior (particles) may be non-deterministic which makes snapshot testing more difficult; write deterministic helpers where possible.
 
 **Overall status:** _Active_ — core demo working, documentation being backfilled, tests to expand.
+
+## Retrospective — 2025-12-28 (TDD Pilot)
+
+- What went well: adding failing tests first made the `DynamicResScaler` change straightforward, and extracting DPR math into a pure helper improved testability without changing behavior.
+- What to improve: follow-ups should add a PR checklist + optional CI warning to make test-first habits consistent for all contributors.
+- Next: keep using the Red → Green → Refactor pattern for the next small feature/bugfix to build team muscle memory.
 
 ---
 

@@ -31,4 +31,4 @@ Improve test coverage by adding unit tests for fireworks-related behavior and ro
 - Added unit tests: `tests/vitest/fireworks.test.ts` and `tests/vitest/rocket.test.ts` and verified they pass locally with `npm run test`.
 - Updated `FireworksManager` and `Rocket` to use the pure helpers for testability.
 
-*Follow-ups: Add integration tests to validate `FireworksManager` rendering/instance updates if needed.*
+_Follow-ups: Add integration tests to validate `FireworksManager` rendering/instance updates if needed._

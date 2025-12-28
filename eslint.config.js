@@ -25,7 +25,16 @@ export default defineConfig([
 
   // Top-level ignore patterns migrated from .eslintignore
   {
-    ignores: ['node_modules/**', 'dist/**', 'build/**', 'public/**', 'coverage/**', '.vscode/**', '*.min.js', '.github/**'],
+    ignores: [
+      'node_modules/**',
+      'dist/**',
+      'build/**',
+      'public/**',
+      'coverage/**',
+      '.vscode/**',
+      '*.min.js',
+      '.github/**',
+    ],
   },
 
   // TypeScript files (parser + type-aware rules)
@@ -79,7 +88,6 @@ export default defineConfig([
     },
     settings: { react: { version: 'detect' } },
   },
-
 
   // Prettier (flat) — must be last so stylistic rules are disabled
   prettierFlat,

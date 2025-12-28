@@ -26,13 +26,13 @@ The initial load cost is dominated by the 3D scene bundle and GPU-heavy initiali
 
 ### Subtasks
 
-| ID  | Description                                         | Status    | Updated     | Notes                                 |
-| --- | --------------------------------------------------- | --------- | ----------- | ------------------------------------- |
-| 1.1 | Split scene into lazy-loaded chunks                 | Complete  | 2025-12-28  | Added new scene modules               |
-| 1.2 | Add staged hydration + idle prefetch                | Complete  | 2025-12-28  | Timed/idle mount sequence             |
-| 1.3 | Add first-paint placeholder                          | Complete  | 2025-12-28  | Suspense fallback + minimal ground    |
-| 1.4 | Add WebGL context loss handling                      | Complete  | 2025-12-28  | Listener + overlay                    |
-| 1.5 | Reduce startup GPU pressure (initial DPR)            | Complete  | 2025-12-28  | Conservative DPR before scaling       |
+| ID  | Description                               | Status   | Updated    | Notes                              |
+| --- | ----------------------------------------- | -------- | ---------- | ---------------------------------- |
+| 1.1 | Split scene into lazy-loaded chunks       | Complete | 2025-12-28 | Added new scene modules            |
+| 1.2 | Add staged hydration + idle prefetch      | Complete | 2025-12-28 | Timed/idle mount sequence          |
+| 1.3 | Add first-paint placeholder               | Complete | 2025-12-28 | Suspense fallback + minimal ground |
+| 1.4 | Add WebGL context loss handling           | Complete | 2025-12-28 | Listener + overlay                 |
+| 1.5 | Reduce startup GPU pressure (initial DPR) | Complete | 2025-12-28 | Conservative DPR before scaling    |
 
 ## Progress Log
 

@@ -29,16 +29,16 @@ The project had a minimal README and source files for a voxel New Year demo. To 
 
 ### Subtasks
 
-| ID | Description | Status | Updated | Notes |
-| --- | --- | --- | --- | --- |
-| 1.1 | Create `projectbrief.md` | Completed | 2025-12-27 | Basic brief added |
-| 1.2 | Create `productContext.md` | Completed | 2025-12-27 | Added personas and acceptance criteria |
-| 1.3 | Create `systemPatterns.md` | Completed | 2025-12-27 | Architecture captured |
-| 1.4 | Create `techContext.md` | Completed | 2025-12-27 | Dev commands and stack documented |
-| 1.5 | Create `activeContext.md` | Completed | 2025-12-27 | Current focus and next steps added |
-| 1.6 | Create `progress.md` | Completed | 2025-12-27 | Status and remaining work listed |
-| 1.7 | Create `memory/tasks/_index.md` and this task file | Completed | 2025-12-27 | Task tracking created |
-| 1.8 | Create `memory/designs/` placeholder | Not Started | - | Next: create fireworks design doc |
+| ID  | Description                                        | Status      | Updated    | Notes                                  |
+| --- | -------------------------------------------------- | ----------- | ---------- | -------------------------------------- |
+| 1.1 | Create `projectbrief.md`                           | Completed   | 2025-12-27 | Basic brief added                      |
+| 1.2 | Create `productContext.md`                         | Completed   | 2025-12-27 | Added personas and acceptance criteria |
+| 1.3 | Create `systemPatterns.md`                         | Completed   | 2025-12-27 | Architecture captured                  |
+| 1.4 | Create `techContext.md`                            | Completed   | 2025-12-27 | Dev commands and stack documented      |
+| 1.5 | Create `activeContext.md`                          | Completed   | 2025-12-27 | Current focus and next steps added     |
+| 1.6 | Create `progress.md`                               | Completed   | 2025-12-27 | Status and remaining work listed       |
+| 1.7 | Create `memory/tasks/_index.md` and this task file | Completed   | 2025-12-27 | Task tracking created                  |
+| 1.8 | Create `memory/designs/` placeholder               | Not Started | -          | Next: create fireworks design doc      |
 
 ## Progress Log
 

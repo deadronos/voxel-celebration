@@ -28,7 +28,9 @@ const TreeComponent: React.FC<{ position: readonly [number, number, number] }> =
 export const Tree = React.memo(TreeComponent);
 Tree.displayName = 'Tree';
 
-const StreetLightComponent: React.FC<{ position: readonly [number, number, number] }> = ({ position }) => {
+const StreetLightComponent: React.FC<{ position: readonly [number, number, number] }> = ({
+  position,
+}) => {
   const poleInstances = useMemo<readonly VoxelInstance[]>(
     () => [
       { position: [0, 0, 0], color: COLORS.stone },
@@ -39,7 +41,10 @@ const StreetLightComponent: React.FC<{ position: readonly [number, number, numbe
     []
   );
 
-  const fixtureInstances = useMemo<readonly VoxelInstance[]>(() => [{ position: [0, 4, 0], color: '#ffffff' }], []);
+  const fixtureInstances = useMemo<readonly VoxelInstance[]>(
+    () => [{ position: [0, 4, 0], color: '#ffffff' }],
+    []
+  );
   // High intensity for Bloom
   const fixtureMaterial = getVoxelMaterial({ emissive: '#fffacd', emissiveIntensity: 5 });
 

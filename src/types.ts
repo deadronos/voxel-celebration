@@ -27,4 +27,3 @@ export interface ExplosionEvent {
   color: string;
   count: number;
 }
-

@@ -15,4 +15,3 @@ describe('constants', () => {
     expect(VOXEL_SIZE).toBeGreaterThan(0);
   });
 });
-

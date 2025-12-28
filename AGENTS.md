@@ -47,6 +47,7 @@ The main copilot instructions file is located at:
 **[`.github/copilot-instructions.md`](.github/copilot-instructions.md)**
 
 This file contains:
+
 - Project overview and technology stack
 - Development workflow and commands
 - Code style and standards
@@ -67,8 +68,12 @@ Find specialized guidance for different aspects of development:
 
 - **`memory-bank.instructions.md`** - How to use the memory bank system
 - **`spec-driven-workflow-v1.instructions.md`** - Specification-driven development
+- **`tdd.instructions.md`** - Test-Driven Development (Red → Green → Refactor) guide
 - **`taming-copilot.instructions.md`** - Controlling AI behavior
-- **`tasksync.instructions.md`** - Task synchronization protocol
+
+### TaskSync (Opt-in)
+
+- **`.github/agents/tasksync-terminal-agent.agent.md`** - Terminal-driven TaskSync loop (select this agent explicitly)
 
 ### Quality & Security
 
@@ -167,7 +172,7 @@ npm run format:check # Check formatting
 
 ## Project Structure
 
-```
+```text
 voxel-celebration/
 ├── .github/
 │   ├── agents/              # Specialized AI agents
@@ -195,15 +200,16 @@ voxel-celebration/
 ## Best Practices for Agents
 
 1. **Context First**: Always review memory bank files before starting work
-2. **Minimal Changes**: Make the smallest changes necessary to achieve the goal
-3. **Test Driven**: Write or update tests for new functionality
-4. **Document Decisions**: Update memory bank with architectural decisions
-5. **Validate Everything**: Run test, lint, and typecheck before finishing
-6. **Use Subagents**: Delegate to specialized agents when appropriate
-7. **Follow Patterns**: Match existing code patterns and conventions
-8. **Performance Aware**: Consider 3D rendering performance impact
-9. **Type Safe**: Maintain strict TypeScript typing
-10. **Incremental Progress**: Make small commits with clear messages
+2. **Autonomy First**: If confidence is ≥ 80%, proceed with sensible defaults and state assumptions briefly; ask clarifying questions only when confidence is < 80% or requirements are genuinely ambiguous
+3. **Minimal Changes**: Make the smallest changes necessary to achieve the goal
+4. **Test Driven**: Write or update tests for new functionality
+5. **Document Decisions**: Update memory bank with architectural decisions
+6. **Validate Everything**: Run test, lint, and typecheck before finishing
+7. **Use Subagents**: Delegate to specialized agents when appropriate
+8. **Follow Patterns**: Match existing code patterns and conventions
+9. **Performance Aware**: Consider 3D rendering performance impact
+10. **Type Safe**: Maintain strict TypeScript typing
+11. **Incremental Progress**: Make small commits with clear messages
 
 ## Getting Help
 

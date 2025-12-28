@@ -34,4 +34,4 @@ An interactive, holiday-themed 3D demo that showcases a voxel-style village, fir
 
 ---
 
-*This document is the canonical short-form project brief for maintainers and contributors.*
+_This document is the canonical short-form project brief for maintainers and contributors._

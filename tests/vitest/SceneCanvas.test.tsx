@@ -6,7 +6,9 @@ import SceneCanvas from '@/SceneCanvas';
 
 const setIdleCallback = (enabled: boolean) => {
   if (enabled) {
-    (window as Window & { requestIdleCallback?: typeof window.requestIdleCallback }).requestIdleCallback = vi.fn(
+    (
+      window as Window & { requestIdleCallback?: typeof window.requestIdleCallback }
+    ).requestIdleCallback = vi.fn(
       (callback: (deadline: { timeRemaining: () => number; didTimeout: boolean }) => void) => {
         // Do not execute the callback automatically.
         // SceneCanvas schedules dynamic imports in an idle callback; executing it here can
@@ -15,10 +17,14 @@ const setIdleCallback = (enabled: boolean) => {
         return 1;
       }
     );
-    (window as Window & { cancelIdleCallback?: (handle: number) => void }).cancelIdleCallback = vi.fn();
+    (window as Window & { cancelIdleCallback?: (handle: number) => void }).cancelIdleCallback =
+      vi.fn();
   } else {
-    (window as Window & { requestIdleCallback?: typeof window.requestIdleCallback }).requestIdleCallback = undefined;
-    (window as Window & { cancelIdleCallback?: (handle: number) => void }).cancelIdleCallback = undefined;
+    (
+      window as Window & { requestIdleCallback?: typeof window.requestIdleCallback }
+    ).requestIdleCallback = undefined;
+    (window as Window & { cancelIdleCallback?: (handle: number) => void }).cancelIdleCallback =
+      undefined;
   }
 };
 
@@ -45,11 +51,10 @@ describe('SceneCanvas', () => {
     setIdleCallback(false);
     const setTimeoutSpy = vi
       .spyOn(window, 'setTimeout')
-      .mockImplementation(((
-        _handler: TimerHandler,
-        _timeout?: number,
-        ..._args: unknown[]
-      ) => 1) as unknown as typeof window.setTimeout);
+      .mockImplementation(
+        ((_handler: TimerHandler, _timeout?: number, ..._args: unknown[]) =>
+          1) as unknown as typeof window.setTimeout
+      );
     const clearTimeoutSpy = vi.spyOn(window, 'clearTimeout');
 
     const { unmount } = render(<SceneCanvas />);

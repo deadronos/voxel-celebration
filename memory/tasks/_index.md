@@ -17,6 +17,7 @@
 - [TASK005] Add GitHub Pages deploy workflow — Completed 2025-12-27
 - [TASK007] Atmospheric Overhaul Implementation — Completed 2025-12-27
 - [TASK009] Page load optimization (lazy scene hydration) — Completed 2025-12-28
+- [TASK010] Adopt TDD (Red-Green-Refactor) — Completed 2025-12-28
 
 ## Abandoned
 

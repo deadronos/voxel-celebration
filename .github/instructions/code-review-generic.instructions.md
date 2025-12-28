@@ -164,6 +164,7 @@ When performing a code review, verify test quality:
 - **Assertions**: Use specific assertions, avoid generic assertTrue/assertFalse
 - **Edge Cases**: Test boundary conditions, null values, empty collections
 - **Mock Appropriately**: Mock external dependencies, not domain logic
+- **TDD**: Prefer test-first work for new features and bug fixes; when possible, verify the PR includes a failing test commit or a short explanation why TDD wasn't used.
 
 ### Examples
 

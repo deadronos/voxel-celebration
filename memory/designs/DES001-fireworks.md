@@ -37,4 +37,4 @@
 
 ---
 
-*This is a living doc — expand with concrete parameter ranges and measured baselines when profiling data is captured.*
+_This is a living doc — expand with concrete parameter ranges and measured baselines when profiling data is captured._

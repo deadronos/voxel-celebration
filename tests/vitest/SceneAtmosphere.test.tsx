@@ -31,10 +31,25 @@ describe('SceneAtmosphere', () => {
     expect(getByTestId('cloud')).toBeTruthy();
 
     expect(lastStarsProps).toEqual(
-      expect.objectContaining({ radius: 100, depth: 60, count: 8000, factor: 6, saturation: 0.9, fade: true, speed: 2 })
+      expect.objectContaining({
+        radius: 100,
+        depth: 60,
+        count: 8000,
+        factor: 6,
+        saturation: 0.9,
+        fade: true,
+        speed: 2,
+      })
     );
     expect(lastCloudProps).toEqual(
-      expect.objectContaining({ opacity: 0.4, speed: 0.2, bounds: [40, 6, 4], segments: 30, position: [0, 25, -20], color: '#221133' })
+      expect.objectContaining({
+        opacity: 0.4,
+        speed: 0.2,
+        bounds: [40, 6, 4],
+        segments: 30,
+        position: [0, 25, -20],
+        color: '#221133',
+      })
     );
   });
 });

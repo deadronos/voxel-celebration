@@ -18,7 +18,11 @@ type ExplosionOpts = {
   spread?: number;
 };
 
-type CreateExplosionParticles = (pos: Vector3, color: string, opts: ExplosionOpts) => ParticleData[];
+type CreateExplosionParticles = (
+  pos: Vector3,
+  color: string,
+  opts: ExplosionOpts
+) => ParticleData[];
 
 const { stepRocketPositionMock, createExplosionParticlesMock } = vi.hoisted(() => ({
   stepRocketPositionMock: vi.fn<StepRocketPosition>(),
@@ -42,7 +46,9 @@ describe('FireworksManager', () => {
   });
 
   it('initializes an instanced particle mesh with zero count', async () => {
-    const renderer = await ReactThreeTestRenderer.create(<FireworksManager rockets={[]} removeRocket={() => {}} />);
+    const renderer = await ReactThreeTestRenderer.create(
+      <FireworksManager rockets={[]} removeRocket={() => {}} />
+    );
 
     const mesh = findInstancedMesh(renderer);
     expect(mesh.count).toBe(0);
@@ -54,10 +60,12 @@ describe('FireworksManager', () => {
     const removeRocket = vi.fn();
     let poolRef: ParticleData[] | undefined;
 
-    stepRocketPositionMock.mockImplementation((_y: number, _speed: number, _delta: number, _target: number) => ({
-      newY: 10,
-      exploded: true,
-    }));
+    stepRocketPositionMock.mockImplementation(
+      (_y: number, _speed: number, _delta: number, _target: number) => ({
+        newY: 10,
+        exploded: true,
+      })
+    );
 
     createExplosionParticlesMock.mockImplementation((pos, color, opts) => {
       poolRef = opts.pool;
