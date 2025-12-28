@@ -1,66 +1,38 @@
-import { describe, expect, it } from 'vitest';
+import React from 'react';
+import { describe, expect, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
-import { Canvas } from '@react-three/fiber';
-import ScenePostProcessing from '@/ScenePostProcessing';
 
-// Helper to render R3F components
-const renderInCanvas = (component: React.ReactElement) => {
-  return render(<Canvas>{component}</Canvas>);
-};
+type AnyProps = Record<string, unknown>;
+let lastComposerProps: AnyProps | undefined;
+let lastBloomProps: AnyProps | undefined;
+
+vi.mock('@react-three/postprocessing', () => ({
+  EffectComposer: ({ children, ...props }: AnyProps & { children?: React.ReactNode }) => {
+    lastComposerProps = props;
+    return <div data-testid="composer">{children}</div>;
+  },
+  Bloom: (props: AnyProps) => {
+    lastBloomProps = props;
+    return <div data-testid="bloom" />;
+  },
+}));
+
+import ScenePostProcessing from '@/ScenePostProcessing';
 
 describe('ScenePostProcessing', () => {
   it('renders without crashing - happy path', () => {
-    const { container } = renderInCanvas(<ScenePostProcessing />);
-    expect(container).toBeTruthy();
+    const { getByTestId } = render(<ScenePostProcessing />);
+    expect(getByTestId('composer')).toBeTruthy();
+    expect(getByTestId('bloom')).toBeTruthy();
   });
 
-  it('renders EffectComposer', () => {
-    const { container } = renderInCanvas(<ScenePostProcessing />);
-    expect(container).toBeTruthy();
-  });
+  it('configures EffectComposer and Bloom as expected', () => {
+    render(<ScenePostProcessing />);
 
-  it('renders Bloom effect', () => {
-    const { container } = renderInCanvas(<ScenePostProcessing />);
-    expect(container).toBeTruthy();
-  });
-
-  it('disables normal pass in EffectComposer', () => {
-    // enableNormalPass is set to false for performance
-    const { container } = renderInCanvas(<ScenePostProcessing />);
-    expect(container).toBeTruthy();
-  });
-
-  it('configures Bloom with correct luminanceThreshold', () => {
-    // luminanceThreshold is 0.8
-    const { container } = renderInCanvas(<ScenePostProcessing />);
-    expect(container).toBeTruthy();
-  });
-
-  it('configures Bloom with correct intensity', () => {
-    // intensity is 1.8
-    const { container } = renderInCanvas(<ScenePostProcessing />);
-    expect(container).toBeTruthy();
-  });
-
-  it('configures Bloom with correct radius', () => {
-    // radius is 0.5
-    const { container } = renderInCanvas(<ScenePostProcessing />);
-    expect(container).toBeTruthy();
-  });
-
-  it('enables mipmapBlur for better performance', () => {
-    const { container } = renderInCanvas(<ScenePostProcessing />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles multiple renders', () => {
-    const { rerender, container } = renderInCanvas(<ScenePostProcessing />);
-    expect(container).toBeTruthy();
-    rerender(
-      <Canvas>
-        <ScenePostProcessing />
-      </Canvas>
-    );
-    expect(container).toBeTruthy();
+    expect(lastComposerProps?.enableNormalPass).toBe(false);
+    expect(lastBloomProps?.luminanceThreshold).toBe(0.8);
+    expect(lastBloomProps?.intensity).toBe(1.8);
+    expect(lastBloomProps?.radius).toBe(0.5);
+    expect(lastBloomProps?.mipmapBlur).toBe(true);
   });
 });

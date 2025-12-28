@@ -1,118 +1,68 @@
+import React from 'react';
 import { describe, expect, it } from 'vitest';
-import { render } from '@testing-library/react';
-import { Canvas } from '@react-three/fiber';
+import ReactThreeTestRenderer from '@react-three/test-renderer';
 import { InstancedVoxels, type VoxelInstance } from '@/components/InstancedVoxels';
+import { type InstancedMesh, Matrix4, Quaternion, Vector3 } from 'three';
 
-// Helper to render R3F components
-const renderInCanvas = (component: React.ReactElement) => {
-  return render(<Canvas>{component}</Canvas>);
+type SceneNode = { instance: unknown };
+type RendererWithSceneFind = {
+  scene: {
+    find: (predicate: (node: SceneNode) => boolean) => SceneNode;
+  };
+};
+
+const isInstancedMesh = (value: unknown): value is InstancedMesh =>
+  typeof value === 'object' && value !== null && (value as InstancedMesh).isInstancedMesh === true;
+
+const findInstancedMesh = (renderer: RendererWithSceneFind): InstancedMesh => {
+  const node = renderer.scene.find((n) => isInstancedMesh(n.instance));
+  const inst = node.instance;
+  if (!isInstancedMesh(inst)) throw new Error('Expected an InstancedMesh in the scene');
+  return inst;
 };
 
 describe('InstancedVoxels', () => {
-  it('renders without crashing - happy path with single instance', () => {
+  it('creates an InstancedMesh with expected count and instanceColor', async () => {
     const instances: VoxelInstance[] = [{ position: [0, 0, 0], color: '#ff0000' }];
-    const { container } = renderInCanvas(<InstancedVoxels instances={instances} />);
-    expect(container).toBeTruthy();
+    const renderer = await ReactThreeTestRenderer.create(<InstancedVoxels instances={instances} />);
+
+    const mesh = findInstancedMesh(renderer);
+    expect(mesh.count).toBe(1);
+    expect(mesh.instanceColor).toBeTruthy();
+    expect(mesh.geometry.boundingBox).toBeTruthy();
+    expect(mesh.geometry.boundingSphere).toBeTruthy();
+
+    await renderer.unmount();
   });
 
-  it('renders multiple instances', () => {
+  it('returns null when instances is empty', async () => {
+    const renderer = await ReactThreeTestRenderer.create(<InstancedVoxels instances={[]} />);
+    const all = renderer.scene.findAllByType('InstancedMesh');
+    expect(all).toHaveLength(0);
+    await renderer.unmount();
+  });
+
+  it('honors per-instance scale values', async () => {
     const instances: VoxelInstance[] = [
       { position: [0, 0, 0], color: '#ff0000' },
-      { position: [1, 0, 0], color: '#00ff00' },
-      { position: [0, 1, 0], color: '#0000ff' },
+      { position: [1, 0, 0], color: '#00ff00', scale: [2, 3, 4] },
     ];
-    const { container } = renderInCanvas(<InstancedVoxels instances={instances} />);
-    expect(container).toBeTruthy();
-  });
 
-  it('renders instances with custom scales', () => {
-    const instances: VoxelInstance[] = [
-      { position: [0, 0, 0], color: '#ff0000', scale: [2, 2, 2] },
-      { position: [1, 0, 0], color: '#00ff00', scale: [1, 3, 1] },
-      { position: [0, 1, 0], color: '#0000ff', scale: [0.5, 0.5, 0.5] },
-    ];
-    const { container } = renderInCanvas(<InstancedVoxels instances={instances} />);
-    expect(container).toBeTruthy();
-  });
+    const renderer = await ReactThreeTestRenderer.create(<InstancedVoxels instances={instances} />);
+    const mesh = findInstancedMesh(renderer);
 
-  it('renders with custom material', () => {
-    const instances: VoxelInstance[] = [{ position: [0, 0, 0], color: '#ffffff' }];
-    // Material will be passed by parent component in real usage
-    const { container } = renderInCanvas(<InstancedVoxels instances={instances} />);
-    expect(container).toBeTruthy();
-  });
+    // Matrix for instance #1 should include the provided scale
+    const m = new Matrix4();
+    mesh.getMatrixAt(1, m);
+    const scale = new Vector3();
+    const pos = new Vector3();
+    const quat = new Quaternion();
+    m.decompose(pos, quat, scale);
 
-  it('renders with castShadow and receiveShadow enabled by default', () => {
-    const instances: VoxelInstance[] = [{ position: [0, 0, 0], color: '#ff00ff' }];
-    const { container } = renderInCanvas(<InstancedVoxels instances={instances} />);
-    expect(container).toBeTruthy();
-  });
+    expect(scale.x).toBeCloseTo(2, 6);
+    expect(scale.y).toBeCloseTo(3, 6);
+    expect(scale.z).toBeCloseTo(4, 6);
 
-  it('renders with castShadow disabled', () => {
-    const instances: VoxelInstance[] = [{ position: [0, 0, 0], color: '#00ffff' }];
-    const { container } = renderInCanvas(<InstancedVoxels instances={instances} castShadow={false} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('renders with receiveShadow disabled', () => {
-    const instances: VoxelInstance[] = [{ position: [0, 0, 0], color: '#ffff00' }];
-    const { container } = renderInCanvas(<InstancedVoxels instances={instances} receiveShadow={false} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles edge case - empty instances array', () => {
-    const instances: VoxelInstance[] = [];
-    const { container } = renderInCanvas(<InstancedVoxels instances={instances} />);
-    // Component should return null for empty array
-    expect(container).toBeTruthy();
-  });
-
-  it('handles edge case - single instance with zero scale', () => {
-    const instances: VoxelInstance[] = [{ position: [0, 0, 0], color: '#000000', scale: [0, 0, 0] }];
-    const { container } = renderInCanvas(<InstancedVoxels instances={instances} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles edge case - negative positions', () => {
-    const instances: VoxelInstance[] = [
-      { position: [-10, -20, -30], color: '#111111' },
-      { position: [-5, -15, -25], color: '#222222' },
-    ];
-    const { container } = renderInCanvas(<InstancedVoxels instances={instances} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles edge case - very large number of instances', () => {
-    const instances: VoxelInstance[] = Array.from({ length: 100 }, (_, i) => ({
-      position: [i % 10, Math.floor(i / 10), 0] as readonly [number, number, number],
-      color: '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'),
-    }));
-    const { container } = renderInCanvas(<InstancedVoxels instances={instances} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles edge case - instances with extremely large positions', () => {
-    const instances: VoxelInstance[] = [
-      { position: [1000, 2000, 3000], color: '#aabbcc' },
-      { position: [9999, 9999, 9999], color: '#ddeeff' },
-    ];
-    const { container } = renderInCanvas(<InstancedVoxels instances={instances} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles edge case - instances with negative scales', () => {
-    const instances: VoxelInstance[] = [{ position: [0, 0, 0], color: '#fedcba', scale: [-1, -1, -1] }];
-    const { container } = renderInCanvas(<InstancedVoxels instances={instances} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles edge case - mixed scale types (some with scale, some without)', () => {
-    const instances: VoxelInstance[] = [
-      { position: [0, 0, 0], color: '#ff0000' },
-      { position: [1, 0, 0], color: '#00ff00', scale: [2, 2, 2] },
-      { position: [2, 0, 0], color: '#0000ff' },
-    ];
-    const { container } = renderInCanvas(<InstancedVoxels instances={instances} />);
-    expect(container).toBeTruthy();
+    await renderer.unmount();
   });
 });

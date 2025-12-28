@@ -10,6 +10,7 @@
 - Scene hydration is staged (first-paint ground/sky, then world, atmosphere, lanterns, fireworks, postprocessing) with idle prefetching to keep startup smooth.
 - WebGL context loss handling and a lower initial DPR help reduce GPU pressure during load.
 - Basic unit tests exist (Vitest) — `tests/vitest/constants.test.ts` verifies shared constants.
+- SceneCanvas coverage now exercises idle scheduling, context loss overlay behavior, and rocket add/remove flows.
 - Linting and formatting scripts are present (`eslint`, `prettier`).
 - Tailwind CSS is configured locally via the Tailwind v4 Vite plugin, using the `@import "tailwindcss";` entrypoint in `src/index.css`.
 

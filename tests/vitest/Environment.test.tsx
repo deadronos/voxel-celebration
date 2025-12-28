@@ -1,32 +1,37 @@
-import { describe, expect, it, vi } from 'vitest';
+import React from 'react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
-import { Canvas } from '@react-three/fiber';
+
+const instancedCalls: Array<{ instances: unknown; material?: unknown }> = [];
+const getVoxelMaterialSpy = vi.fn((args: unknown) => {
+  void args;
+  return { kind: 'mockMaterial' };
+});
+
+vi.mock('@/components/InstancedVoxels', () => ({
+  InstancedVoxels: ({ instances, material }: { instances: unknown; material?: unknown }) => {
+    instancedCalls.push({ instances, material });
+    return <div data-testid="instanced" />;
+  },
+}));
+
+vi.mock('@/utils/threeCache', () => ({
+  getVoxelMaterial: (args: unknown) => getVoxelMaterialSpy(args),
+}));
+
 import { Tree, StreetLight, Ground } from '@/components/Environment';
 
-// Helper to render R3F components
-const renderInCanvas = (component: React.ReactElement) => {
-  return render(<Canvas>{component}</Canvas>);
-};
+afterEach(() => {
+  instancedCalls.length = 0;
+  getVoxelMaterialSpy.mockClear();
+  vi.restoreAllMocks();
+});
 
 describe('Tree', () => {
   it('renders without crashing - happy path', () => {
-    const { container } = renderInCanvas(<Tree position={[0, 0, 0]} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('renders at different positions', () => {
-    const { container } = renderInCanvas(<Tree position={[5, 0, -5]} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles edge case - negative positions', () => {
-    const { container } = renderInCanvas(<Tree position={[-10, -5, -15]} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles edge case - very large positions', () => {
-    const { container } = renderInCanvas(<Tree position={[1000, 2000, 3000]} />);
-    expect(container).toBeTruthy();
+    render(<Tree position={[0, 0, 0]} />);
+    const lengths = instancedCalls.map((c) => (c.instances as unknown[]).length);
+    expect(lengths).toContain(8);
   });
 
   it('renders with memoization (displayName is set)', () => {
@@ -36,23 +41,20 @@ describe('Tree', () => {
 
 describe('StreetLight', () => {
   it('renders without crashing - happy path', () => {
-    const { container } = renderInCanvas(<StreetLight position={[0, 0, 0]} />);
-    expect(container).toBeTruthy();
-  });
+    const { container } = render(<StreetLight position={[0, 0, 0]} />);
 
-  it('renders at different positions', () => {
-    const { container } = renderInCanvas(<StreetLight position={[10, 0, -10]} />);
-    expect(container).toBeTruthy();
-  });
+    // light fixture should render a pointLight element
+    expect(container.querySelector('pointlight')).toBeTruthy();
 
-  it('handles edge case - negative positions', () => {
-    const { container } = renderInCanvas(<StreetLight position={[-5, -10, -15]} />);
-    expect(container).toBeTruthy();
-  });
+    // Instanced voxels include the pole (4) and the fixture (1)
+    const lengths = instancedCalls.map((c) => (c.instances as unknown[]).length);
+    expect(lengths).toContain(4);
+    expect(lengths).toContain(1);
 
-  it('handles edge case - very large positions', () => {
-    const { container } = renderInCanvas(<StreetLight position={[5000, 0, 5000]} />);
-    expect(container).toBeTruthy();
+    // fixture material should be created with emissive properties
+    expect(getVoxelMaterialSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ emissive: '#fffacd', emissiveIntensity: 5 })
+    );
   });
 
   it('renders with memoization (displayName is set)', () => {
@@ -62,70 +64,10 @@ describe('StreetLight', () => {
 
 describe('Ground', () => {
   it('renders without crashing - happy path', () => {
-    // Mock Math.random for deterministic testing
-    const originalRandom = Math.random;
-    Math.random = vi.fn(() => 0.5);
-
-    const { container } = renderInCanvas(<Ground />);
-    expect(container).toBeTruthy();
-
-    Math.random = originalRandom;
-  });
-
-  it('generates ground voxels with random distribution', () => {
-    // Mock random to test different distributions
-    const originalRandom = Math.random;
-    let callCount = 0;
-    Math.random = vi.fn(() => {
-      callCount++;
-      // Alternate between different values
-      return callCount % 2 === 0 ? 0.9 : 0.7;
-    });
-
-    const { container } = renderInCanvas(<Ground />);
-    expect(container).toBeTruthy();
-
-    Math.random = originalRandom;
-  });
-
-  it('handles edge case - all snow (random > 0.8)', () => {
-    const originalRandom = Math.random;
-    Math.random = vi.fn(() => 0.85);
-
-    const { container } = renderInCanvas(<Ground />);
-    expect(container).toBeTruthy();
-
-    Math.random = originalRandom;
-  });
-
-  it('handles edge case - no snow (random <= 0.8)', () => {
-    const originalRandom = Math.random;
-    Math.random = vi.fn(() => 0.5);
-
-    const { container } = renderInCanvas(<Ground />);
-    expect(container).toBeTruthy();
-
-    Math.random = originalRandom;
-  });
-
-  it('handles edge case - all elevated (random > 0.85)', () => {
-    const originalRandom = Math.random;
-    Math.random = vi.fn(() => 0.9);
-
-    const { container } = renderInCanvas(<Ground />);
-    expect(container).toBeTruthy();
-
-    Math.random = originalRandom;
-  });
-
-  it('handles edge case - no elevation (random <= 0.85)', () => {
-    const originalRandom = Math.random;
-    Math.random = vi.fn(() => 0.5);
-
-    const { container } = renderInCanvas(<Ground />);
-    expect(container).toBeTruthy();
-
-    Math.random = originalRandom;
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    render(<Ground />);
+    const anyNonEmpty = instancedCalls.some((c) => (c.instances as unknown[]).length > 0);
+    expect(anyNonEmpty).toBe(true);
   });
 
   it('renders with memoization (displayName is set)', () => {

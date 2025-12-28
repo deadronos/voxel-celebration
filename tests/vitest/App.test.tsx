@@ -1,5 +1,13 @@
-import { describe, expect, it } from 'vitest';
+import React from 'react';
+import { describe, expect, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
+
+// App renders SceneCanvas inside <Suspense/>. In unit tests we don't need to load the 3D scene,
+// and letting the lazy scene resolve can trigger noisy "not wrapped in act" warnings.
+vi.mock('@/SceneCanvas', () => ({
+  default: React.lazy(() => new Promise<never>(() => {})),
+}));
+
 import App from '@/App';
 
 describe('App', () => {

@@ -1,62 +1,33 @@
-import { describe, expect, it } from 'vitest';
+import React from 'react';
+import { describe, expect, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
-import { Canvas } from '@react-three/fiber';
-import SceneControls from '@/SceneControls';
 
-// Helper to render R3F components
-const renderInCanvas = (component: React.ReactElement) => {
-  return render(<Canvas>{component}</Canvas>);
-};
+let lastOrbitControlsProps: Record<string, unknown> | undefined;
+vi.mock('@react-three/drei', () => ({
+  OrbitControls: (props: Record<string, unknown>) => {
+    lastOrbitControlsProps = props;
+    return <div data-testid="orbit-controls" />;
+  },
+}));
+
+import SceneControls from '@/SceneControls';
 
 describe('SceneControls', () => {
   it('renders without crashing - happy path', () => {
-    const { container } = renderInCanvas(<SceneControls />);
-    expect(container).toBeTruthy();
+    const { getByTestId } = render(<SceneControls />);
+    expect(getByTestId('orbit-controls')).toBeTruthy();
   });
 
-  it('renders OrbitControls component', () => {
-    const { container } = renderInCanvas(<SceneControls />);
-    expect(container).toBeTruthy();
-  });
+  it('passes expected OrbitControls props', () => {
+    render(<SceneControls />);
 
-  it('configures maxPolarAngle correctly', () => {
-    // maxPolarAngle prevents camera from going below ground
-    const { container } = renderInCanvas(<SceneControls />);
-    expect(container).toBeTruthy();
-  });
+    expect(lastOrbitControlsProps).toBeDefined();
+    expect(lastOrbitControlsProps?.minDistance).toBe(10);
+    expect(lastOrbitControlsProps?.maxDistance).toBe(60);
+    expect(lastOrbitControlsProps?.autoRotate).toBe(true);
+    expect(lastOrbitControlsProps?.autoRotateSpeed).toBe(0.3);
 
-  it('configures minDistance correctly', () => {
-    // minDistance is set to 10
-    const { container } = renderInCanvas(<SceneControls />);
-    expect(container).toBeTruthy();
-  });
-
-  it('configures maxDistance correctly', () => {
-    // maxDistance is set to 60
-    const { container } = renderInCanvas(<SceneControls />);
-    expect(container).toBeTruthy();
-  });
-
-  it('enables autoRotate', () => {
-    // autoRotate is enabled
-    const { container } = renderInCanvas(<SceneControls />);
-    expect(container).toBeTruthy();
-  });
-
-  it('sets autoRotateSpeed', () => {
-    // autoRotateSpeed is 0.3
-    const { container } = renderInCanvas(<SceneControls />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles multiple renders', () => {
-    const { rerender, container } = renderInCanvas(<SceneControls />);
-    expect(container).toBeTruthy();
-    rerender(
-      <Canvas>
-        <SceneControls />
-      </Canvas>
-    );
-    expect(container).toBeTruthy();
+    const maxPolarAngle = lastOrbitControlsProps?.maxPolarAngle as number;
+    expect(maxPolarAngle).toBeCloseTo(Math.PI / 2 - 0.1, 6);
   });
 });

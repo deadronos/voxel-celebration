@@ -1,199 +1,133 @@
-import { describe, expect, it, vi } from 'vitest';
-import { render } from '@testing-library/react';
-import { Canvas } from '@react-three/fiber';
-import { FireworksManager } from '@/components/FireworksManager';
-import type { RocketData } from '@/types';
-import * as THREE from 'three';
+import React from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import ReactThreeTestRenderer from '@react-three/test-renderer';
+import { Color, type InstancedMesh, Vector3 } from 'three';
+import type { ParticleData, RocketData } from '@/types';
 
-// Helper to render R3F components
-const renderInCanvas = (component: React.ReactElement) => {
-  return render(<Canvas>{component}</Canvas>);
+type StepRocketPosition = (
+  y: number,
+  speed: number,
+  delta: number,
+  targetHeight: number
+) => { newY: number; exploded: boolean };
+
+type ExplosionOpts = {
+  out: ParticleData[];
+  pool: ParticleData[];
+  count?: number;
+  spread?: number;
 };
 
+type CreateExplosionParticles = (pos: Vector3, color: string, opts: ExplosionOpts) => ParticleData[];
+
+const { stepRocketPositionMock, createExplosionParticlesMock } = vi.hoisted(() => ({
+  stepRocketPositionMock: vi.fn<StepRocketPosition>(),
+  createExplosionParticlesMock: vi.fn<CreateExplosionParticles>(),
+}));
+
+vi.mock('@/utils/rocket', () => ({
+  stepRocketPosition: stepRocketPositionMock,
+}));
+
+vi.mock('@/utils/fireworks', () => ({
+  createExplosionParticles: createExplosionParticlesMock,
+}));
+
+import { FireworksManager } from '@/components/FireworksManager';
+
 describe('FireworksManager', () => {
-  const mockRemoveRocket = vi.fn();
-
-  it('renders without crashing - happy path with no rockets', () => {
-    const { container } = renderInCanvas(<FireworksManager rockets={[]} removeRocket={mockRemoveRocket} />);
-    expect(container).toBeTruthy();
+  beforeEach(() => {
+    stepRocketPositionMock.mockReset();
+    createExplosionParticlesMock.mockReset();
   });
 
-  it('renders with single rocket', () => {
-    const rockets: RocketData[] = [
-      {
-        id: 'rocket-1',
-        position: new THREE.Vector3(0, 0, 0),
-        color: '#ff0000',
-        targetHeight: 20,
-      },
-    ];
-    const { container } = renderInCanvas(<FireworksManager rockets={rockets} removeRocket={mockRemoveRocket} />);
-    expect(container).toBeTruthy();
+  it('initializes an instanced particle mesh with zero count', async () => {
+    const renderer = await ReactThreeTestRenderer.create(<FireworksManager rockets={[]} removeRocket={() => {}} />);
+
+    const mesh = findInstancedMesh(renderer);
+    expect(mesh.count).toBe(0);
+
+    await renderer.unmount();
   });
 
-  it('renders with multiple rockets', () => {
-    const rockets: RocketData[] = [
-      {
-        id: 'rocket-1',
-        position: new THREE.Vector3(0, 0, 0),
-        color: '#ff0000',
-        targetHeight: 20,
-      },
-      {
-        id: 'rocket-2',
-        position: new THREE.Vector3(5, 0, 5),
-        color: '#00ff00',
-        targetHeight: 25,
-      },
-      {
-        id: 'rocket-3',
-        position: new THREE.Vector3(-5, 0, -5),
-        color: '#0000ff',
-        targetHeight: 30,
-      },
-    ];
-    const { container } = renderInCanvas(<FireworksManager rockets={rockets} removeRocket={mockRemoveRocket} />);
-    expect(container).toBeTruthy();
-  });
+  it('explodes a rocket, removes it, and renders surviving particles', async () => {
+    const removeRocket = vi.fn();
+    let poolRef: ParticleData[] | undefined;
 
-  it('handles rockets at different positions', () => {
-    const rockets: RocketData[] = [
-      {
-        id: 'rocket-1',
-        position: new THREE.Vector3(-10, 5, 15),
-        color: '#ff00ff',
-        targetHeight: 40,
-      },
-    ];
-    const { container } = renderInCanvas(<FireworksManager rockets={rockets} removeRocket={mockRemoveRocket} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles rockets with different colors', () => {
-    const rockets: RocketData[] = [
-      {
-        id: 'rocket-1',
-        position: new THREE.Vector3(0, 0, 0),
-        color: '#ffffff',
-        targetHeight: 20,
-      },
-      {
-        id: 'rocket-2',
-        position: new THREE.Vector3(0, 0, 0),
-        color: '#000000',
-        targetHeight: 20,
-      },
-    ];
-    const { container } = renderInCanvas(<FireworksManager rockets={rockets} removeRocket={mockRemoveRocket} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles edge case - rocket at zero position', () => {
-    const rockets: RocketData[] = [
-      {
-        id: 'rocket-zero',
-        position: new THREE.Vector3(0, 0, 0),
-        color: '#abcdef',
-        targetHeight: 15,
-      },
-    ];
-    const { container } = renderInCanvas(<FireworksManager rockets={rockets} removeRocket={mockRemoveRocket} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles edge case - rocket with zero target height', () => {
-    const rockets: RocketData[] = [
-      {
-        id: 'rocket-zero-target',
-        position: new THREE.Vector3(0, 0, 0),
-        color: '#fedcba',
-        targetHeight: 0,
-      },
-    ];
-    const { container } = renderInCanvas(<FireworksManager rockets={rockets} removeRocket={mockRemoveRocket} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles edge case - rocket with negative target height', () => {
-    const rockets: RocketData[] = [
-      {
-        id: 'rocket-negative',
-        position: new THREE.Vector3(0, 0, 0),
-        color: '#123456',
-        targetHeight: -10,
-      },
-    ];
-    const { container } = renderInCanvas(<FireworksManager rockets={rockets} removeRocket={mockRemoveRocket} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles edge case - rocket with very large target height', () => {
-    const rockets: RocketData[] = [
-      {
-        id: 'rocket-high',
-        position: new THREE.Vector3(0, 0, 0),
-        color: '#aabbcc',
-        targetHeight: 10000,
-      },
-    ];
-    const { container } = renderInCanvas(<FireworksManager rockets={rockets} removeRocket={mockRemoveRocket} />);
-    expect(container).toBeTruthy();
-  });
-
-  it('handles edge case - many simultaneous rockets', () => {
-    const rockets: RocketData[] = Array.from({ length: 50 }, (_, i) => ({
-      id: `rocket-${i}`,
-      position: new THREE.Vector3(i % 10, 0, Math.floor(i / 10)),
-      color: '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'),
-      targetHeight: 20 + i,
+    stepRocketPositionMock.mockImplementation((_y: number, _speed: number, _delta: number, _target: number) => ({
+      newY: 10,
+      exploded: true,
     }));
-    const { container } = renderInCanvas(<FireworksManager rockets={rockets} removeRocket={mockRemoveRocket} />);
-    expect(container).toBeTruthy();
-  });
 
-  it('handles removeRocket callback', () => {
-    const callback = vi.fn();
+    createExplosionParticlesMock.mockImplementation((pos, color, opts) => {
+      poolRef = opts.pool;
+      const p1: ParticleData = {
+        position: pos.clone().setY(1),
+        velocity: new Vector3(0, 0, 0),
+        color: new Color(color),
+        scale: 1,
+        life: 1,
+        decay: 0.1,
+      };
+      const p2: ParticleData = {
+        position: pos.clone().setY(-1),
+        velocity: new Vector3(0, 0, 0),
+        color: new Color(color),
+        scale: 1,
+        life: 0,
+        decay: 0.1,
+      };
+      return [p1, p2];
+    });
+
     const rockets: RocketData[] = [
       {
-        id: 'test-rocket',
-        position: new THREE.Vector3(0, 0, 0),
-        color: '#ff0000',
-        targetHeight: 20,
-      },
-    ];
-    const { container } = renderInCanvas(<FireworksManager rockets={rockets} removeRocket={callback} />);
-    expect(container).toBeTruthy();
-    // Callback will be called when rocket explodes via useFrame
-  });
-
-  it('handles rocket list updates', () => {
-    const rockets1: RocketData[] = [
-      {
         id: 'rocket-1',
-        position: new THREE.Vector3(0, 0, 0),
+        position: new Vector3(0, 0, 0),
         color: '#ff0000',
-        targetHeight: 20,
+        targetHeight: 1,
       },
     ];
-    const { rerender, container } = renderInCanvas(
-      <FireworksManager rockets={rockets1} removeRocket={mockRemoveRocket} />
-    );
-    expect(container).toBeTruthy();
 
-    // Update rockets
-    const rockets2: RocketData[] = [
-      {
-        id: 'rocket-2',
-        position: new THREE.Vector3(5, 0, 5),
-        color: '#00ff00',
-        targetHeight: 25,
-      },
-    ];
-    rerender(
-      <Canvas>
-        <FireworksManager rockets={rockets2} removeRocket={mockRemoveRocket} />
-      </Canvas>
+    const renderer = await ReactThreeTestRenderer.create(
+      <FireworksManager rockets={rockets} removeRocket={removeRocket} />
     );
-    expect(container).toBeTruthy();
+
+    // Frame 1: rocket explodes (rocket useFrame), explosion particles are created
+    await ReactThreeTestRenderer.act(async () => {
+      await renderer.advanceFrames(1, 0.016);
+    });
+
+    expect(removeRocket).toHaveBeenCalledWith('rocket-1');
+    expect(createExplosionParticlesMock).toHaveBeenCalled();
+
+    // Frame 2: particle manager processes particles and updates instanced mesh
+    await ReactThreeTestRenderer.act(async () => {
+      await renderer.advanceFrames(1, 0.016);
+    });
+
+    const mesh = findInstancedMesh(renderer);
+    expect(poolRef).toBeDefined();
+    expect(poolRef?.length).toBeGreaterThanOrEqual(1);
+    expect(mesh.count).toBeLessThanOrEqual(2);
+
+    await renderer.unmount();
   });
 });
+
+type SceneNode = { instance: unknown };
+type RendererWithSceneFind = {
+  scene: {
+    find: (predicate: (node: SceneNode) => boolean) => SceneNode;
+  };
+};
+
+const isInstancedMesh = (value: unknown): value is InstancedMesh =>
+  typeof value === 'object' && value !== null && (value as InstancedMesh).isInstancedMesh === true;
+
+const findInstancedMesh = (renderer: RendererWithSceneFind): InstancedMesh => {
+  const node = renderer.scene.find((n) => isInstancedMesh(n.instance));
+  const inst = node.instance;
+  if (!isInstancedMesh(inst)) throw new Error('Expected an InstancedMesh in the scene');
+  return inst;
+};
