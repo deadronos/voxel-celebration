@@ -169,7 +169,7 @@ npm run format:check # Check formatting
 
 ## Project Structure
 
-```
+```text
 voxel-celebration/
 ├── .github/
 │   ├── agents/              # Specialized AI agents

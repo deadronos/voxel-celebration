@@ -32,7 +32,7 @@ The repository already has a strong testing culture (Vitest, Playwright) and a s
 
 ## Progress Tracking
 
-**Overall Status:** In Progress - 75% of initial docs created
+**Overall Status:** In Progress - Green step completed for pilot (DynamicResScaler)
 
 ### Subtasks
 
@@ -40,7 +40,7 @@ The repository already has a strong testing culture (Vitest, Playwright) and a s
 - 1.2 **Create task (`TASK010`)** — **Completed** (2025-12-28) — This file
 - 1.3 **Write `tdd.instructions.md`** — **Completed** (2025-12-28) — Short how-to and examples
 - 1.4 **Edit existing instruction files** — **Not Started** — Plan and proposed edits ready
-- 1.5 **Pilot (DynamicResScaler)** — **Not Started** — Will add failing test, implement, refactor
+- 1.5 **Pilot (DynamicResScaler)** — **In Progress** — Red + Green done (clamping props); next Refactor (extract helper)
 - 1.6 **PR template and CI automation** — **Not Started** — Optional, team decision needed
 - 1.7 **Training & metrics** — **Not Started** — Pairing session proposal
 
@@ -51,7 +51,10 @@ The repository already has a strong testing culture (Vitest, Playwright) and a s
 - Created design file `DES005-tdd-adoption.md`.  
 - Created task file `TASK010-adopt-tdd.md`.  
 - Drafted `tdd.instructions.md` with examples.  
-- Next: update `nodejs-javascript-vitest.instructions.md` and `spec-driven-workflow-v1.instructions.md` to codify TDD guidance and add TASK010 to the tasks index.
+- Added failing TDD pilot tests for `DynamicResScaler` (Red step).
+- Updated TDD guidance in instruction files and added TASK010 to the tasks index.
+- Implemented Green step for `DynamicResScaler` (minDpr/maxDpr clamping) and verified tests pass locally.
+- Next: Refactor step — extract DPR math to a pure helper and keep tests green.
 
 ---
 

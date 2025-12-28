@@ -10,13 +10,25 @@ const MAX_DPR = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio
 const START_DPR = Math.min(1, MAX_DPR);
 const STEP = 0.1;
 
-export function DynamicResScaler() {
+type DynamicResScalerProps = {
+  minDpr?: number;
+  maxDpr?: number;
+};
+
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+export function DynamicResScaler({ minDpr, maxDpr }: DynamicResScalerProps) {
   const setDpr = useThree((state) => state.setDpr);
+
+  const deviceMaxDpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio ?? 1, 2) : 1;
+  const effectiveMaxDpr = clamp(maxDpr ?? MAX_DPR, MIN_DPR, deviceMaxDpr);
+  const effectiveMinDpr = clamp(minDpr ?? MIN_DPR, MIN_DPR, effectiveMaxDpr);
+  const initialDpr = clamp(START_DPR, effectiveMinDpr, effectiveMaxDpr);
 
   // Refs to store state without triggering re-renders for the logic loop
   const frameCount = useRef(0);
   const lastTime = useRef(performance.now());
-  const dprRef = useRef(START_DPR); // Start conservative to reduce GPU pressure
+  const dprRef = useRef(initialDpr); // Start conservative to reduce GPU pressure within bounds
 
   // We'll just set the initial DPR once on mount to ensure we start at a known state
   useEffect(() => {
@@ -40,10 +52,10 @@ export function DynamicResScaler() {
 
       if (fps < TARGET_FPS - FPS_TOLERANCE) {
         // Performance is low, reduce resolution
-        newDpr = Math.max(MIN_DPR, dprRef.current - STEP);
+        newDpr = clamp(dprRef.current - STEP, effectiveMinDpr, effectiveMaxDpr);
       } else if (fps > TARGET_FPS + FPS_TOLERANCE) {
         // Performance is good, increase resolution
-        newDpr = Math.min(MAX_DPR, dprRef.current + STEP);
+        newDpr = clamp(dprRef.current + STEP, effectiveMinDpr, effectiveMaxDpr);
       }
 
       // Apply change if needed
