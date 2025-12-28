@@ -1,5 +1,5 @@
 TN:
-SF:src\App.tsx
+SF:src/App.tsx
 FN:3,(anonymous_0)
 FN:5,App
 FNF:2
@@ -14,7 +14,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src\SceneAtmosphere.tsx
+SF:src/SceneAtmosphere.tsx
 FN:6,SceneAtmosphere
 FNF:1
 FNH:0
@@ -26,7 +26,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src\SceneCanvas.tsx
+SF:src/SceneCanvas.tsx
 FN:8,(anonymous_0)
 FN:9,(anonymous_1)
 FN:10,(anonymous_2)
@@ -194,7 +194,7 @@ BRF:20
 BRH:0
 end_of_record
 TN:
-SF:src\SceneControls.tsx
+SF:src/SceneControls.tsx
 FN:4,SceneControls
 FNF:1
 FNH:0
@@ -206,7 +206,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src\SceneLanterns.tsx
+SF:src/SceneLanterns.tsx
 FN:11,SceneLanterns
 FN:14,(anonymous_1)
 FNF:2
@@ -222,7 +222,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src\ScenePostProcessing.tsx
+SF:src/ScenePostProcessing.tsx
 FN:4,ScenePostProcessing
 FNF:1
 FNH:0
@@ -234,7 +234,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src\SceneWorld.tsx
+SF:src/SceneWorld.tsx
 FN:45,SceneWorld
 FN:50,(anonymous_1)
 FN:62,(anonymous_2)
@@ -258,7 +258,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src\constants.ts
+SF:src/constants.ts
 FNF:0
 FNH:0
 DA:1,1
@@ -270,7 +270,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src\main.tsx
+SF:src/main.tsx
 FNF:0
 FNH:0
 DA:6,0
@@ -286,7 +286,7 @@ BRF:2
 BRH:0
 end_of_record
 TN:
-SF:src\types.ts
+SF:src/types.ts
 FNF:0
 FNH:0
 LF:0
@@ -295,7 +295,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src\components\AuroraSky.tsx
+SF:src/components/AuroraSky.tsx
 FN:84,AuroraSky
 FN:88,(anonymous_1)
 FN:97,(anonymous_2)
@@ -325,7 +325,7 @@ BRF:4
 BRH:0
 end_of_record
 TN:
-SF:src\components\DynamicResScaler.tsx
+SF:src/components/DynamicResScaler.tsx
 FN:13,DynamicResScaler
 FN:14,(anonymous_1)
 FN:22,(anonymous_2)
@@ -386,7 +386,7 @@ BRF:12
 BRH:0
 end_of_record
 TN:
-SF:src\components\Environment.tsx
+SF:src/components/Environment.tsx
 FN:6,(anonymous_0)
 FN:8,(anonymous_1)
 FN:31,(anonymous_2)
@@ -441,7 +441,7 @@ BRF:4
 BRH:0
 end_of_record
 TN:
-SF:src\components\FireworksManager.tsx
+SF:src/components/FireworksManager.tsx
 FN:22,(anonymous_0)
 FN:30,(anonymous_1)
 FN:45,(anonymous_2)
@@ -554,7 +554,7 @@ BRF:20
 BRH:0
 end_of_record
 TN:
-SF:src\components\House.tsx
+SF:src/components/House.tsx
 FN:19,(anonymous_0)
 FN:30,(anonymous_1)
 FN:30,(anonymous_2)
@@ -613,7 +613,7 @@ BRF:12
 BRH:0
 end_of_record
 TN:
-SF:src\components\InstancedVoxels.tsx
+SF:src/components/InstancedVoxels.tsx
 FN:18,(anonymous_0)
 FN:25,(anonymous_1)
 FN:26,(anonymous_2)
@@ -669,7 +669,7 @@ BRF:12
 BRH:0
 end_of_record
 TN:
-SF:src\components\SkyLantern.tsx
+SF:src/components/SkyLantern.tsx
 FN:11,(anonymous_0)
 FN:21,(anonymous_1)
 FNF:2
@@ -718,7 +718,7 @@ BRF:9
 BRH:0
 end_of_record
 TN:
-SF:src\components\VoxelUtils.tsx
+SF:src/components/VoxelUtils.tsx
 FN:12,(anonymous_0)
 FN:20,(anonymous_1)
 FN:36,(anonymous_2)
@@ -745,7 +745,7 @@ BRF:2
 BRH:0
 end_of_record
 TN:
-SF:src\utils\fireworks.ts
+SF:src/utils/fireworks.ts
 FN:6,createExplosionParticles
 FNF:1
 FNH:1
@@ -780,7 +780,7 @@ BRF:8
 BRH:7
 end_of_record
 TN:
-SF:src\utils\rocket.ts
+SF:src/utils/rocket.ts
 FN:1,stepRocketPosition
 FNF:1
 FNH:1
@@ -794,7 +794,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src\utils\threeCache.ts
+SF:src/utils/threeCache.ts
 FN:18,voxelMaterialKey
 FN:28,getSharedBoxGeometry
 FN:32,getVoxelMaterial
