@@ -2,6 +2,7 @@ import React from 'react';
 import type { Vector3 } from 'three';
 
 import { Ground, Tree, StreetLight } from './components/Environment';
+import { IceLake } from './components/IceLake';
 import House from './components/House';
 
 const HOUSES: ReadonlyArray<
@@ -46,6 +47,7 @@ export default function SceneWorld({ onShootRocket }: SceneWorldProps) {
   return (
     <group position={[0, -2, 0]}>
       <Ground />
+      <IceLake />
 
       {HOUSES.map((house) => (
         <House

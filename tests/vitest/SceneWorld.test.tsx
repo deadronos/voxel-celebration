@@ -29,6 +29,10 @@ vi.mock('@/components/House', () => ({
   },
 }));
 
+vi.mock('@/components/IceLake', () => ({
+  IceLake: () => <div data-testid="icelake" />,
+}));
+
 import SceneWorld from '@/SceneWorld';
 
 describe('SceneWorld', () => {

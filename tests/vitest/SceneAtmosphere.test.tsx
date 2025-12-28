@@ -9,6 +9,10 @@ vi.mock('@/components/AuroraSky', () => ({
   AuroraSky: () => <div data-testid="aurora" />,
 }));
 
+vi.mock('@/components/Snowfall', () => ({
+  Snowfall: () => <div data-testid="snowfall" />,
+}));
+
 vi.mock('@react-three/drei', () => ({
   Stars: (props: Record<string, unknown>) => {
     lastStarsProps = props;
@@ -27,6 +31,7 @@ describe('SceneAtmosphere', () => {
     const { getByTestId } = render(<SceneAtmosphere />);
 
     expect(getByTestId('aurora')).toBeTruthy();
+    expect(getByTestId('snowfall')).toBeTruthy();
     expect(getByTestId('stars')).toBeTruthy();
     expect(getByTestId('cloud')).toBeTruthy();
 
