@@ -1,9 +1,9 @@
-import React, { useMemo } from 'react';
+import { useMemo, memo, type FC } from 'react';
 import { InstancedVoxels, type VoxelInstance } from './InstancedVoxels';
 import { COLORS } from '../constants';
 import { getVoxelMaterial } from '@/utils/threeCache';
 
-const TreeComponent: React.FC<{ position: readonly [number, number, number] }> = ({ position }) => {
+const TreeComponent: FC<{ position: readonly [number, number, number] }> = ({ position }) => {
   const instances = useMemo<readonly VoxelInstance[]>(
     () => [
       { position: [0, 0, 0], color: COLORS.wood },
@@ -25,10 +25,10 @@ const TreeComponent: React.FC<{ position: readonly [number, number, number] }> =
   );
 };
 
-export const Tree = React.memo(TreeComponent);
+export const Tree = memo(TreeComponent);
 Tree.displayName = 'Tree';
 
-const StreetLightComponent: React.FC<{ position: readonly [number, number, number] }> = ({
+const StreetLightComponent: FC<{ position: readonly [number, number, number] }> = ({
   position,
 }) => {
   const poleInstances = useMemo<readonly VoxelInstance[]>(
@@ -57,11 +57,10 @@ const StreetLightComponent: React.FC<{ position: readonly [number, number, numbe
   );
 };
 
-export const StreetLight = React.memo(StreetLightComponent);
+export const StreetLight = memo(StreetLightComponent);
 StreetLight.displayName = 'StreetLight';
 
-const GroundComponent: React.FC = () => {
-  const instances = useMemo<readonly VoxelInstance[]>(() => {
+const GroundComponent: FC = () => {  const instances = useMemo<readonly VoxelInstance[]>(() => {
     const size = 30;
     const step = 2;
     const voxels: VoxelInstance[] = [];
@@ -89,5 +88,5 @@ const GroundComponent: React.FC = () => {
   );
 };
 
-export const Ground = React.memo(GroundComponent);
+export const Ground = memo(GroundComponent);
 Ground.displayName = 'Ground';

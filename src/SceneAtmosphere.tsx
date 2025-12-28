@@ -1,4 +1,3 @@
-import React from 'react';
 import { Cloud, Stars } from '@react-three/drei';
 
 import { AuroraSky } from './components/AuroraSky';

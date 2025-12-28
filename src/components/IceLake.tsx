@@ -1,7 +1,7 @@
-import React from 'react';
+import type { FC } from 'react';
 import { MeshReflectorMaterial } from '@react-three/drei';
 
-export const IceLake: React.FC = () => {
+export const IceLake: FC = () => {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.9, 0]}>
       <planeGeometry args={[100, 100]} />

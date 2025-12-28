@@ -1,11 +1,11 @@
-import React, { useMemo, useRef } from 'react';
+import { useMemo, useRef, type FC } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 const SNOW_COUNT = 1500;
 const RANGE = 60; // Spread of snow
 
-export const Snowfall: React.FC = () => {
+export const Snowfall: FC = () => {
   const pointsRef = useRef<THREE.Points>(null);
 
   // Create initial positions

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Bloom, EffectComposer } from '@react-three/postprocessing';
 
 export default function ScenePostProcessing() {

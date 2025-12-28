@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useMemo, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef, type FC } from 'react';
 import * as THREE from 'three';
 import { getSharedBoxGeometry, getVoxelMaterial } from '@/utils/threeCache';
 
@@ -15,7 +15,7 @@ interface InstancedVoxelsProps {
   receiveShadow?: boolean;
 }
 
-export const InstancedVoxels: React.FC<InstancedVoxelsProps> = ({
+export const InstancedVoxels: FC<InstancedVoxelsProps> = ({ 
   instances,
   material,
   castShadow = true,

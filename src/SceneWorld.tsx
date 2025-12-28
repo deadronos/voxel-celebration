@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Vector3 } from 'three';
 
 import { Ground, Tree, StreetLight } from './components/Environment';
