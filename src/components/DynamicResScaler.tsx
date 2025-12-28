@@ -78,6 +78,10 @@ export function DynamicResScaler({ minDpr, maxDpr }: DynamicResScalerProps) {
       frameCount.current = 0;
       lastTime.current = time;
 
+      // Expose FPS for testing
+      // @ts-expect-error - Adding custom property to window for testing
+      window.__FPS__ = fps;
+
       // Logic to adjust DPR
       const newDpr = computeNextDpr({
         fps,
