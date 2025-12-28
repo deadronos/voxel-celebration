@@ -1,16 +1,21 @@
 import { vi, beforeAll, afterAll } from 'vitest';
+import { act } from 'react';
+import { setConsoleFunction } from 'three';
 
 // React 18+/19: enable act() semantics for tests (used by RTL and @react-three/test-renderer)
 // https://react.dev/reference/react-dom/test-utils/act
 (globalThis as unknown as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
 // Avoid background idle-callback work (SceneCanvas schedules lazy imports in idle time).
-// In unit tests this can resolve outside of act() and cause noisy React warnings.
+// Call idle callbacks synchronously inside act() so suspended resources resolve inside act.
 if (typeof window !== 'undefined') {
   (
     window as Window & { requestIdleCallback?: typeof window.requestIdleCallback }
   ).requestIdleCallback = vi.fn((callback: IdleRequestCallback) => {
-    void callback;
+    act(() => {
+      // Simulate an idle deadline
+      callback({ didTimeout: false, timeRemaining: () => 9999 });
+    });
     return 1;
   });
   (window as Window & { cancelIdleCallback?: (handle: number) => void }).cancelIdleCallback =
@@ -145,6 +150,7 @@ HTMLCanvasElement.prototype.getContext = vi.fn().mockImplementation((contextType
 
 // Suppress console errors for expected warnings during tests
 const originalError = console.error;
+const originalWarn = console.warn;
 beforeAll(() => {
   console.error = (...args: unknown[]): void => {
     const first = args[0];
@@ -157,8 +163,44 @@ beforeAll(() => {
     }
     (originalError as (...args: unknown[]) => void).apply(console, args);
   };
+
+  // Intercept console.warn early so we can silence Three.js 'Multiple instances' warnings
+  console.warn = (...args: unknown[]): void => {
+    const first = args[0];
+    if (typeof first === 'string' && first.includes('Multiple instances of Three.js')) {
+      return; // ignore noisy, non-actionable warning in tests
+    }
+    (originalWarn as (...args: unknown[]) => void).apply(console, args);
+  };
+
+  // Also use Three.js setConsoleFunction to prevent additional spam where possible
+  try {
+    setConsoleFunction((level: 'log' | 'warn' | 'error', message: string, ...params: unknown[]) => {
+      if (level === 'warn' && typeof message === 'string' && message.includes('Multiple instances of Three.js')) {
+        return; // ignore this specific, non-actionable warning in tests
+      }
+      // Forward to the appropriate console method with safe typing
+      if (level === 'log') {
+        console.log(message, ...params);
+      } else if (level === 'warn') {
+        console.warn(message, ...params);
+      } else if (level === 'error') {
+        console.error(message, ...params);
+      }
+    });
+  } catch {
+    // ignore if three does not expose setConsoleFunction (very old versions)
+  }
 });
+
+
 
 afterAll(() => {
   console.error = originalError;
+  console.warn = originalWarn;
+  try {
+    setConsoleFunction(null as unknown as ((...args: unknown[]) => void) | null);
+  } catch {
+    // ignore
+  }
 });
