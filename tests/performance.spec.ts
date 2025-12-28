@@ -28,8 +28,8 @@ test('measure webgl performance', async ({ page }) => {
     });
 
     if (fps !== undefined) {
-        fpsSamples.push(fps);
-        console.log(`Sample ${i + 1}: ${fps} FPS`);
+      fpsSamples.push(fps);
+      console.log(`Sample ${i + 1}: ${fps} FPS`);
     }
   }
 

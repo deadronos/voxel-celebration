@@ -49,7 +49,11 @@ vi.mock('@react-three/fiber', async () => {
 vi.mock('../../src/components/DynamicResScaler', () => ({ DynamicResScaler: () => null }));
 
 vi.mock('../../src/SceneWorld', () => ({
-  default: ({ onShootRocket }: { onShootRocket: (start: THREE.Vector3, color: string) => void }) => (
+  default: ({
+    onShootRocket,
+  }: {
+    onShootRocket: (start: THREE.Vector3, color: string) => void;
+  }) => (
     <div data-testid="scene-world">
       <button
         type="button"
@@ -63,9 +67,13 @@ vi.mock('../../src/SceneWorld', () => ({
   ),
 }));
 
-vi.mock('../../src/SceneAtmosphere', () => ({ default: () => <div data-testid="scene-atmosphere" /> }));
+vi.mock('../../src/SceneAtmosphere', () => ({
+  default: () => <div data-testid="scene-atmosphere" />,
+}));
 vi.mock('../../src/SceneLanterns', () => ({ default: () => <div data-testid="scene-lanterns" /> }));
-vi.mock('../../src/ScenePostProcessing', () => ({ default: () => <div data-testid="scene-post" /> }));
+vi.mock('../../src/ScenePostProcessing', () => ({
+  default: () => <div data-testid="scene-post" />,
+}));
 vi.mock('../../src/SceneControls', () => ({ default: () => <div data-testid="scene-controls" /> }));
 
 vi.mock('../../src/components/FireworksManager', () => ({
@@ -99,17 +107,22 @@ vi.mock('../../src/components/FireworksManager', () => ({
 import SceneCanvas from '@/SceneCanvas';
 
 const setIdleCallbackCapture = (callbacks: Array<() => void>) => {
-  (window as Window & { requestIdleCallback?: typeof window.requestIdleCallback }).requestIdleCallback =
-    vi.fn((cb: IdleRequestCallback) => {
-      callbacks.push(cb as unknown as () => void);
-      return 1;
-    });
-  (window as Window & { cancelIdleCallback?: (handle: number) => void }).cancelIdleCallback = vi.fn();
+  (
+    window as Window & { requestIdleCallback?: typeof window.requestIdleCallback }
+  ).requestIdleCallback = vi.fn((cb: IdleRequestCallback) => {
+    callbacks.push(cb as unknown as () => void);
+    return 1;
+  });
+  (window as Window & { cancelIdleCallback?: (handle: number) => void }).cancelIdleCallback =
+    vi.fn();
 };
 
 const unsetIdleCallback = () => {
-  (window as Window & { requestIdleCallback?: typeof window.requestIdleCallback }).requestIdleCallback = undefined;
-  (window as Window & { cancelIdleCallback?: (handle: number) => void }).cancelIdleCallback = undefined;
+  (
+    window as Window & { requestIdleCallback?: typeof window.requestIdleCallback }
+  ).requestIdleCallback = undefined;
+  (window as Window & { cancelIdleCallback?: (handle: number) => void }).cancelIdleCallback =
+    undefined;
 };
 
 describe('SceneCanvas', () => {

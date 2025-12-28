@@ -19,8 +19,8 @@ export default defineConfig({
         // Enable WebGL in headless mode
         headless: true,
         launchOptions: {
-            args: ['--use-gl=egl', '--ignore-gpu-blocklist', '--use-gl=swiftshader']
-        }
+          args: ['--use-gl=egl', '--ignore-gpu-blocklist', '--use-gl=swiftshader'],
+        },
       },
     },
   ],

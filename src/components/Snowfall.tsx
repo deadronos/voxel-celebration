@@ -68,10 +68,13 @@ export const Snowfall: FC = () => {
     return [pos, spd];
   }, []);
 
-  const uniforms = useMemo(() => ({
-    time: { value: 0 },
-    range: { value: RANGE }
-  }), []);
+  const uniforms = useMemo(
+    () => ({
+      time: { value: 0 },
+      range: { value: RANGE },
+    }),
+    []
+  );
 
   useFrame((state) => {
     if (materialRef.current) {
@@ -88,12 +91,7 @@ export const Snowfall: FC = () => {
           array={positions}
           itemSize={3}
         />
-        <bufferAttribute
-          attach="attributes-speed"
-          count={SNOW_COUNT}
-          array={speeds}
-          itemSize={1}
-        />
+        <bufferAttribute attach="attributes-speed" count={SNOW_COUNT} array={speeds} itemSize={1} />
       </bufferGeometry>
       <shaderMaterial
         ref={materialRef}

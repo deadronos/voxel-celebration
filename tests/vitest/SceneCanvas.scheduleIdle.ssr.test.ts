@@ -5,7 +5,8 @@ import React from 'react';
 
 // Prevent the real R3F implementation from loading in the Node environment.
 vi.mock('@react-three/fiber', () => ({
-  Canvas: ({ children }: { children?: React.ReactNode }) => React.createElement(React.Fragment, null, children),
+  Canvas: ({ children }: { children?: React.ReactNode }) =>
+    React.createElement(React.Fragment, null, children),
   useThree: () => ({ gl: { domElement: null } }),
 }));
 

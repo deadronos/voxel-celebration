@@ -38,7 +38,11 @@ Object.defineProperty(globalThis, 'ResizeObserver', {
 // Guard for Node-environment tests where HTMLCanvasElement doesn't exist.
 if (typeof HTMLCanvasElement !== 'undefined') {
   HTMLCanvasElement.prototype.getContext = vi.fn().mockImplementation((contextType) => {
-    if (contextType === 'webgl' || contextType === 'webgl2' || contextType === 'experimental-webgl') {
+    if (
+      contextType === 'webgl' ||
+      contextType === 'webgl2' ||
+      contextType === 'experimental-webgl'
+    ) {
       return {
         canvas: {},
         drawingBufferWidth: 800,
@@ -179,7 +183,11 @@ beforeAll(() => {
   // Also use Three.js setConsoleFunction to prevent additional spam where possible
   try {
     setConsoleFunction((level: 'log' | 'warn' | 'error', message: string, ...params: unknown[]) => {
-      if (level === 'warn' && typeof message === 'string' && message.includes('Multiple instances of Three.js')) {
+      if (
+        level === 'warn' &&
+        typeof message === 'string' &&
+        message.includes('Multiple instances of Three.js')
+      ) {
         return; // ignore this specific, non-actionable warning in tests
       }
       // Forward to the appropriate console method with safe typing
@@ -195,8 +203,6 @@ beforeAll(() => {
     // ignore if three does not expose setConsoleFunction (very old versions)
   }
 });
-
-
 
 afterAll(() => {
   console.error = originalError;

@@ -95,7 +95,7 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
     // But InstancedMesh might expect it.
     const identity = new THREE.Matrix4();
     for (let i = 0; i < MAX_PARTICLES; i++) {
-        mesh.setMatrixAt(i, identity);
+      mesh.setMatrixAt(i, identity);
     }
     mesh.instanceMatrix.needsUpdate = true;
 
@@ -125,11 +125,10 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
     attrRefs.current = attrs;
 
     // Initialize buffers with "dead" state (startTime = -1000)
-    for(let i=0; i<MAX_PARTICLES; i++) {
-        attrs.aStartTime.setX(i, -1000);
+    for (let i = 0; i < MAX_PARTICLES; i++) {
+      attrs.aStartTime.setX(i, -1000);
     }
     attrs.aStartTime.needsUpdate = true;
-
   }, []);
 
   useFrame((state) => {
@@ -156,8 +155,8 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
     else if (shapeRoll > 0.4) shape = 'ring';
 
     const brightness = 10; // High brightness for "glow" look in shader (if tone mapped)
-                           // Our shader output is vec4(vColor, 1.0), handled by postprocessing bloom usually.
-                           // Standard Fireworks was MeshBasicMaterial, so we output >1 values.
+    // Our shader output is vec4(vColor, 1.0), handled by postprocessing bloom usually.
+    // Standard Fireworks was MeshBasicMaterial, so we output >1 values.
 
     for (let i = 0; i < count; i++) {
       cursor = (cursor + 1) % MAX_PARTICLES;
@@ -166,7 +165,9 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
       attrs.aStartPosition.setXYZ(cursor, position.x, position.y, position.z);
 
       // Velocity
-      let vx = 0, vy = 0, vz = 0;
+      let vx = 0,
+        vy = 0,
+        vz = 0;
       const speed = 5 + Math.random() * 5;
 
       if (shape === 'sphere') {
@@ -176,14 +177,18 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
         vy = Math.sin(phi) * Math.sin(theta);
         vz = Math.cos(phi);
         const s = speed * (0.8 + Math.random() * 0.4);
-        vx *= s; vy *= s; vz *= s;
+        vx *= s;
+        vy *= s;
+        vz *= s;
       } else if (shape === 'ring') {
         const angle = Math.random() * Math.PI * 2;
         vx = Math.cos(angle);
         vy = (Math.random() - 0.5) * 0.2;
         vz = Math.sin(angle);
         const s = speed * (0.9 + Math.random() * 0.2);
-        vx *= s; vy *= s; vz *= s;
+        vx *= s;
+        vy *= s;
+        vz *= s;
       } else {
         vx = (Math.random() - 0.5) * 10;
         vy = (Math.random() - 0.5) * 10;
@@ -194,7 +199,12 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
       // Color
       tempColor.copy(baseColor);
       if (Math.random() > 0.8) tempColor.offsetHSL(0.1, 0, 0);
-      attrs.aColor.setXYZ(cursor, tempColor.r * brightness, tempColor.g * brightness, tempColor.b * brightness);
+      attrs.aColor.setXYZ(
+        cursor,
+        tempColor.r * brightness,
+        tempColor.g * brightness,
+        tempColor.b * brightness
+      );
 
       // Timing
       attrs.aStartTime.setX(cursor, currentTime);
