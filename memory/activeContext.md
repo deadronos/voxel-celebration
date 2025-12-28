@@ -3,6 +3,8 @@
 ## Current focus
 
 - Performance pass: introduce instanced voxel rendering + caching and particle pooling to reduce draw calls and per-frame allocations.
+- Improve initial load time by splitting heavy 3D scene code into a lazy-loaded chunk with a lightweight fallback.
+- Further load-time work: staged scene hydration (first-paint ground/sky, then world, atmosphere, lanterns, fireworks, postprocessing) plus idle prefetching of lazy chunks.
 - Backfilling the repository Memory Bank with core documentation files (`projectbrief.md`, `productContext.md`, `systemPatterns.md`, `techContext.md`, `activeContext.md`, `progress.md`, and `tasks/` entries). This work documents project intent and developer conventions so contributors can onboard quickly.
 
 ## Recent changes
@@ -11,6 +13,8 @@
 - Project uses TypeScript, Vite, R3F, and Vitest.
 - Static voxel scenery now uses instanced meshes with shared geometry/material caching, and fireworks particles use pooling to avoid churn.
 - Tailwind CSS is on v4 and now wired through the Vite plugin, using the v4 `@import "tailwindcss";` entrypoint in `src/index.css`.
+- The 3D scene is now code-split and lazy-loaded (`SceneCanvas`), so initial HTML/CSS renders before heavy Three.js bundles.
+- Added staged scene hydration (world, atmosphere, lanterns, fireworks, postprocessing) plus WebGL context loss handling and a lower initial DPR to reduce GPU pressure.
 
 ## Next steps & immediate tasks
 
