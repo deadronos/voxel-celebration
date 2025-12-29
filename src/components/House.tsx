@@ -1,5 +1,4 @@
-import { useMemo, useRef, memo, type FC } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useMemo, useEffect, memo, type FC } from 'react';
 import { InstancedVoxels, type VoxelInstance } from './InstancedVoxels';
 import { COLORS } from '../constants';
 import * as THREE from 'three';
@@ -25,7 +24,6 @@ const House: FC<HouseProps> = ({
   depth = 4,
 }) => {
   const [x, y, z] = position;
-  const nextShootTime = useRef(Math.random() * 4 + 2); // Random start delay
 
   const litWindows = useMemo(() => Array.from({ length: 3 }, () => Math.random() > 0.3), []);
   const litWindowMaterial = getVoxelMaterial({ emissive: COLORS.windowLit, emissiveIntensity: 1 });
@@ -79,26 +77,36 @@ const House: FC<HouseProps> = ({
     return { solidInstances: solid, litWindowInstances: lit };
   }, [depth, height, litWindows, width]);
 
-  useFrame((state, delta) => {
-    nextShootTime.current -= delta;
-    if (nextShootTime.current <= 0) {
-      // Shoot!
-      const randomColor = COLORS.fireworks[Math.floor(Math.random() * COLORS.fireworks.length)];
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
 
-      // Calculate launch position from chimney
-      // Chimney local position relative to group origin: [width/4, height + 2, depth/4]
-      // We need to rotate this offset by the house rotation
-      const offset = new THREE.Vector3(width / 4, height + 2, depth / 4);
-      offset.applyAxisAngle(yAxis, rotation);
+    const scheduleNext = () => {
+      // Random delay between 5 and 15 seconds
+      const delay = (Math.random() * 10 + 5) * 1000;
 
-      const launchPos = new THREE.Vector3(x, y, z).add(offset);
+      timeoutId = setTimeout(() => {
+        // Shoot!
+        const randomColor = COLORS.fireworks[Math.floor(Math.random() * COLORS.fireworks.length)];
 
-      onShootRocket(launchPos, randomColor);
+        // Calculate launch position from chimney
+        // Chimney local position relative to group origin: [width/4, height + 2, depth/4]
+        // We need to rotate this offset by the house rotation
+        const offset = new THREE.Vector3(width / 4, height + 2, depth / 4);
+        offset.applyAxisAngle(yAxis, rotation);
 
-      // Reset timer (random between 5 and 15 seconds)
-      nextShootTime.current = Math.random() * 10 + 5;
-    }
-  });
+        const launchPos = new THREE.Vector3(x, y, z).add(offset);
+
+        onShootRocket(launchPos, randomColor);
+
+        // Schedule next shot
+        scheduleNext();
+      }, delay);
+    };
+
+    scheduleNext();
+
+    return () => clearTimeout(timeoutId);
+  }, [depth, height, onShootRocket, rotation, width, x, y, z]);
 
   return (
     <group position={[x, y, z]} rotation={[0, rotation, 0]}>
