@@ -1,4 +1,4 @@
-import { useMemo, type FC } from 'react';
+import { memo, useMemo, type FC } from 'react';
 import { useThree } from '@react-three/fiber';
 import { MeshReflectorMaterial } from '@react-three/drei';
 
@@ -6,7 +6,7 @@ const MIN_REFLECT_RESOLUTION = 256;
 const MAX_REFLECT_RESOLUTION = 512;
 const BASE_REFLECT_RESOLUTION = 256;
 
-export const IceLake: FC = () => {
+const IceLakeComponent: FC = () => {
   const dpr = useThree((state) => state.viewport.dpr);
 
   const reflectorResolution = useMemo(() => {
@@ -33,3 +33,5 @@ export const IceLake: FC = () => {
     </mesh>
   );
 };
+
+export const IceLake = memo(IceLakeComponent);
