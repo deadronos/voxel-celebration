@@ -212,6 +212,7 @@ export default function SceneCanvas() {
   }, []);
 
   useEffect(() => {
+    // Start prefetching immediately (next idle tick) so resources are ready
     const cancelPrefetch = scheduleIdle(() => {
       void import('./SceneWorld');
       void import('./SceneAtmosphere');
@@ -219,7 +220,7 @@ export default function SceneCanvas() {
       void import('./ScenePostProcessing');
       void import('./components/FireworksManager');
       void import('./SceneControls');
-    }, 500);
+    }, 100);
 
     return cancelPrefetch;
   }, []);

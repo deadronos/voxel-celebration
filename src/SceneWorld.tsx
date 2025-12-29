@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { Vector3 } from 'three';
 
 import { Ground, Tree, StreetLight } from './components/Environment';
@@ -42,7 +43,7 @@ type SceneWorldProps = {
   onShootRocket: (startPos: Vector3, color: string) => void;
 };
 
-export default function SceneWorld({ onShootRocket }: SceneWorldProps) {
+function SceneWorldComponent({ onShootRocket }: SceneWorldProps) {
   return (
     <group position={[0, -2, 0]}>
       <Ground />
@@ -70,3 +71,5 @@ export default function SceneWorld({ onShootRocket }: SceneWorldProps) {
     </group>
   );
 }
+
+export default memo(SceneWorldComponent);
