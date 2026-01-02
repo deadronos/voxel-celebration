@@ -1,6 +1,5 @@
 import { type FC, type ReactNode } from 'react';
 import { InstancedVoxels, type VoxelInstance } from './InstancedVoxels';
-import * as THREE from 'three';
 
 interface VoxelModelProps {
   position?: readonly [number, number, number];
