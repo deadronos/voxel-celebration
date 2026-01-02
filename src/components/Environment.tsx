@@ -1,5 +1,6 @@
 import { useMemo, memo, type FC } from 'react';
 import { InstancedVoxels, type VoxelInstance } from './InstancedVoxels';
+import { VoxelModel } from './VoxelModel';
 import { COLORS } from '../constants';
 import { getVoxelMaterial } from '@/utils/threeCache';
 
@@ -18,11 +19,7 @@ const TreeComponent: FC<{ position: readonly [number, number, number] }> = ({ po
     []
   );
 
-  return (
-    <group position={position}>
-      <InstancedVoxels instances={instances} />
-    </group>
-  );
+  return <VoxelModel position={position} instances={instances} />;
 };
 
 export const Tree = memo(TreeComponent);
@@ -49,11 +46,10 @@ const StreetLightComponent: FC<{ position: readonly [number, number, number] }> 
   const fixtureMaterial = getVoxelMaterial({ emissive: '#fffacd', emissiveIntensity: 0.8 });
 
   return (
-    <group position={position}>
-      <InstancedVoxels instances={poleInstances} />
+    <VoxelModel position={position} instances={poleInstances}>
       <InstancedVoxels instances={fixtureInstances} material={fixtureMaterial} />
       <pointLight position={[0, 5, 0]} intensity={0.8} distance={10} color="#fffacd" decay={2} />
-    </group>
+    </VoxelModel>
   );
 };
 
@@ -82,11 +78,7 @@ const GroundComponent: FC = () => {
     return voxels;
   }, []);
 
-  return (
-    <group>
-      <InstancedVoxels instances={instances} />
-    </group>
-  );
+  return <VoxelModel instances={instances} />;
 };
 
 export const Ground = memo(GroundComponent);
