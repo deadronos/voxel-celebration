@@ -9,7 +9,7 @@ import { act } from 'react';
 // For focused unit tests, mock R3F's Canvas/useThree so the scene JSX renders in the DOM,
 // enabling interaction and event dispatch (e.g., WebGL context lost).
 vi.mock('@react-three/fiber', async () => {
-  const ReactModule = await import('react');
+  const ReactModule: typeof React = await import('react');
 
   type ThreeState = { gl: { domElement: HTMLCanvasElement | null } };
   const ThreeContext = ReactModule.createContext<ThreeState>({ gl: { domElement: null } });

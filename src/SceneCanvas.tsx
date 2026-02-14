@@ -231,7 +231,10 @@ export default function SceneCanvas() {
         shadows
         dpr={1}
         camera={{ position: [20, 15, 20], fov: 45 }}
-        gl={{ powerPreference: 'high-performance' }}
+        gl={{
+          powerPreference: 'high-performance',
+          antialias: true,
+        }}
       >
         <WebGLContextListener onChange={setContextLost} />
         <Scene
