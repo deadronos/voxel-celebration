@@ -21,6 +21,8 @@ const FireworksShaderMaterial = new THREE.ShaderMaterial({
     uGravity: { value: GRAVITY },
   },
   vertexShader: `
+    precision highp float;
+
     uniform float uTime;
     uniform float uGravity;
 
@@ -60,13 +62,15 @@ const FireworksShaderMaterial = new THREE.ShaderMaterial({
     }
   `,
   fragmentShader: `
+    precision highp float;
+
     varying vec3 vColor;
     void main() {
       gl_FragColor = vec4(vColor, 1.0);
     }
   `,
   vertexColors: true,
-  side: THREE.FrontSide, // Box is closed
+  side: THREE.FrontSide,
 });
 
 export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRocket }) => {

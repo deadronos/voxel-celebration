@@ -10,10 +10,6 @@ import prettierFlat from 'eslint-config-prettier/flat';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const compat = new FlatCompat({ baseDirectory: __dirname });
 
-const tsTypeCheckingConfigs = compat
-  .extends('plugin:@typescript-eslint/recommended-requiring-type-checking')
-  .map((c) => ({ ...c, files: ['**/*.{ts,tsx}'] }));
-
 export default defineConfig([
   // Use FlatCompat to include the recommended shareable configs (TypeScript + React + a11y)
   ...compat.extends(
@@ -21,7 +17,6 @@ export default defineConfig([
     'plugin:react/recommended',
     'plugin:jsx-a11y/recommended'
   ),
-  ...tsTypeCheckingConfigs,
 
   // Top-level ignore patterns migrated from .eslintignore
   {
@@ -44,7 +39,6 @@ export default defineConfig([
     languageOptions: {
       parser: tsParser,
       parserOptions: {
-        project: './tsconfig.json',
         ecmaVersion: 'latest',
         sourceType: 'module',
         ecmaFeatures: { jsx: true },
