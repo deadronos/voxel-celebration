@@ -9,6 +9,8 @@
 
 ## Recent changes
 
+- Refreshed direct dependencies to the latest compatible versions available in March 2026, including Tailwind v4 tooling, Three.js, Vitest, JSDOM, TypeScript ESLint, and Node type definitions. Vite and `@vitejs/plugin-react` were intentionally held on their current compatible major because the latest Tailwind Vite plugin still peers only through Vite 7.
+- Updated the lockfile with `npm install` and adjusted the `App` unit test mock so Suspense fallback assertions still pass under the newer Vitest/JSDOM stack.
 - Core scene components are present in `src/` including `House`, `FireworksManager`, `SkyLantern`, and `Environment` (see `src/` for component implementations).
 - Project uses TypeScript, Vite, R3F, and Vitest.
 - Static voxel scenery now uses instanced meshes with shared geometry/material caching, and fireworks particles use pooling to avoid churn.
