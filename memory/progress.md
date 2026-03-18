@@ -14,6 +14,7 @@
 - SceneCanvas coverage now exercises idle scheduling, context loss overlay behavior, and rocket add/remove flows.
 - Linting and formatting scripts are present (`eslint`, `prettier`).
 - Tailwind CSS is configured locally via the Tailwind v4 Vite plugin, using the `@import "tailwindcss";` entrypoint in `src/index.css`.
+- Direct dependencies and the `package-lock.json` have been refreshed to the latest compatible versions currently supported by the repo's toolchain, and `npm run test`, `npm run lint`, and `npm run typecheck` pass on that updated stack.
 - TDD adoption kickstarted: design doc + task plan added, plus a working Red → Green → Refactor pilot on `DynamicResScaler`.
 
 **What's left to build / next priorities:**
@@ -28,6 +29,7 @@
 
 - Visual tests are not present—visual regression would be a future improvement.
 - Some rendering behavior (particles) may be non-deterministic which makes snapshot testing more difficult; write deterministic helpers where possible.
+- `npm audit` still reports 2 high-severity vulnerabilities in transitive dependencies after the dependency refresh; follow-up triage can address those separately from this focused package update.
 
 **Overall status:** _Active_ — core demo working, documentation being backfilled, tests to expand.
 
