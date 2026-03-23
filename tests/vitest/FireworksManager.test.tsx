@@ -39,7 +39,7 @@ vi.mock('@/utils/fireworks', () => ({
   writeExplosionParticles: writeExplosionParticlesMock,
 }));
 
-import { FireworksManager } from '@/components/FireworksManager';
+import { FireworksManager } from "@/components/FireworksManager";
 
 describe('FireworksManager', () => {
   beforeEach(() => {
@@ -52,7 +52,7 @@ describe('FireworksManager', () => {
       <FireworksManager rockets={[]} removeRocket={() => {}} />
     );
 
-    const mesh = findInstancedMesh(renderer);
+    const mesh = renderer.scene.findAll((n) => isInstancedMesh(n.instance))[0].instance as InstancedMesh;
     expect(mesh.count).toBe(4000);
 
     await renderer.unmount();
@@ -92,19 +92,6 @@ describe('FireworksManager', () => {
   });
 });
 
-type SceneNode = { instance: unknown };
-type RendererWithSceneFind = {
-  scene: {
-    find: (predicate: (node: SceneNode) => boolean) => SceneNode;
-  };
-};
 
 const isInstancedMesh = (value: unknown): value is InstancedMesh =>
   typeof value === 'object' && value !== null && (value as InstancedMesh).isInstancedMesh === true;
-
-const findInstancedMesh = (renderer: RendererWithSceneFind): InstancedMesh => {
-  const node = renderer.scene.find((n) => isInstancedMesh(n.instance));
-  const inst = node.instance;
-  if (!isInstancedMesh(inst)) throw new Error('Expected an InstancedMesh in the scene');
-  return inst;
-};
