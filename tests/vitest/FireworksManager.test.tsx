@@ -11,40 +11,19 @@ type StepRocketPosition = (
   targetHeight: number
 ) => { newY: number; exploded: boolean };
 
-type WriteExplosionParticles = (
-  buffers: {
-    position: Float32Array;
-    velocity: Float32Array;
-    color: Float32Array;
-    scale: Float32Array;
-    life: Float32Array;
-    decay: Float32Array;
-  },
-  startIndex: number,
-  maxParticles: number,
-  pos: Vector3,
-  color: string
-) => number;
-
-const { stepRocketPositionMock, writeExplosionParticlesMock } = vi.hoisted(() => ({
+const { stepRocketPositionMock } = vi.hoisted(() => ({
   stepRocketPositionMock: vi.fn<StepRocketPosition>(),
-  writeExplosionParticlesMock: vi.fn<WriteExplosionParticles>(),
 }));
 
 vi.mock('@/utils/rocket', () => ({
   stepRocketPosition: stepRocketPositionMock,
 }));
 
-vi.mock('@/utils/fireworks', () => ({
-  writeExplosionParticles: writeExplosionParticlesMock,
-}));
-
-import { FireworksManager } from "@/components/FireworksManager";
+import { FireworksManager } from '@/components/FireworksManager';
 
 describe('FireworksManager', () => {
   beforeEach(() => {
     stepRocketPositionMock.mockReset();
-    writeExplosionParticlesMock.mockReset();
   });
 
   it('initializes an instanced particle mesh with max count', async () => {
@@ -52,8 +31,13 @@ describe('FireworksManager', () => {
       <FireworksManager rockets={[]} removeRocket={() => {}} />
     );
 
-    const mesh = renderer.scene.findAll((n) => isInstancedMesh(n.instance))[0].instance as InstancedMesh;
-    expect(mesh.count).toBe(4000);
+    // Find all instanced meshes
+    const meshes = renderer.scene.findAll((n) => isInstancedMesh(n.instance));
+    // One for particles, one for rockets
+    expect(meshes.length).toBe(2);
+
+    const particleMesh = meshes.find((m) => (m.instance as InstancedMesh).count === 4000);
+    expect(particleMesh).toBeDefined();
 
     await renderer.unmount();
   });
@@ -80,18 +64,15 @@ describe('FireworksManager', () => {
       <FireworksManager rockets={rockets} removeRocket={removeRocket} />
     );
 
-    // Frame 1: rocket explodes (rocket useFrame), explosion particles are created
     await ReactThreeTestRenderer.act(async () => {
       await renderer.advanceFrames(1, 0.016);
     });
 
     expect(removeRocket).toHaveBeenCalledWith('rocket-1');
-    // We don't check writeExplosionParticlesMock because the logic is now inline and GPU based.
 
     await renderer.unmount();
   });
 });
-
 
 const isInstancedMesh = (value: unknown): value is InstancedMesh =>
   typeof value === 'object' && value !== null && (value as InstancedMesh).isInstancedMesh === true;

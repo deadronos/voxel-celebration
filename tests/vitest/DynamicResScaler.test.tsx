@@ -23,17 +23,18 @@ const runFrames = (count: number, delta = 1 / 60) => {
 
 describe('DynamicResScaler', () => {
   const originalEnv = process.env.NODE_ENV;
-  const maxDpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio ?? 1, 2) : 1;
-  const startDpr = 0.5;
+  const startDpr = 1.0;
 
   beforeEach(() => {
     frameCallbacks.length = 0;
     setDprSpy.mockClear();
+    vi.stubGlobal('devicePixelRatio', 2.0);
   });
 
   afterEach(() => {
     process.env.NODE_ENV = originalEnv;
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
   });
 
   it('sets initial DPR once on mount', () => {
@@ -43,48 +44,39 @@ describe('DynamicResScaler', () => {
   });
 
   it('reduces DPR when FPS is consistently low (clamped)', () => {
-    // Mount initializes lastTime=0
     let t = 0;
     vi.spyOn(performance, 'now').mockImplementation(() => t);
 
     render(<DynamicResScaler />);
     expect(setDprSpy).toHaveBeenCalledWith(startDpr);
 
-    // First force a high-FPS interval to increase DPR above the minimum.
-    for (let i = 0; i < 80; i++) {
-      t += 500 / 80;
-      runFrames(1);
-    }
-
-    const afterHigh = setDprSpy.mock.calls.map((c) => c[0] as number).at(-1) ?? 0;
-    expect(afterHigh).toBeGreaterThan(startDpr);
-
-    // Then drive a low-FPS interval: 10 frames over 500ms => 20 FPS.
+    // Drive a low-FPS interval: 10 frames over 500ms => 20 FPS.
     for (let i = 0; i < 10; i++) {
       t += 50;
       runFrames(1);
     }
 
-    const afterLow = setDprSpy.mock.calls.map((c) => c[0] as number).at(-1) ?? 0;
-    expect(afterLow).toBeLessThanOrEqual(afterHigh);
+    const afterLow = setDprSpy.mock.calls.map((c) => c[0] as number).at(-1) ?? 2;
+    expect(afterLow).toBeLessThan(startDpr);
     expect(afterLow).toBeGreaterThanOrEqual(0.5);
   });
 
   it('increases DPR when FPS is high (up to MAX_DPR)', () => {
-    // Force initial DPR down by simulating a low-FPS interval, then a high-FPS interval.
     let t = 0;
     vi.spyOn(performance, 'now').mockImplementation(() => t);
 
     render(<DynamicResScaler />);
 
-    // Low FPS interval to reduce DPR to 0.9
-    for (let i = 0; i < 10; i++) {
-      t += 50;
-      runFrames(1);
+    // Low FPS interval to reduce DPR
+    for (let step = 0; step < 2; step++) {
+      for (let i = 0; i < 10; i++) {
+        t += 50;
+        runFrames(1);
+      }
     }
 
-    const afterLow = setDprSpy.mock.calls.map((c) => c[0] as number).at(-1);
-    expect(afterLow).toBeLessThan(1);
+    const afterLow = setDprSpy.mock.calls.map((c) => c[0] as number).at(-1) ?? 2;
+    expect(afterLow).toBeLessThan(startDpr);
 
     // High FPS interval: 80 frames over 500ms => 160 FPS
     for (let i = 0; i < 80; i++) {
@@ -92,9 +84,9 @@ describe('DynamicResScaler', () => {
       runFrames(1);
     }
 
-    const afterHigh = setDprSpy.mock.calls.map((c) => c[0] as number).at(-1);
-    expect(afterHigh).toBeGreaterThan(afterLow ?? 0);
-    expect(afterHigh).toBeLessThanOrEqual(maxDpr);
+    const afterHigh = setDprSpy.mock.calls.map((c) => c[0] as number).at(-1) ?? 0;
+    expect(afterHigh).toBeGreaterThan(afterLow);
+    expect(afterHigh).toBeLessThanOrEqual(2.0);
   });
 
   it('logs DPR adjustments in development', () => {
@@ -105,9 +97,9 @@ describe('DynamicResScaler', () => {
     vi.spyOn(performance, 'now').mockImplementation(() => t);
 
     render(<DynamicResScaler />);
-    // Trigger one high-FPS adjustment
-    for (let i = 0; i < 80; i++) {
-      t += 500 / 80;
+    // Trigger one low-FPS adjustment
+    for (let i = 0; i < 10; i++) {
+      t += 50;
       runFrames(1);
     }
 
@@ -120,7 +112,7 @@ describe('DynamicResScaler', () => {
 
     render(<DynamicResScaler minDpr={0.8} maxDpr={1.2} />);
 
-    // Drive several low-FPS intervals (20 FPS equivalent) to force multiple reductions.
+    // Drive several low-FPS intervals to force multiple reductions.
     for (let step = 0; step < 6; step++) {
       for (let i = 0; i < 10; i++) {
         t += 50;
@@ -140,28 +132,23 @@ describe('DynamicResScaler', () => {
 
     render(<DynamicResScaler minDpr={0.5} maxDpr={0.9} />);
 
-    // First drop DPR with low FPS to ensure we later ramp upward.
-    for (let step = 0; step < 4; step++) {
+    // Low FPS to drop it
+    for (let step = 0; step < 10; step++) {
       for (let i = 0; i < 10; i++) {
         t += 50;
         runFrames(1);
       }
     }
 
-    const callsAfterLow = setDprSpy.mock.calls.map((c) => c[0] as number);
-    expect(callsAfterLow.length).toBeGreaterThan(0);
-    const afterLow = callsAfterLow[callsAfterLow.length - 1];
+    const afterLow = setDprSpy.mock.calls.map((c) => c[0] as number).at(-1) ?? 0;
 
-    // Then simulate very high FPS to trigger increases.
+    // High FPS to trigger increases.
     for (let i = 0; i < 80; i++) {
       t += 500 / 80;
       runFrames(1);
     }
 
-    const callsAfterHigh = setDprSpy.mock.calls.map((c) => c[0] as number);
-    expect(callsAfterHigh.length).toBeGreaterThan(0);
-    const afterHigh = callsAfterHigh[callsAfterHigh.length - 1];
-
+    const afterHigh = setDprSpy.mock.calls.map((c) => c[0] as number).at(-1) ?? 0;
     expect(afterHigh).toBeGreaterThan(afterLow);
     expect(afterHigh).toBeLessThanOrEqual(0.9);
   });

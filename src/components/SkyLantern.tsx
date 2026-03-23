@@ -38,14 +38,6 @@ const SkyLanternComponent: FC<SkyLanternProps> = ({ position, color = '#ff5722' 
     groupRef.current.position.x = initialPos.x + driftX;
     groupRef.current.position.z = initialPos.z + driftZ;
 
-    // Bobbing motion integrated into sway
-    // Apply speed
-    groupRef.current.position.y += speed * delta;
-    // Add bob to visual y position without affecting the base trajectory too much?
-    // Actually, let's just add it to the rotation/sway to keep upward movement clean,
-    // OR just modulate the Y slightly.
-    // Let's keep Y linear for "rising" but maybe sway rotation is key.
-
     // Better: Sway/Tilt as if caught in wind
     // When moving X, tilt Z. When moving Z, tilt X.
     groupRef.current.rotation.z = Math.cos(time * 0.5) * 0.15; // Rocking left/right

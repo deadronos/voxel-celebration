@@ -83,3 +83,21 @@ const GroundComponent: FC = () => {
 
 export const Ground = memo(GroundComponent);
 Ground.displayName = 'Ground';
+
+const BushComponent: FC<{ position: readonly [number, number, number] }> = ({ position }) => {
+  const instances = useMemo<readonly VoxelInstance[]>(
+    () => [
+      { position: [0, 0, 0], color: COLORS.leaves },
+      { position: [0.5, 0, 0], color: COLORS.leaves, scale: [0.8, 0.8, 0.8] },
+      { position: [-0.5, 0, 0], color: COLORS.leaves, scale: [0.8, 0.8, 0.8] },
+      { position: [0, 0, 0.5], color: COLORS.leaves, scale: [0.8, 0.8, 0.8] },
+      { position: [0, 0, -0.5], color: COLORS.leaves, scale: [0.8, 0.8, 0.8] },
+    ],
+    []
+  );
+
+  return <VoxelModel position={position} instances={instances} />;
+};
+
+export const Bush = memo(BushComponent);
+Bush.displayName = 'Bush';

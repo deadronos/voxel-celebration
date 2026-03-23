@@ -1,9 +1,9 @@
-import { useLayoutEffect, useMemo, useRef, type FC } from 'react';
+import { useLayoutEffect, useRef, useMemo, type FC } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { RocketData } from '@/types';
 import { stepRocketPosition } from '@/utils/rocket';
-import { getSharedBoxGeometry } from '@/utils/threeCache';
+import { getSharedBoxGeometry, getVoxelMaterial } from '@/utils/threeCache';
 
 interface FireworksManagerProps {
   rockets: RocketData[];
@@ -16,8 +16,7 @@ const MAX_LIGHTS = 8;
 const GRAVITY = 9.8 * 0.5;
 
 /**
- * Custom Shader Material for GPU-based particles.
- * Calculates position and scale based on time and initial velocity.
+ * Optimized Shader for Particle Systems
  */
 const FireworksShaderMaterial = new THREE.ShaderMaterial({
   uniforms: {
@@ -41,15 +40,17 @@ const FireworksShaderMaterial = new THREE.ShaderMaterial({
 
     void main() {
       float age = uTime - aStartTime;
+
+      // Calculate scale based on age
       float progress = age / aDuration;
       float scale = aBaseScale * (1.0 - progress);
 
-      // If particle is not yet born or dead, hide it
+      // If particle is not yet born or dead, scale to 0
       if (age < 0.0 || age > aDuration) {
         scale = 0.0;
       }
 
-      // Physics: s = ut + 0.5at^2
+      // Physics Position
       vec3 pos = aStartPosition + aVelocity * age;
       pos.y -= 0.5 * uGravity * age * age;
 
@@ -72,9 +73,8 @@ const FireworksShaderMaterial = new THREE.ShaderMaterial({
   side: THREE.FrontSide,
 });
 
-const RocketMaterial = new THREE.MeshStandardMaterial({
-  toneMapped: true,
-  emissive: new THREE.Color(0xffffff),
+const RocketMaterial = getVoxelMaterial({
+  emissive: '#ffffff',
   emissiveIntensity: 2,
 });
 
@@ -165,7 +165,9 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
       cursor = (cursor + 1) % MAX_PARTICLES;
       attrs.aStartPosition.setXYZ(cursor, position.x, position.y, position.z);
 
-      let vx = 0, vy = 0, vz = 0;
+      let vx = 0,
+        vy = 0,
+        vz = 0;
       const speed = 6 + Math.random() * 6;
 
       if (shape === 'sphere') {
@@ -175,14 +177,18 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
         vy = Math.sin(phi) * Math.sin(theta);
         vz = Math.cos(phi);
         const s = speed * (0.8 + Math.random() * 0.4);
-        vx *= s; vy *= s; vz *= s;
+        vx *= s;
+        vy *= s;
+        vz *= s;
       } else if (shape === 'ring') {
         const angle = Math.random() * Math.PI * 2;
         vx = Math.cos(angle);
         vy = (Math.random() - 0.5) * 0.2;
         vz = Math.sin(angle);
         const s = speed * (0.9 + Math.random() * 0.2);
-        vx *= s; vy *= s; vz *= s;
+        vx *= s;
+        vy *= s;
+        vz *= s;
       } else {
         vx = (Math.random() - 0.5) * 12;
         vy = (Math.random() - 0.5) * 12;
@@ -193,7 +199,12 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
 
       instColor.copy(baseColor);
       if (Math.random() > 0.8) instColor.offsetHSL(0.05, 0, 0);
-      attrs.aColor.setXYZ(cursor, instColor.r * brightness, instColor.g * brightness, instColor.b * brightness);
+      attrs.aColor.setXYZ(
+        cursor,
+        instColor.r * brightness,
+        instColor.g * brightness,
+        instColor.b * brightness
+      );
 
       attrs.aStartTime.setX(cursor, currentTime);
       attrs.aDuration.setX(cursor, 1.5 + Math.random() * 0.5);
@@ -293,7 +304,9 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
       {Array.from({ length: MAX_LIGHTS }).map((_, i) => (
         <pointLight
           key={i}
-          ref={(el) => { lightRefs.current[i] = el; }}
+          ref={(el) => {
+            lightRefs.current[i] = el;
+          }}
           distance={10}
           decay={2}
           intensity={0}
