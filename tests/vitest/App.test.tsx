@@ -12,9 +12,33 @@ vi.mock('@/SceneCanvas', () => ({
   },
 }));
 
-import App from '@/App';
+import App, { DEFAULT_GREETING, MAX_GREETING_LENGTH, getGreetingFromSearch, sanitizeGreeting } from '@/App';
 
 describe('App', () => {
+  it('uses the default greeting when the URL parameter is missing', () => {
+    expect(getGreetingFromSearch('')).toBe(DEFAULT_GREETING);
+  });
+
+  it('uses the greeting URL parameter when provided', () => {
+    expect(getGreetingFromSearch('?greeting=Happy%20Birthday')).toBe('Happy Birthday');
+  });
+
+  it('sanitizes greetings by stripping quotes, angle brackets, and control characters', () => {
+    expect(sanitizeGreeting(' "Happy <Birthday>\n" ')).toBe('Happy Birthday');
+  });
+
+  it('falls back to the default greeting when sanitization removes all content', () => {
+    expect(sanitizeGreeting('""')).toBe(DEFAULT_GREETING);
+  });
+
+  it('limits overly long greeting text', () => {
+    const longGreeting = 'Celebrate '.repeat(20);
+    const sanitizedGreeting = sanitizeGreeting(longGreeting);
+
+    expect(sanitizedGreeting.length).toBeLessThanOrEqual(MAX_GREETING_LENGTH);
+    expect(sanitizedGreeting).toBe(longGreeting.trim().slice(0, MAX_GREETING_LENGTH).trim());
+  });
+
   it('renders without crashing - happy path', () => {
     const { container } = render(<App />);
     expect(container).toBeTruthy();
@@ -22,8 +46,19 @@ describe('App', () => {
 
   it('renders header with title', () => {
     const { getAllByText } = render(<App />);
-    const titleElements = getAllByText('Happy New Year');
+    const titleElements = getAllByText(DEFAULT_GREETING);
     expect(titleElements.length).toBeGreaterThan(0);
+  });
+
+  it('renders a sanitized greeting from the URL parameter', () => {
+    window.history.pushState({}, '', '/?greeting=%22Happy%20%3CBirthday%3E%22');
+
+    const { getAllByText } = render(<App />);
+    const titleElements = getAllByText('Happy Birthday');
+
+    expect(titleElements.length).toBeGreaterThan(0);
+
+    window.history.pushState({}, '', '/');
   });
 
   it('renders subtitle', () => {

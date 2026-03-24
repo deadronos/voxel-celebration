@@ -2,12 +2,48 @@ import { Suspense, lazy } from 'react';
 
 const SceneCanvas = lazy(() => import('./SceneCanvas'));
 
+export const DEFAULT_GREETING = 'Happy New Year';
+export const MAX_GREETING_LENGTH = 80;
+
+export function sanitizeGreeting(rawGreeting: string | null): string {
+  if (typeof rawGreeting !== 'string') {
+    return DEFAULT_GREETING;
+  }
+
+  const trimmedGreeting = rawGreeting.trim();
+
+  if (!trimmedGreeting) {
+    return DEFAULT_GREETING;
+  }
+
+  const normalizedGreeting = trimmedGreeting
+    .replace(/^['"]+|['"]+$/g, '')
+    .replace(/[\u0000-\u001F\u007F]/g, '')
+    .replace(/[<>]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, MAX_GREETING_LENGTH)
+    .trim();
+
+  return normalizedGreeting || DEFAULT_GREETING;
+}
+
+export function getGreetingFromSearch(search: string): string {
+  const searchParams = new URLSearchParams(search);
+  return sanitizeGreeting(searchParams.get('greeting'));
+}
+
 function App() {
+  const greeting =
+    typeof window === 'undefined'
+      ? DEFAULT_GREETING
+      : getGreetingFromSearch(window.location.search);
+
   return (
     <div className="w-full h-full relative">
       <div className="absolute top-5 left-0 right-0 z-10 text-center pointer-events-none">
         <h1 className="text-4xl md:text-6xl font-bold text-white tracking-widest uppercase drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] font-sans">
-          Happy New Year
+          {greeting}
         </h1>
         <p className="text-blue-200 mt-2 text-sm tracking-wider opacity-80">Voxel Celebration</p>
       </div>
