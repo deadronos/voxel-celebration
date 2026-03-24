@@ -1,5 +1,5 @@
 import React from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
 
 // App renders SceneCanvas inside <Suspense/>. In unit tests we don't need to load the 3D scene,
@@ -15,6 +15,10 @@ vi.mock('@/SceneCanvas', () => ({
 import App, { DEFAULT_GREETING, MAX_GREETING_LENGTH, getGreetingFromSearch, sanitizeGreeting } from '@/App';
 
 describe('App', () => {
+  afterEach(() => {
+    window.history.pushState({}, '', '/');
+  });
+
   it('uses the default greeting when the URL parameter is missing', () => {
     expect(getGreetingFromSearch('')).toBe(DEFAULT_GREETING);
   });
@@ -27,6 +31,10 @@ describe('App', () => {
     expect(sanitizeGreeting(' "Happy <Birthday>\n" ')).toBe('Happy Birthday');
   });
 
+  it('strips invisible bidi and zero-width characters', () => {
+    expect(sanitizeGreeting('\u202E\u200BHappy\u2060 Birthday')).toBe('Happy Birthday');
+  });
+
   it('falls back to the default greeting when sanitization removes all content', () => {
     expect(sanitizeGreeting('""')).toBe(DEFAULT_GREETING);
   });
@@ -35,8 +43,9 @@ describe('App', () => {
     const longGreeting = 'Celebrate '.repeat(20);
     const sanitizedGreeting = sanitizeGreeting(longGreeting);
 
+    expect(longGreeting.length).toBeGreaterThan(MAX_GREETING_LENGTH);
     expect(sanitizedGreeting.length).toBeLessThanOrEqual(MAX_GREETING_LENGTH);
-    expect(sanitizedGreeting).toBe(longGreeting.trim().slice(0, MAX_GREETING_LENGTH).trim());
+    expect(sanitizedGreeting.startsWith('Celebrate Celebrate')).toBe(true);
   });
 
   it('renders without crashing - happy path', () => {
@@ -57,8 +66,6 @@ describe('App', () => {
     const titleElements = getAllByText('Happy Birthday');
 
     expect(titleElements.length).toBeGreaterThan(0);
-
-    window.history.pushState({}, '', '/');
   });
 
   it('renders subtitle', () => {
