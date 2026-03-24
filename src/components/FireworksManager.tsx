@@ -11,7 +11,7 @@ interface FireworksManagerProps {
 }
 
 const MAX_PARTICLES = 4000;
-const MAX_ROCKETS = 256;
+const MAX_ROCKETS = 50;
 const MAX_LIGHTS = 8;
 const GRAVITY = 9.8 * 0.5;
 

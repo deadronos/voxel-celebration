@@ -1,25 +1,61 @@
-import { describe, expect, it } from 'vitest';
+import React from 'react';
+import { describe, expect, it, vi } from 'vitest';
 import ReactThreeTestRenderer from '@react-three/test-renderer';
-import type { Mesh } from 'three';
-
 import SceneInteraction from '@/components/SceneInteraction';
+import * as THREE from 'three';
+import { useThree } from '@react-three/fiber';
+
+// Mock useThree to provide controlled raycaster and camera
+vi.mock('@react-three/fiber', async (importOriginal) => {
+  const actual = (await importOriginal()) as Record<string, unknown>;
+  return {
+    ...actual,
+    useThree: vi.fn(),
+  };
+});
 
 describe('SceneInteraction', () => {
-  it('renders a raycastable ground plane at the scene floor', async () => {
-    const renderer = await ReactThreeTestRenderer.create(
-      <SceneInteraction onShoot={() => {}} />
-    );
+  it('calls onShoot when clicked and intersection occurs', async () => {
+    const onShoot = vi.fn();
 
-    const meshNode = renderer.scene.find((node) => {
-      const instance = node.instance as Mesh | null | undefined;
-      return !!instance && instance.isMesh;
+    const mockRaycaster = {
+      setFromCamera: vi.fn(),
+      ray: {
+        intersectPlane: vi.fn().mockImplementation((_plane: THREE.Plane, target: THREE.Vector3) => {
+          target.set(10, 0, 10);
+          return target;
+        }),
+      },
+    };
+
+    const mockCamera = new THREE.PerspectiveCamera();
+    const mockPointer = new THREE.Vector2();
+
+    vi.mocked(useThree).mockImplementation((selector) => {
+      const state = {
+        camera: mockCamera,
+        raycaster: mockRaycaster,
+        pointer: mockPointer,
+      };
+      // @ts-expect-error - Mocking useThree state for testing
+      return selector(state);
     });
 
-    const mesh = meshNode.instance as Mesh;
+    const renderer = await ReactThreeTestRenderer.create(<SceneInteraction onShoot={onShoot} />);
 
-    expect(mesh.visible).not.toBe(false);
-    expect(mesh.position.y).toBe(-2);
-    expect(mesh.rotation.x).toBeCloseTo(-Math.PI / 2);
+    const mesh = renderer.scene.children[0];
+
+    await ReactThreeTestRenderer.act(async () => {
+      // fireEvent triggers the onPointerDown prop
+      await renderer.fireEvent(mesh, 'pointerDown');
+    });
+
+    expect(onShoot).toHaveBeenCalled();
+    const [pos, color] = onShoot.mock.calls[0];
+    expect(pos).toBeInstanceOf(THREE.Vector3);
+    expect(pos.x).toBe(10);
+    expect(pos.z).toBe(10);
+    expect(typeof color).toBe('string');
 
     await renderer.unmount();
   });
