@@ -6,9 +6,7 @@ import SceneInteraction from '@/components/SceneInteraction';
 
 describe('SceneInteraction', () => {
   it('renders a raycastable ground plane at the scene floor', async () => {
-    const renderer = await ReactThreeTestRenderer.create(
-      <SceneInteraction onShoot={() => {}} />
-    );
+    const renderer = await ReactThreeTestRenderer.create(<SceneInteraction onShoot={() => {}} />);
 
     const meshNode = renderer.scene.find((node) => {
       const instance = node.instance as Mesh | null | undefined;
