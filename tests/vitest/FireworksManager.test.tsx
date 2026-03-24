@@ -72,6 +72,34 @@ describe('FireworksManager', () => {
 
     await renderer.unmount();
   });
+
+  it('keeps all active rockets within the instanced rocket pool', async () => {
+    const rockets: RocketData[] = Array.from({ length: 51 }, (_, index) => ({
+      id: `rocket-${index}`,
+      position: new Vector3(index, 0, 0),
+      color: '#00ff88',
+      targetHeight: 10,
+    }));
+
+    stepRocketPositionMock.mockReturnValue({ newY: 1, exploded: false });
+
+    const renderer = await ReactThreeTestRenderer.create(
+      <FireworksManager rockets={rockets} removeRocket={() => {}} />
+    );
+
+    await ReactThreeTestRenderer.act(async () => {
+      await renderer.advanceFrames(1, 0.016);
+    });
+
+    const rocketMesh = renderer.scene
+      .findAll((n) => isInstancedMesh(n.instance))
+      .map((node) => node.instance as InstancedMesh)
+      .find((mesh) => mesh.count !== 4000);
+
+    expect(rocketMesh?.count).toBe(51);
+
+    await renderer.unmount();
+  });
 });
 
 const isInstancedMesh = (value: unknown): value is InstancedMesh =>
