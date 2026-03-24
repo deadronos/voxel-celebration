@@ -1,5 +1,5 @@
 import React from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
 
 // App renders SceneCanvas inside <Suspense/>. In unit tests we don't need to load the 3D scene,
@@ -12,9 +12,42 @@ vi.mock('@/SceneCanvas', () => ({
   },
 }));
 
-import App from '@/App';
+import App, { DEFAULT_GREETING, MAX_GREETING_LENGTH, getGreetingFromSearch, sanitizeGreeting } from '@/App';
 
 describe('App', () => {
+  afterEach(() => {
+    window.history.pushState({}, '', '/');
+  });
+
+  it('uses the default greeting when the URL parameter is missing', () => {
+    expect(getGreetingFromSearch('')).toBe(DEFAULT_GREETING);
+  });
+
+  it('uses the greeting URL parameter when provided', () => {
+    expect(getGreetingFromSearch('?greeting=Happy%20Birthday')).toBe('Happy Birthday');
+  });
+
+  it('sanitizes greetings by stripping quotes, angle brackets, and control characters', () => {
+    expect(sanitizeGreeting(' "Happy <Birthday>\n" ')).toBe('Happy Birthday');
+  });
+
+  it('strips invisible bidi and zero-width characters', () => {
+    expect(sanitizeGreeting('\u202E\u200BHappy\u2060 Birthday')).toBe('Happy Birthday');
+  });
+
+  it('falls back to the default greeting when sanitization removes all content', () => {
+    expect(sanitizeGreeting('""')).toBe(DEFAULT_GREETING);
+  });
+
+  it('limits overly long greeting text', () => {
+    const longGreeting = 'Celebrate '.repeat(20);
+    const sanitizedGreeting = sanitizeGreeting(longGreeting);
+
+    expect(longGreeting.length).toBeGreaterThan(MAX_GREETING_LENGTH);
+    expect(sanitizedGreeting.length).toBeLessThanOrEqual(MAX_GREETING_LENGTH);
+    expect(sanitizedGreeting.startsWith('Celebrate Celebrate')).toBe(true);
+  });
+
   it('renders without crashing - happy path', () => {
     const { container } = render(<App />);
     expect(container).toBeTruthy();
@@ -22,7 +55,16 @@ describe('App', () => {
 
   it('renders header with title', () => {
     const { getAllByText } = render(<App />);
-    const titleElements = getAllByText('Happy New Year');
+    const titleElements = getAllByText(DEFAULT_GREETING);
+    expect(titleElements.length).toBeGreaterThan(0);
+  });
+
+  it('renders a sanitized greeting from the URL parameter', () => {
+    window.history.pushState({}, '', '/?greeting=%22Happy%20%3CBirthday%3E%22');
+
+    const { getAllByText } = render(<App />);
+    const titleElements = getAllByText('Happy Birthday');
+
     expect(titleElements.length).toBeGreaterThan(0);
   });
 
