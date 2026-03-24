@@ -1,34 +1,34 @@
-import React from 'react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import ReactThreeTestRenderer from '@react-three/test-renderer';
-import { type InstancedMesh, Vector3 } from 'three';
-import type { RocketData } from '@/types';
+import React from "react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import ReactThreeTestRenderer from "@react-three/test-renderer";
+import { type InstancedMesh, Vector3 } from "three";
+import type { RocketData } from "@/types";
 
 type StepRocketPosition = (
   y: number,
   speed: number,
   delta: number,
-  targetHeight: number
+  targetHeight: number,
 ) => { newY: number; exploded: boolean };
 
 const { stepRocketPositionMock } = vi.hoisted(() => ({
   stepRocketPositionMock: vi.fn<StepRocketPosition>(),
 }));
 
-vi.mock('@/utils/rocket', () => ({
+vi.mock("@/utils/rocket", () => ({
   stepRocketPosition: stepRocketPositionMock,
 }));
 
-import { FireworksManager } from '@/components/FireworksManager';
+import { FireworksManager } from "@/components/FireworksManager";
 
-describe('FireworksManager', () => {
+describe("FireworksManager", () => {
   beforeEach(() => {
     stepRocketPositionMock.mockReset();
   });
 
-  it('initializes an instanced particle mesh with max count', async () => {
+  it("initializes an instanced particle mesh with max count", async () => {
     const renderer = await ReactThreeTestRenderer.create(
-      <FireworksManager rockets={[]} removeRocket={() => {}} />
+      <FireworksManager rockets={[]} removeRocket={() => {}} />,
     );
 
     // Find all instanced meshes
@@ -42,7 +42,7 @@ describe('FireworksManager', () => {
     await renderer.unmount();
   });
 
-  it('explodes a rocket, removes it', async () => {
+  it("explodes a rocket, removes it", async () => {
     const removeRocket = vi.fn();
 
     let stepCalls = 0;
@@ -53,38 +53,38 @@ describe('FireworksManager', () => {
 
     const rockets: RocketData[] = [
       {
-        id: 'rocket-1',
+        id: "rocket-1",
         position: new Vector3(0, 0, 0),
-        color: '#ff0000',
+        color: "#ff0000",
         targetHeight: 1,
       },
     ];
 
     const renderer = await ReactThreeTestRenderer.create(
-      <FireworksManager rockets={rockets} removeRocket={removeRocket} />
+      <FireworksManager rockets={rockets} removeRocket={removeRocket} />,
     );
 
     await ReactThreeTestRenderer.act(async () => {
       await renderer.advanceFrames(1, 0.016);
     });
 
-    expect(removeRocket).toHaveBeenCalledWith('rocket-1');
+    expect(removeRocket).toHaveBeenCalledWith("rocket-1");
 
     await renderer.unmount();
   });
 
-  it('keeps all active rockets within the instanced rocket pool', async () => {
+  it("keeps all active rockets within the instanced rocket pool", async () => {
     const rockets: RocketData[] = Array.from({ length: 51 }, (_, index) => ({
       id: `rocket-${index}`,
       position: new Vector3(index, 0, 0),
-      color: '#00ff88',
+      color: "#00ff88",
       targetHeight: 10,
     }));
 
     stepRocketPositionMock.mockReturnValue({ newY: 1, exploded: false });
 
     const renderer = await ReactThreeTestRenderer.create(
-      <FireworksManager rockets={rockets} removeRocket={() => {}} />
+      <FireworksManager rockets={rockets} removeRocket={() => {}} />,
     );
 
     await ReactThreeTestRenderer.act(async () => {
@@ -103,4 +103,4 @@ describe('FireworksManager', () => {
 });
 
 const isInstancedMesh = (value: unknown): value is InstancedMesh =>
-  typeof value === 'object' && value !== null && (value as InstancedMesh).isInstancedMesh === true;
+  typeof value === "object" && value !== null && (value as InstancedMesh).isInstancedMesh === true;

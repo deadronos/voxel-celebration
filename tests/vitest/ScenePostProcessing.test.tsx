@@ -1,12 +1,12 @@
-import React from 'react';
-import { describe, expect, it, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import React from "react";
+import { describe, expect, it, vi } from "vitest";
+import { render } from "@testing-library/react";
 
 type AnyProps = Record<string, unknown>;
 let lastComposerProps: AnyProps | undefined;
 let lastBloomProps: AnyProps | undefined;
 
-vi.mock('@react-three/postprocessing', () => ({
+vi.mock("@react-three/postprocessing", () => ({
   EffectComposer: ({ children, ...props }: AnyProps & { children?: React.ReactNode }) => {
     lastComposerProps = props;
     return <div data-testid="composer">{children}</div>;
@@ -17,16 +17,16 @@ vi.mock('@react-three/postprocessing', () => ({
   },
 }));
 
-import ScenePostProcessing from '@/ScenePostProcessing';
+import ScenePostProcessing from "@/ScenePostProcessing";
 
-describe('ScenePostProcessing', () => {
-  it('renders without crashing - happy path', () => {
+describe("ScenePostProcessing", () => {
+  it("renders without crashing - happy path", () => {
     const { getByTestId } = render(<ScenePostProcessing />);
-    expect(getByTestId('composer')).toBeTruthy();
-    expect(getByTestId('bloom')).toBeTruthy();
+    expect(getByTestId("composer")).toBeTruthy();
+    expect(getByTestId("bloom")).toBeTruthy();
   });
 
-  it('configures EffectComposer and Bloom as expected', () => {
+  it("configures EffectComposer and Bloom as expected", () => {
     render(<ScenePostProcessing />);
 
     expect(lastComposerProps?.enableNormalPass).toBe(false);

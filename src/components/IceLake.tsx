@@ -1,6 +1,6 @@
-import { memo, useMemo, type FC } from 'react';
-import { useThree } from '@react-three/fiber';
-import { MeshReflectorMaterial } from '@react-three/drei';
+import { memo, useMemo, type FC } from "react";
+import { useThree } from "@react-three/fiber";
+import { MeshReflectorMaterial } from "@react-three/drei";
 
 const MIN_REFLECT_RESOLUTION = 256;
 const MAX_REFLECT_RESOLUTION = 512;

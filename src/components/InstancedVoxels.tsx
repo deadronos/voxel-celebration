@@ -1,6 +1,6 @@
-import { useLayoutEffect, useMemo, useRef, type FC } from 'react';
-import * as THREE from 'three';
-import { getSharedBoxGeometry, getVoxelMaterial } from '@/utils/threeCache';
+import { useLayoutEffect, useMemo, useRef, type FC } from "react";
+import * as THREE from "three";
+import { getSharedBoxGeometry, getVoxelMaterial } from "@/utils/threeCache";
 
 export type VoxelInstance = Readonly<{
   position: readonly [number, number, number];

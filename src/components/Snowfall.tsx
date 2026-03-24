@@ -1,6 +1,6 @@
-import { useMemo, useRef, type FC } from 'react';
-import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
+import { useMemo, useRef, type FC } from "react";
+import { useFrame } from "@react-three/fiber";
+import * as THREE from "three";
 
 const SNOW_COUNT = 1500;
 const RANGE = 60; // Spread of snow
@@ -73,7 +73,7 @@ export const Snowfall: FC = () => {
       time: { value: 0 },
       range: { value: RANGE },
     }),
-    []
+    [],
   );
 
   useFrame((state) => {

@@ -1,6 +1,6 @@
 ---
-description: 'Test-Driven Development (TDD) guidance: Red → Green → Refactor, examples, and PR/review expectations.'
-applyTo: '**'
+description: "Test-Driven Development (TDD) guidance: Red → Green → Refactor, examples, and PR/review expectations."
+applyTo: "**"
 ---
 
 # TDD — Test-Driven Development (Red → Green → Refactor)

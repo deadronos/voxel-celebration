@@ -1,7 +1,7 @@
 ---
-description: 'Generic code review instructions that can be customized for any project using GitHub Copilot'
-applyTo: '**'
-excludeAgent: ['coding-agent']
+description: "Generic code review instructions that can be customized for any project using GitHub Copilot"
+applyTo: "**"
+excludeAgent: ["coding-agent"]
 ---
 
 # Generic Code Review Instructions
@@ -147,7 +147,7 @@ stmt.setString(1, email);
 
 ```javascript
 // ❌ BAD: Exposed secret in code
-const API_KEY = 'sk_live_abc123xyz789';
+const API_KEY = "sk_live_abc123xyz789";
 
 // ✅ GOOD: Use environment variables
 const API_KEY = process.env.API_KEY;
@@ -170,13 +170,13 @@ When performing a code review, verify test quality:
 
 ```typescript
 // ❌ BAD: Vague name and assertion
-test('test1', () => {
+test("test1", () => {
   const result = calc(5, 10);
   expect(result).toBeTruthy();
 });
 
 // ✅ GOOD: Descriptive name and specific assertion
-test('should calculate 10% discount for orders under $100', () => {
+test("should calculate 10% discount for orders under $100", () => {
   const orderTotal = 50;
   const itemPrice = 20;
 

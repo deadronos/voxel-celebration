@@ -1,24 +1,24 @@
-import React from 'react';
-import { describe, expect, it, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import React from "react";
+import { describe, expect, it, vi } from "vitest";
+import { render } from "@testing-library/react";
 
 let lastOrbitControlsProps: Record<string, unknown> | undefined;
-vi.mock('@react-three/drei', () => ({
+vi.mock("@react-three/drei", () => ({
   OrbitControls: (props: Record<string, unknown>) => {
     lastOrbitControlsProps = props;
     return <div data-testid="orbit-controls" />;
   },
 }));
 
-import SceneControls from '@/SceneControls';
+import SceneControls from "@/SceneControls";
 
-describe('SceneControls', () => {
-  it('renders without crashing - happy path', () => {
+describe("SceneControls", () => {
+  it("renders without crashing - happy path", () => {
     const { getByTestId } = render(<SceneControls />);
-    expect(getByTestId('orbit-controls')).toBeTruthy();
+    expect(getByTestId("orbit-controls")).toBeTruthy();
   });
 
-  it('passes expected OrbitControls props', () => {
+  it("passes expected OrbitControls props", () => {
     render(<SceneControls />);
 
     expect(lastOrbitControlsProps).toBeDefined();

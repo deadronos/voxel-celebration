@@ -1,5 +1,5 @@
-import { useMemo, type FC } from 'react';
-import { getSharedBoxGeometry, getVoxelMaterial } from '@/utils/threeCache';
+import { useMemo, type FC } from "react";
+import { getSharedBoxGeometry, getVoxelMaterial } from "@/utils/threeCache";
 
 interface VoxelProps {
   position: [number, number, number];
@@ -18,7 +18,7 @@ export const Voxel: FC<VoxelProps> = ({
 }) => {
   const material = useMemo(
     () => getVoxelMaterial({ color, emissive, emissiveIntensity }),
-    [color, emissive, emissiveIntensity]
+    [color, emissive, emissiveIntensity],
   );
 
   return (

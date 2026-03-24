@@ -1,13 +1,13 @@
-import { describe, expect, it } from 'vitest';
-import * as THREE from 'three';
-import { createExplosionParticles, RandomFn, writeExplosionParticles } from '@/utils/fireworks';
+import { describe, expect, it } from "vitest";
+import * as THREE from "three";
+import { createExplosionParticles, RandomFn, writeExplosionParticles } from "@/utils/fireworks";
 
-describe('createExplosionParticles', () => {
-  it('generates deterministic particles with provided random', () => {
+describe("createExplosionParticles", () => {
+  it("generates deterministic particles with provided random", () => {
     // 0.5 > 0.4 and 0.5 < 0.7, so shape 'ring'
     const rand: RandomFn = () => 0.5;
     const position = new THREE.Vector3(1, 2, 3);
-    const parts = createExplosionParticles(position, '#ff0000', { random: rand });
+    const parts = createExplosionParticles(position, "#ff0000", { random: rand });
 
     // 50 + 0.5 * 50 = 75
     expect(parts.length).toBe(75);
@@ -17,18 +17,18 @@ describe('createExplosionParticles', () => {
       expect(p.position.y).toBeCloseTo(2);
       expect(p.position.z).toBeCloseTo(3);
 
-      expect(p.color.equals(new THREE.Color('#ff0000'))).toBe(true);
+      expect(p.color.equals(new THREE.Color("#ff0000"))).toBe(true);
       expect(p.life).toBeCloseTo(1.0);
     }
   });
 
-  it('respects count override', () => {
+  it("respects count override", () => {
     const pos = new THREE.Vector3();
-    const parts = createExplosionParticles(pos, '#00ff00', { random: () => 0, count: 5 });
+    const parts = createExplosionParticles(pos, "#00ff00", { random: () => 0, count: 5 });
     expect(parts.length).toBe(5);
   });
 
-  it('generates sphere distribution when rand > 0.7', () => {
+  it("generates sphere distribution when rand > 0.7", () => {
     const pos = new THREE.Vector3();
     // Use a mock random that returns 0.8 initially for shape selection
     // then other values
@@ -39,7 +39,7 @@ describe('createExplosionParticles', () => {
       return 0.5;
     };
 
-    const parts = createExplosionParticles(pos, '#00ff00', { random: mockRand, count: 10 });
+    const parts = createExplosionParticles(pos, "#00ff00", { random: mockRand, count: 10 });
     expect(parts.length).toBe(10);
     // Sphere logic: x, y, z set by spherical coords
     // Just verify they are not all 0 or infinity
@@ -48,7 +48,7 @@ describe('createExplosionParticles', () => {
     });
   });
 
-  it('generates ring distribution when rand is between 0.4 and 0.7', () => {
+  it("generates ring distribution when rand is between 0.4 and 0.7", () => {
     const pos = new THREE.Vector3();
     // Use a mock random that returns 0.5 initially for shape selection
     let callCount = 0;
@@ -58,7 +58,7 @@ describe('createExplosionParticles', () => {
       return 0.5;
     };
 
-    const parts = createExplosionParticles(pos, '#00ff00', { random: mockRand, count: 10 });
+    const parts = createExplosionParticles(pos, "#00ff00", { random: mockRand, count: 10 });
     expect(parts.length).toBe(10);
     parts.forEach((p) => {
       expect(p.velocity.length()).toBeGreaterThan(0);
@@ -66,8 +66,8 @@ describe('createExplosionParticles', () => {
   });
 });
 
-describe('writeExplosionParticles', () => {
-  it('writes particles into typed buffers with provided random', () => {
+describe("writeExplosionParticles", () => {
+  it("writes particles into typed buffers with provided random", () => {
     const buffers = {
       position: new Float32Array(10 * 3),
       velocity: new Float32Array(10 * 3),
@@ -80,7 +80,7 @@ describe('writeExplosionParticles', () => {
     const rand: RandomFn = () => 0.5;
     const pos = new THREE.Vector3(1, 2, 3);
 
-    const written = writeExplosionParticles(buffers, 0, 10, pos, '#ff0000', {
+    const written = writeExplosionParticles(buffers, 0, 10, pos, "#ff0000", {
       random: rand,
       count: 2,
     });
@@ -106,7 +106,7 @@ describe('writeExplosionParticles', () => {
     expect(buffers.decay[0]).toBeCloseTo(0.75);
   });
 
-  it('clamps writes to remaining capacity', () => {
+  it("clamps writes to remaining capacity", () => {
     const buffers = {
       position: new Float32Array(10 * 3),
       velocity: new Float32Array(10 * 3),
@@ -117,7 +117,7 @@ describe('writeExplosionParticles', () => {
     };
 
     const pos = new THREE.Vector3(0, 0, 0);
-    const written = writeExplosionParticles(buffers, 9, 10, pos, '#00ff00', {
+    const written = writeExplosionParticles(buffers, 9, 10, pos, "#00ff00", {
       random: () => 0,
       count: 5,
     });

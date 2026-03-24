@@ -1,32 +1,32 @@
-import { Suspense, useCallback, useEffect, useState, lazy } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
-import * as THREE from 'three';
+import { Suspense, useCallback, useEffect, useState, lazy } from "react";
+import { Canvas, useThree } from "@react-three/fiber";
+import * as THREE from "three";
 
-import { DynamicResScaler } from './components/DynamicResScaler';
-import { RocketData } from './types';
+import { DynamicResScaler } from "./components/DynamicResScaler";
+import { RocketData } from "./types";
 
-const SceneWorld = lazy(() => import('./SceneWorld'));
-const SceneAtmosphere = lazy(() => import('./SceneAtmosphere'));
-const SceneLanterns = lazy(() => import('./SceneLanterns'));
-const ScenePostProcessing = lazy(() => import('./ScenePostProcessing'));
-const SceneControls = lazy(() => import('./SceneControls'));
+const SceneWorld = lazy(() => import("./SceneWorld"));
+const SceneAtmosphere = lazy(() => import("./SceneAtmosphere"));
+const SceneLanterns = lazy(() => import("./SceneLanterns"));
+const ScenePostProcessing = lazy(() => import("./ScenePostProcessing"));
+const SceneControls = lazy(() => import("./SceneControls"));
 const FireworksManager = lazy(() =>
-  import('./components/FireworksManager').then((module) => ({ default: module.FireworksManager }))
+  import("./components/FireworksManager").then((module) => ({ default: module.FireworksManager })),
 );
-const SceneInteraction = lazy(() => import('./components/SceneInteraction'));
+const SceneInteraction = lazy(() => import("./components/SceneInteraction"));
 
 type IdleDeadline = { timeRemaining: () => number; didTimeout: boolean };
 type IdleCallbackHandle = number;
 type IdleWindow = Window & {
   requestIdleCallback?: (
     callback: (deadline: IdleDeadline) => void,
-    options?: { timeout: number }
+    options?: { timeout: number },
   ) => IdleCallbackHandle;
   cancelIdleCallback?: (handle: IdleCallbackHandle) => void;
 };
 
 export const scheduleIdle = (callback: () => void, timeout: number): (() => void) => {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     callback();
     return () => {};
   }
@@ -68,12 +68,12 @@ function WebGLContextListener({ onChange }: { onChange: (lost: boolean) => void 
       onChange(false);
     };
 
-    canvas.addEventListener('webglcontextlost', handleLost, { passive: false });
-    canvas.addEventListener('webglcontextrestored', handleRestored);
+    canvas.addEventListener("webglcontextlost", handleLost, { passive: false });
+    canvas.addEventListener("webglcontextrestored", handleRestored);
 
     return () => {
-      canvas.removeEventListener('webglcontextlost', handleLost);
-      canvas.removeEventListener('webglcontextrestored', handleRestored);
+      canvas.removeEventListener("webglcontextlost", handleLost);
+      canvas.removeEventListener("webglcontextrestored", handleRestored);
     };
   }, [gl, onChange]);
 
@@ -105,11 +105,11 @@ function Scene({
 
   return (
     <>
-      <color attach="background" args={['#050510']} />
+      <color attach="background" args={["#050510"]} />
 
       <DynamicResScaler />
 
-      <fog attach="fog" args={['#0b0026', 15, 60]} />
+      <fog attach="fog" args={["#0b0026", 15, 60]} />
 
       <ambientLight intensity={0.4} color="#332255" />
       <hemisphereLight intensity={0.5} groundColor="#000022" color="#5533aa" />
@@ -216,13 +216,13 @@ export default function SceneCanvas() {
   useEffect(() => {
     // Start prefetching immediately (next idle tick) so resources are ready
     const cancelPrefetch = scheduleIdle(() => {
-      void import('./SceneWorld');
-      void import('./SceneAtmosphere');
-      void import('./SceneLanterns');
-      void import('./ScenePostProcessing');
-      void import('./components/FireworksManager');
-      void import('./SceneControls');
-      void import('./components/SceneInteraction');
+      void import("./SceneWorld");
+      void import("./SceneAtmosphere");
+      void import("./SceneLanterns");
+      void import("./ScenePostProcessing");
+      void import("./components/FireworksManager");
+      void import("./SceneControls");
+      void import("./components/SceneInteraction");
     }, 100);
 
     return cancelPrefetch;
@@ -235,7 +235,7 @@ export default function SceneCanvas() {
         dpr={1}
         camera={{ position: [20, 15, 20], fov: 45 }}
         gl={{
-          powerPreference: 'high-performance',
+          powerPreference: "high-performance",
           antialias: true,
         }}
       >

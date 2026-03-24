@@ -1,9 +1,9 @@
-import * as THREE from 'three';
-import type { ParticleData } from '../types';
+import * as THREE from "three";
+import type { ParticleData } from "../types";
 
 export type RandomFn = () => number;
 
-type ShapeType = 'burst' | 'sphere' | 'ring';
+type ShapeType = "burst" | "sphere" | "ring";
 
 const tempBaseColor = new THREE.Color();
 const TWO_PI = Math.PI * 2;
@@ -25,11 +25,11 @@ function getParticle(pool: ParticleData[] | undefined): ParticleData {
 export function createExplosionParticles(
   position: THREE.Vector3,
   color: string,
-  opts?: { random?: RandomFn; count?: number; out?: ParticleData[]; pool?: ParticleData[] }
+  opts?: { random?: RandomFn; count?: number; out?: ParticleData[]; pool?: ParticleData[] },
 ): ParticleData[] {
   const rand: RandomFn = opts?.random ?? Math.random;
   // Increase default count for better shapes
-  const count = typeof opts?.count === 'number' ? opts.count : Math.floor(50 + rand() * 50);
+  const count = typeof opts?.count === "number" ? opts.count : Math.floor(50 + rand() * 50);
   const baseColor = tempBaseColor.set(color);
 
   const particles = opts?.out ?? [];
@@ -37,9 +37,9 @@ export function createExplosionParticles(
 
   // Randomly select a shape
   const shapeRoll = rand();
-  let shape: ShapeType = 'burst';
-  if (shapeRoll > 0.7) shape = 'sphere';
-  else if (shapeRoll > 0.4) shape = 'ring';
+  let shape: ShapeType = "burst";
+  if (shapeRoll > 0.7) shape = "sphere";
+  else if (shapeRoll > 0.4) shape = "ring";
 
   for (let i = 0; i < count; i++) {
     const particle = getParticle(opts?.pool);
@@ -51,7 +51,7 @@ export function createExplosionParticles(
       vz = 0;
     const speed = 5 + rand() * 5;
 
-    if (shape === 'sphere') {
+    if (shape === "sphere") {
       // Uniform point on sphere surface
       const theta = rand() * Math.PI * 2;
       const phi = Math.acos(2 * rand() - 1);
@@ -63,7 +63,7 @@ export function createExplosionParticles(
       vx *= s;
       vy *= s;
       vz *= s;
-    } else if (shape === 'ring') {
+    } else if (shape === "ring") {
       // Ring on XZ plane (mostly)
       const angle = rand() * Math.PI * 2;
       vx = Math.cos(angle);
@@ -115,10 +115,10 @@ export function writeExplosionParticles(
   maxParticles: number,
   position: THREE.Vector3,
   color: string,
-  opts?: { random?: RandomFn; count?: number }
+  opts?: { random?: RandomFn; count?: number },
 ): number {
   const rand: RandomFn = opts?.random ?? Math.random;
-  const desiredCount = typeof opts?.count === 'number' ? opts.count : Math.floor(50 + rand() * 50);
+  const desiredCount = typeof opts?.count === "number" ? opts.count : Math.floor(50 + rand() * 50);
   const available = Math.max(0, maxParticles - startIndex);
   const count = Math.min(desiredCount, available);
   if (count <= 0) return 0;
@@ -129,9 +129,9 @@ export function writeExplosionParticles(
   const baseB = baseColor.b;
 
   const shapeRoll = rand();
-  let shape: ShapeType = 'burst';
-  if (shapeRoll > 0.7) shape = 'sphere';
-  else if (shapeRoll > 0.4) shape = 'ring';
+  let shape: ShapeType = "burst";
+  if (shapeRoll > 0.7) shape = "sphere";
+  else if (shapeRoll > 0.4) shape = "ring";
 
   const px = position.x;
   const py = position.y;
@@ -150,7 +150,7 @@ export function writeExplosionParticles(
     let vz = 0;
     const speed = 5 + rand() * 5;
 
-    if (shape === 'sphere') {
+    if (shape === "sphere") {
       const theta = rand() * TWO_PI;
       const phi = Math.acos(2 * rand() - 1);
       const sinPhi = Math.sin(phi);
@@ -162,7 +162,7 @@ export function writeExplosionParticles(
       vx *= s;
       vy *= s;
       vz *= s;
-    } else if (shape === 'ring') {
+    } else if (shape === "ring") {
       const angle = rand() * TWO_PI;
       vx = Math.cos(angle);
       vy = (rand() - 0.5) * 0.2;

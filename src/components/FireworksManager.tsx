@@ -1,9 +1,9 @@
-import { useLayoutEffect, useRef, useMemo, type FC } from 'react';
-import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
-import { RocketData } from '@/types';
-import { stepRocketPosition } from '@/utils/rocket';
-import { getSharedBoxGeometry, getVoxelMaterial } from '@/utils/threeCache';
+import { useLayoutEffect, useRef, useMemo, type FC } from "react";
+import { useFrame } from "@react-three/fiber";
+import * as THREE from "three";
+import { RocketData } from "@/types";
+import { stepRocketPosition } from "@/utils/rocket";
+import { getSharedBoxGeometry, getVoxelMaterial } from "@/utils/threeCache";
 
 interface FireworksManagerProps {
   rockets: RocketData[];
@@ -74,7 +74,7 @@ const FireworksShaderMaterial = new THREE.ShaderMaterial({
 });
 
 const RocketMaterial = getVoxelMaterial({
-  emissive: '#ffffff',
+  emissive: "#ffffff",
   emissiveIntensity: 2,
 });
 
@@ -124,12 +124,12 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
       aBaseScale: createAttr(1),
     };
 
-    mesh.geometry.setAttribute('aStartPosition', attrs.aStartPosition);
-    mesh.geometry.setAttribute('aVelocity', attrs.aVelocity);
-    mesh.geometry.setAttribute('aColor', attrs.aColor);
-    mesh.geometry.setAttribute('aStartTime', attrs.aStartTime);
-    mesh.geometry.setAttribute('aDuration', attrs.aDuration);
-    mesh.geometry.setAttribute('aBaseScale', attrs.aBaseScale);
+    mesh.geometry.setAttribute("aStartPosition", attrs.aStartPosition);
+    mesh.geometry.setAttribute("aVelocity", attrs.aVelocity);
+    mesh.geometry.setAttribute("aColor", attrs.aColor);
+    mesh.geometry.setAttribute("aStartTime", attrs.aStartTime);
+    mesh.geometry.setAttribute("aDuration", attrs.aDuration);
+    mesh.geometry.setAttribute("aBaseScale", attrs.aBaseScale);
 
     attrRefs.current = attrs;
 
@@ -157,9 +157,9 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
 
     // Determine explosion shape
     const shapeRoll = Math.random();
-    let shape: 'burst' | 'sphere' | 'ring' = 'burst';
-    if (shapeRoll > 0.7) shape = 'sphere';
-    else if (shapeRoll > 0.4) shape = 'ring';
+    let shape: "burst" | "sphere" | "ring" = "burst";
+    if (shapeRoll > 0.7) shape = "sphere";
+    else if (shapeRoll > 0.4) shape = "ring";
 
     for (let i = 0; i < count; i++) {
       cursor = (cursor + 1) % MAX_PARTICLES;
@@ -170,7 +170,7 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
         vz = 0;
       const speed = 6 + Math.random() * 6;
 
-      if (shape === 'sphere') {
+      if (shape === "sphere") {
         const theta = Math.random() * Math.PI * 2;
         const phi = Math.acos(2 * Math.random() - 1);
         vx = Math.sin(phi) * Math.cos(theta);
@@ -180,7 +180,7 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
         vx *= s;
         vy *= s;
         vz *= s;
-      } else if (shape === 'ring') {
+      } else if (shape === "ring") {
         const angle = Math.random() * Math.PI * 2;
         vx = Math.cos(angle);
         vy = (Math.random() - 0.5) * 0.2;
@@ -203,7 +203,7 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
         cursor,
         instColor.r * brightness,
         instColor.g * brightness,
-        instColor.b * brightness
+        instColor.b * brightness,
       );
 
       attrs.aStartTime.setX(cursor, currentTime);

@@ -1,5 +1,5 @@
-import { type FC, type ReactNode } from 'react';
-import { InstancedVoxels, type VoxelInstance } from './InstancedVoxels';
+import { type FC, type ReactNode } from "react";
+import { InstancedVoxels, type VoxelInstance } from "./InstancedVoxels";
 
 interface VoxelModelProps {
   position?: readonly [number, number, number];
