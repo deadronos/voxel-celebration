@@ -5,6 +5,7 @@ import { render } from '@testing-library/react';
 const houseProps: Array<Record<string, unknown>> = [];
 const streetLightProps: Array<Record<string, unknown>> = [];
 const treeProps: Array<Record<string, unknown>> = [];
+const bushProps: Array<Record<string, unknown>> = [];
 let groundRendered = 0;
 
 vi.mock('@/components/Environment', () => ({
@@ -19,6 +20,10 @@ vi.mock('@/components/Environment', () => ({
   Tree: (props: Record<string, unknown>) => {
     treeProps.push(props);
     return <div data-testid="tree" />;
+  },
+  Bush: (props: Record<string, unknown>) => {
+    bushProps.push(props);
+    return <div data-testid="bush" />;
   },
 }));
 
@@ -47,6 +52,7 @@ describe('SceneWorld', () => {
     houseProps.length = 0;
     streetLightProps.length = 0;
     treeProps.length = 0;
+    bushProps.length = 0;
     groundRendered = 0;
 
     const callback = vi.fn();
@@ -61,10 +67,12 @@ describe('SceneWorld', () => {
     const uniqHousePos = new Set(houseProps.map((p) => (p.position as number[]).join(',')));
     const uniqLightPos = new Set(streetLightProps.map((p) => (p.position as number[]).join(',')));
     const uniqTreePos = new Set(treeProps.map((p) => (p.position as number[]).join(',')));
+    const uniqBushPos = new Set(bushProps.map((p) => (p.position as number[]).join(',')));
 
     expect(uniqHousePos.size).toBe(5);
     expect(uniqLightPos.size).toBe(5);
     expect(uniqTreePos.size).toBe(6);
+    expect(uniqBushPos.size).toBe(6);
 
     expect(houseProps.every((p) => p.onShootRocket === callback)).toBe(true);
   });

@@ -35,9 +35,9 @@ vi.mock('@react-three/fiber', async () => {
     );
   };
 
-  const useThree = <T,>(selector: (state: ThreeState) => T): T => {
+  const useThree = <T,>(selector?: (state: ThreeState) => T): T => {
     const state = ReactModule.useContext(ThreeContext);
-    return selector(state);
+    return selector ? selector(state) : (state as unknown as T);
   };
 
   return { Canvas, useThree };

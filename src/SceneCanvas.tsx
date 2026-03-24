@@ -13,6 +13,7 @@ const SceneControls = lazy(() => import('./SceneControls'));
 const FireworksManager = lazy(() =>
   import('./components/FireworksManager').then((module) => ({ default: module.FireworksManager }))
 );
+const SceneInteraction = lazy(() => import('./components/SceneInteraction'));
 
 type IdleDeadline = { timeRemaining: () => number; didTimeout: boolean };
 type IdleCallbackHandle = number;
@@ -132,6 +133,7 @@ function Scene({
 
       {enableWorld && (
         <Suspense fallback={null}>
+          <SceneInteraction onShoot={onShootRocket} />
           <SceneWorld onShootRocket={onShootRocket} />
         </Suspense>
       )}
@@ -220,6 +222,7 @@ export default function SceneCanvas() {
       void import('./ScenePostProcessing');
       void import('./components/FireworksManager');
       void import('./SceneControls');
+      void import('./components/SceneInteraction');
     }, 100);
 
     return cancelPrefetch;

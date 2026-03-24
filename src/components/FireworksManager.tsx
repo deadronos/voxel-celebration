@@ -1,10 +1,9 @@
-import { useLayoutEffect, useRef, type FC } from 'react';
+import { useLayoutEffect, useRef, useMemo, type FC } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { Voxel } from './VoxelUtils';
 import { RocketData } from '@/types';
 import { stepRocketPosition } from '@/utils/rocket';
-import { getSharedBoxGeometry } from '@/utils/threeCache';
+import { getSharedBoxGeometry, getVoxelMaterial } from '@/utils/threeCache';
 
 interface FireworksManagerProps {
   rockets: RocketData[];
@@ -12,9 +11,13 @@ interface FireworksManagerProps {
 }
 
 const MAX_PARTICLES = 4000;
+const MAX_ROCKETS = 256;
+const MAX_LIGHTS = 8;
 const GRAVITY = 9.8 * 0.5;
 
-// Custom Shader Material for GPU-based particles
+/**
+ * Optimized Shader for Particle Systems
+ */
 const FireworksShaderMaterial = new THREE.ShaderMaterial({
   uniforms: {
     uTime: { value: 0 },
@@ -52,18 +55,15 @@ const FireworksShaderMaterial = new THREE.ShaderMaterial({
       pos.y -= 0.5 * uGravity * age * age;
 
       // Transform the box geometry
-      // We scale the box relative to its center, then translate
       vec3 transformed = position * scale;
       vec3 finalPos = pos + transformed;
 
       vColor = aColor;
-
       gl_Position = projectionMatrix * modelViewMatrix * vec4(finalPos, 1.0);
     }
   `,
   fragmentShader: `
     precision highp float;
-
     varying vec3 vColor;
     void main() {
       gl_FragColor = vec4(vColor, 1.0);
@@ -73,11 +73,21 @@ const FireworksShaderMaterial = new THREE.ShaderMaterial({
   side: THREE.FrontSide,
 });
 
+const RocketMaterial = getVoxelMaterial({
+  emissive: '#ffffff',
+  emissiveIntensity: 2,
+});
+
 export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRocket }) => {
   const meshRef = useRef<THREE.InstancedMesh>(null);
+  const rocketMeshRef = useRef<THREE.InstancedMesh>(null);
+  const lightRefs = useRef<(THREE.PointLight | null)[]>([]);
   const cursorRef = useRef(0);
 
-  // Buffer references
+  // Track visual Y positions to avoid mutating props directly
+  const yPositionsRef = useRef<Map<string, number>>(new Map());
+
+  // Buffer references for particle attributes
   const attrRefs = useRef<{
     aStartPosition: THREE.InstancedBufferAttribute;
     aVelocity: THREE.InstancedBufferAttribute;
@@ -87,23 +97,18 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
     aBaseScale: THREE.InstancedBufferAttribute;
   } | null>(null);
 
+  // Initialize particle buffers
   useLayoutEffect(() => {
     const mesh = meshRef.current;
     if (!mesh) return;
 
-    // Set instance count to max immediately
     mesh.count = MAX_PARTICLES;
-
-    // Initialize Identity Matrix for all instances (though we ignore it in shader mostly)
-    // Actually we don't use instanceMatrix in shader, so we can ignore it.
-    // But InstancedMesh might expect it.
     const identity = new THREE.Matrix4();
     for (let i = 0; i < MAX_PARTICLES; i++) {
       mesh.setMatrixAt(i, identity);
     }
     mesh.instanceMatrix.needsUpdate = true;
 
-    // Create Instanced Attributes
     const createAttr = (size: number) => {
       const attr = new THREE.InstancedBufferAttribute(new Float32Array(MAX_PARTICLES * size), size);
       attr.setUsage(THREE.DynamicDrawUsage);
@@ -128,51 +133,42 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
 
     attrRefs.current = attrs;
 
-    // Initialize buffers with "dead" state (startTime = -1000)
+    // Initialize as dead
     for (let i = 0; i < MAX_PARTICLES; i++) {
       attrs.aStartTime.setX(i, -1000);
     }
     attrs.aStartTime.needsUpdate = true;
   }, []);
 
-  useFrame((state) => {
-    FireworksShaderMaterial.uniforms.uTime.value = state.clock.getElapsedTime();
-  });
+  const tempRocket = useMemo(() => new THREE.Object3D(), []);
+  const tempColor = useMemo(() => new THREE.Color(), []);
 
   const addExplosion = (position: THREE.Vector3, color: string) => {
     const attrs = attrRefs.current;
     if (!attrs) return;
 
-    const count = Math.floor(50 + Math.random() * 50);
-    // Use the time from the shader uniform which is updated in useFrame
+    const count = Math.floor(60 + Math.random() * 40);
     const currentTime = FireworksShaderMaterial.uniforms.uTime.value as number;
-
     const baseColor = new THREE.Color(color);
-    const tempColor = new THREE.Color();
+    const instColor = new THREE.Color();
 
     let cursor = cursorRef.current;
+    const brightness = 15;
 
-    // Shape logic
+    // Determine explosion shape
     const shapeRoll = Math.random();
-    let shape = 'burst';
+    let shape: 'burst' | 'sphere' | 'ring' = 'burst';
     if (shapeRoll > 0.7) shape = 'sphere';
     else if (shapeRoll > 0.4) shape = 'ring';
 
-    const brightness = 10; // High brightness for "glow" look in shader (if tone mapped)
-    // Our shader output is vec4(vColor, 1.0), handled by postprocessing bloom usually.
-    // Standard Fireworks was MeshBasicMaterial, so we output >1 values.
-
     for (let i = 0; i < count; i++) {
       cursor = (cursor + 1) % MAX_PARTICLES;
-
-      // Position
       attrs.aStartPosition.setXYZ(cursor, position.x, position.y, position.z);
 
-      // Velocity
       let vx = 0,
         vy = 0,
         vz = 0;
-      const speed = 5 + Math.random() * 5;
+      const speed = 6 + Math.random() * 6;
 
       if (shape === 'sphere') {
         const theta = Math.random() * Math.PI * 2;
@@ -194,42 +190,28 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
         vy *= s;
         vz *= s;
       } else {
-        vx = (Math.random() - 0.5) * 10;
-        vy = (Math.random() - 0.5) * 10;
-        vz = (Math.random() - 0.5) * 10;
+        vx = (Math.random() - 0.5) * 12;
+        vy = (Math.random() - 0.5) * 12;
+        vz = (Math.random() - 0.5) * 12;
       }
+
       attrs.aVelocity.setXYZ(cursor, vx, vy, vz);
 
-      // Color
-      tempColor.copy(baseColor);
-      if (Math.random() > 0.8) tempColor.offsetHSL(0.1, 0, 0);
+      instColor.copy(baseColor);
+      if (Math.random() > 0.8) instColor.offsetHSL(0.05, 0, 0);
       attrs.aColor.setXYZ(
         cursor,
-        tempColor.r * brightness,
-        tempColor.g * brightness,
-        tempColor.b * brightness
+        instColor.r * brightness,
+        instColor.g * brightness,
+        instColor.b * brightness
       );
 
-      // Timing
       attrs.aStartTime.setX(cursor, currentTime);
-
-      const decay = 0.5 + Math.random() * 0.5;
-      const life = 1.0;
-      attrs.aDuration.setX(cursor, life / decay);
-
-      attrs.aBaseScale.setX(cursor, 0.3 + Math.random() * 0.3);
+      attrs.aDuration.setX(cursor, 1.5 + Math.random() * 0.5);
+      attrs.aBaseScale.setX(cursor, 0.25 + Math.random() * 0.25);
     }
 
     cursorRef.current = cursor;
-
-    // Mark ranges for update?
-    // Since it's a ring buffer, we updated `count` items at `start`.
-    // Actually we jumped around if we wrapped.
-    // For simplicity, mark all as needing update or try to be smart.
-    // InstancedBufferAttribute.needsUpdate = true updates the whole buffer.
-    // `updateRange` can be used.
-
-    // Simplest: update everything.
     attrs.aStartPosition.needsUpdate = true;
     attrs.aVelocity.needsUpdate = true;
     attrs.aColor.needsUpdate = true;
@@ -238,65 +220,98 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
     attrs.aBaseScale.needsUpdate = true;
   };
 
+  useFrame((state, delta) => {
+    // Update global shader time
+    FireworksShaderMaterial.uniforms.uTime.value = state.clock.getElapsedTime();
+
+    const mesh = rocketMeshRef.current;
+    if (!mesh) return;
+
+    // Safety: cap rocket count to buffer size
+    const activeCount = Math.min(rockets.length, MAX_ROCKETS);
+    mesh.count = activeCount;
+
+    // Process rockets
+    for (let i = 0; i < activeCount; i++) {
+      const rocket = rockets[i];
+
+      // Get or initialize current Y
+      let currentY = yPositionsRef.current.get(rocket.id);
+      if (currentY === undefined) {
+        currentY = rocket.position.y;
+        yPositionsRef.current.set(rocket.id, currentY);
+      }
+
+      const { newY, exploded } = stepRocketPosition(currentY, 15, delta, rocket.targetHeight);
+      yPositionsRef.current.set(rocket.id, newY);
+
+      // Update Matrix
+      tempRocket.position.set(rocket.position.x, newY, rocket.position.z);
+      tempRocket.scale.set(0.4, 0.8, 0.4);
+      tempRocket.updateMatrix();
+      mesh.setMatrixAt(i, tempRocket.matrix);
+
+      // Update Color
+      tempColor.set(rocket.color);
+      mesh.setColorAt(i, tempColor);
+
+      // Sync point lights (limited pool)
+      if (i < MAX_LIGHTS) {
+        const light = lightRefs.current[i];
+        if (light) {
+          light.position.set(rocket.position.x, newY, rocket.position.z);
+          light.color.set(rocket.color);
+          light.intensity = 15;
+        }
+      }
+
+      if (exploded) {
+        addExplosion(new THREE.Vector3(rocket.position.x, newY, rocket.position.z), rocket.color);
+        yPositionsRef.current.delete(rocket.id);
+        removeRocket(rocket.id);
+      }
+    }
+
+    // Hide remaining lights
+    for (let i = activeCount; i < MAX_LIGHTS; i++) {
+      const light = lightRefs.current[i];
+      if (light) light.intensity = 0;
+    }
+
+    mesh.instanceMatrix.needsUpdate = true;
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+
+    // Cleanup stale entries in yPositionsRef
+    if (rockets.length === 0 && yPositionsRef.current.size > 0) {
+      yPositionsRef.current.clear();
+    }
+  });
+
   return (
     <>
-      {/* The Particles Instanced Mesh */}
       <instancedMesh
         ref={meshRef}
         args={[getSharedBoxGeometry(), FireworksShaderMaterial, MAX_PARTICLES]}
         frustumCulled={false}
         dispose={null}
       />
-
-      {/* Render Active Rockets */}
-      {rockets.map((rocket) => (
-        <Rocket
-          key={rocket.id}
-          data={rocket}
-          onExplode={(pos, col) => {
-            addExplosion(pos, col);
-            removeRocket(rocket.id);
+      <instancedMesh
+        ref={rocketMeshRef}
+        args={[getSharedBoxGeometry(), RocketMaterial, MAX_ROCKETS]}
+        frustumCulled={false}
+        dispose={null}
+      />
+      {Array.from({ length: MAX_LIGHTS }).map((_, i) => (
+        <pointLight
+          key={i}
+          ref={(el) => {
+            lightRefs.current[i] = el;
           }}
+          distance={10}
+          decay={2}
+          intensity={0}
         />
       ))}
     </>
-  );
-};
-
-const Rocket: FC<{
-  data: RocketData;
-  onExplode: (pos: THREE.Vector3, color: string) => void;
-}> = ({ data, onExplode }) => {
-  const ref = useRef<THREE.Group>(null);
-  const speed = 15;
-
-  useFrame((_state, delta) => {
-    if (!ref.current) return;
-
-    const { newY, exploded } = stepRocketPosition(
-      ref.current.position.y,
-      speed,
-      delta,
-      data.targetHeight
-    );
-    ref.current.position.y = newY;
-
-    if (exploded) {
-      onExplode(ref.current.position, data.color);
-    }
-  });
-
-  return (
-    <group ref={ref} position={[data.position.x, data.position.y, data.position.z]}>
-      <Voxel
-        position={[0, 0, 0]}
-        scale={[0.4, 0.8, 0.4]}
-        color={data.color}
-        emissive={data.color}
-        emissiveIntensity={4}
-      />
-      {/* Trail */}
-      <pointLight color={data.color} intensity={2} distance={3} decay={2} />
-    </group>
   );
 };

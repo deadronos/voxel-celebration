@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import type { Vector3 } from 'three';
 
-import { Ground, Tree, StreetLight } from './components/Environment';
+import { Ground, Tree, StreetLight, Bush } from './components/Environment';
 import { IceLake } from './components/IceLake';
 import House from './components/House';
 
@@ -39,6 +39,15 @@ const TREES: ReadonlyArray<readonly [number, number, number]> = [
   [12, 0, 0],
 ];
 
+const BUSHES: ReadonlyArray<readonly [number, number, number]> = [
+  [-3, 0, 3],
+  [3, 0, -3],
+  [-6, 0, 0],
+  [6, 0, 0],
+  [0, 0, 6],
+  [0, 0, -6],
+];
+
 type SceneWorldProps = {
   onShootRocket: (startPos: Vector3, color: string) => void;
 };
@@ -67,6 +76,10 @@ function SceneWorldComponent({ onShootRocket }: SceneWorldProps) {
 
       {TREES.map((pos) => (
         <Tree key={pos.join(',')} position={pos} />
+      ))}
+
+      {BUSHES.map((pos) => (
+        <Bush key={pos.join(',')} position={pos} />
       ))}
     </group>
   );
