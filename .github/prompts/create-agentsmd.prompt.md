@@ -1,6 +1,6 @@
 ---
-description: "Prompt for generating an AGENTS.md file for a repository"
-agent: "agent"
+description: 'Prompt for generating an AGENTS.md file for a repository'
+agent: 'agent'
 ---
 
 # Create high‑quality AGENTS.md file

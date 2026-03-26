@@ -1,8 +1,8 @@
-import React from "react";
-import { describe, expect, it } from "vitest";
-import ReactThreeTestRenderer from "@react-three/test-renderer";
-import { InstancedVoxels, type VoxelInstance } from "@/components/InstancedVoxels";
-import { type InstancedMesh, Matrix4, Quaternion, Vector3 } from "three";
+import React from 'react';
+import { describe, expect, it } from 'vitest';
+import ReactThreeTestRenderer from '@react-three/test-renderer';
+import { InstancedVoxels, type VoxelInstance } from '@/components/InstancedVoxels';
+import { type InstancedMesh, Matrix4, Quaternion, Vector3 } from 'three';
 
 type SceneNode = { instance: unknown };
 type RendererWithSceneFind = {
@@ -12,18 +12,18 @@ type RendererWithSceneFind = {
 };
 
 const isInstancedMesh = (value: unknown): value is InstancedMesh =>
-  typeof value === "object" && value !== null && (value as InstancedMesh).isInstancedMesh === true;
+  typeof value === 'object' && value !== null && (value as InstancedMesh).isInstancedMesh === true;
 
 const findInstancedMesh = (renderer: RendererWithSceneFind): InstancedMesh => {
   const node = renderer.scene.find((n) => isInstancedMesh(n.instance));
   const inst = node.instance;
-  if (!isInstancedMesh(inst)) throw new Error("Expected an InstancedMesh in the scene");
+  if (!isInstancedMesh(inst)) throw new Error('Expected an InstancedMesh in the scene');
   return inst;
 };
 
-describe("InstancedVoxels", () => {
-  it("creates an InstancedMesh with expected count and instanceColor", async () => {
-    const instances: VoxelInstance[] = [{ position: [0, 0, 0], color: "#ff0000" }];
+describe('InstancedVoxels', () => {
+  it('creates an InstancedMesh with expected count and instanceColor', async () => {
+    const instances: VoxelInstance[] = [{ position: [0, 0, 0], color: '#ff0000' }];
     const renderer = await ReactThreeTestRenderer.create(<InstancedVoxels instances={instances} />);
 
     const mesh = findInstancedMesh(renderer);
@@ -35,17 +35,17 @@ describe("InstancedVoxels", () => {
     await renderer.unmount();
   });
 
-  it("returns null when instances is empty", async () => {
+  it('returns null when instances is empty', async () => {
     const renderer = await ReactThreeTestRenderer.create(<InstancedVoxels instances={[]} />);
-    const all = renderer.scene.findAllByType("InstancedMesh");
+    const all = renderer.scene.findAllByType('InstancedMesh');
     expect(all).toHaveLength(0);
     await renderer.unmount();
   });
 
-  it("honors per-instance scale values", async () => {
+  it('honors per-instance scale values', async () => {
     const instances: VoxelInstance[] = [
-      { position: [0, 0, 0], color: "#ff0000" },
-      { position: [1, 0, 0], color: "#00ff00", scale: [2, 3, 4] },
+      { position: [0, 0, 0], color: '#ff0000' },
+      { position: [1, 0, 0], color: '#00ff00', scale: [2, 3, 4] },
     ];
 
     const renderer = await ReactThreeTestRenderer.create(<InstancedVoxels instances={instances} />);

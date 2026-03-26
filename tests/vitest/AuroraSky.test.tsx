@@ -1,14 +1,14 @@
-import React from "react";
-import { describe, expect, it } from "vitest";
-import ReactThreeTestRenderer from "@react-three/test-renderer";
-import { AuroraSky } from "@/components/AuroraSky";
-import type { Mesh, ShaderMaterial } from "three";
+import React from 'react';
+import { describe, expect, it } from 'vitest';
+import ReactThreeTestRenderer from '@react-three/test-renderer';
+import { AuroraSky } from '@/components/AuroraSky';
+import type { Mesh, ShaderMaterial } from 'three';
 
-describe("AuroraSky", () => {
-  it("creates a mesh with a ShaderMaterial and uniforms", async () => {
+describe('AuroraSky', () => {
+  it('creates a mesh with a ShaderMaterial and uniforms', async () => {
     const renderer = await ReactThreeTestRenderer.create(<AuroraSky />);
 
-    const mesh = renderer.scene.findByType("Mesh");
+    const mesh = renderer.scene.findByType('Mesh');
     const meshObj = mesh.instance as unknown as Mesh;
     const material = meshObj.material as unknown as ShaderMaterial & {
       uniforms?: Record<string, { value: unknown }>;
@@ -23,9 +23,9 @@ describe("AuroraSky", () => {
     await renderer.unmount();
   });
 
-  it("updates uTime on frame advances", async () => {
+  it('updates uTime on frame advances', async () => {
     const renderer = await ReactThreeTestRenderer.create(<AuroraSky />);
-    const mesh = renderer.scene.findByType("Mesh");
+    const mesh = renderer.scene.findByType('Mesh');
     const meshObj = mesh.instance as unknown as Mesh;
     const material = meshObj.material as unknown as ShaderMaterial & {
       uniforms: { uTime: { value: number } };

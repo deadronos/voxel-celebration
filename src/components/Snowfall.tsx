@@ -1,6 +1,6 @@
-import { useMemo, useRef, type FC } from "react";
-import { useFrame } from "@react-three/fiber";
-import * as THREE from "three";
+import { useMemo, useRef, type FC } from 'react';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
 
 const SNOW_COUNT = 3000;
 const RANGE = 60; // Spread of snow
@@ -56,7 +56,7 @@ export const Snowfall: FC = () => {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
 
   // Create initial positions and speeds
-    const [positions, speeds, sizes] = useMemo(() => {
+  const [positions, speeds, sizes] = useMemo(() => {
     const pos = new Float32Array(SNOW_COUNT * 3);
     const spd = new Float32Array(SNOW_COUNT);
     const sz = new Float32Array(SNOW_COUNT);
@@ -77,7 +77,7 @@ export const Snowfall: FC = () => {
       time: { value: 0 },
       range: { value: RANGE },
     }),
-    [],
+    []
   );
 
   useFrame((state) => {
@@ -88,7 +88,7 @@ export const Snowfall: FC = () => {
 
   return (
     <points>
-            <bufferGeometry>
+      <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
           count={SNOW_COUNT}

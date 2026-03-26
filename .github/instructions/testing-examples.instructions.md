@@ -1,6 +1,6 @@
 ---
-description: "Short, practical testing examples for Vitest and Playwright used in this repo."
-applyTo: "**"
+description: 'Short, practical testing examples for Vitest and Playwright used in this repo.'
+applyTo: '**'
 ---
 
 # Testing Examples (Vitest + Playwright)
@@ -17,14 +17,14 @@ The examples below are intended as quick copy-and-adapt patterns.
 Prefer extracting “math/decision” logic into small pure functions and testing them directly.
 
 ```ts
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from 'vitest';
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
-describe("clamp", () => {
-  it("clamps to range", () => {
+describe('clamp', () => {
+  it('clamps to range', () => {
     expect(clamp(2, 0, 1)).toBe(1);
     expect(clamp(-1, 0, 1)).toBe(0);
     expect(clamp(0.5, 0, 1)).toBe(0.5);
@@ -37,8 +37,8 @@ describe("clamp", () => {
 Use `@testing-library/react` to test behavior via outputs (DOM, callbacks) rather than internal details.
 
 ```tsx
-import { render } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 
 function Button({ onClick }: { onClick: () => void }) {
   return (
@@ -48,12 +48,12 @@ function Button({ onClick }: { onClick: () => void }) {
   );
 }
 
-describe("Button", () => {
-  it("invokes callback when clicked", async () => {
+describe('Button', () => {
+  it('invokes callback when clicked', async () => {
     const onClick = vi.fn();
     const { getByRole } = render(<Button onClick={onClick} />);
 
-    getByRole("button", { name: "Click" }).click();
+    getByRole('button', { name: 'Click' }).click();
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 });
@@ -76,14 +76,14 @@ Key ideas:
 Prefer role-based locators and web-first assertions.
 
 ```ts
-import { test, expect } from "@playwright/test";
+import { test, expect } from '@playwright/test';
 
-test.describe("App smoke", () => {
-  test("loads without crashing", async ({ page }) => {
-    await page.goto("/");
+test.describe('App smoke', () => {
+  test('loads without crashing', async ({ page }) => {
+    await page.goto('/');
 
     // Example: verify the main content exists.
-    await expect(page.getByRole("main")).toBeVisible();
+    await expect(page.getByRole('main')).toBeVisible();
   });
 });
 ```
@@ -91,11 +91,11 @@ test.describe("App smoke", () => {
 ## Playwright: accessibility snapshot (recommended for stable UI structures)
 
 ```ts
-import { test, expect } from "@playwright/test";
+import { test, expect } from '@playwright/test';
 
-test("main structure is stable", async ({ page }) => {
-  await page.goto("/");
-  await expect(page.getByRole("main")).toMatchAriaSnapshot(`
+test('main structure is stable', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('main')).toMatchAriaSnapshot(`
     - main:
   `);
 });

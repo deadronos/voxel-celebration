@@ -1,23 +1,23 @@
-import React from "react";
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { render } from "@testing-library/react";
-import * as THREE from "three";
+import React from 'react';
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { render } from '@testing-library/react';
+import * as THREE from 'three';
 
-vi.mock("@react-three/fiber", () => ({
+vi.mock('@react-three/fiber', () => ({
   useFrame: vi.fn(),
 }));
 
-vi.mock("@/components/InstancedVoxels", () => ({
+vi.mock('@/components/InstancedVoxels', () => ({
   InstancedVoxels: () => null,
 }));
 
-vi.mock("@/utils/threeCache", () => ({
-  getVoxelMaterial: () => ({ kind: "mockMaterial" }),
+vi.mock('@/utils/threeCache', () => ({
+  getVoxelMaterial: () => ({ kind: 'mockMaterial' }),
 }));
 
-import House from "@/components/House";
+import House from '@/components/House';
 
-describe("House", () => {
+describe('House', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     vi.useFakeTimers();
@@ -27,7 +27,7 @@ describe("House", () => {
     vi.useRealTimers();
   });
 
-  it("fires a rocket when the timer elapses (launch position accounts for rotation)", () => {
+  it('fires a rocket when the timer elapses (launch position accounts for rotation)', () => {
     const onShootRocket = vi.fn();
 
     // Random call order in House:
@@ -35,7 +35,7 @@ describe("House", () => {
     // 4) start delay => ((0 * 10) + 5) * 1000 = 5000ms
     // 5) randomColor index
     // 6) next delay
-    const randomSpy = vi.spyOn(Math, "random");
+    const randomSpy = vi.spyOn(Math, 'random');
 
     // Windows lit status (3 calls)
     randomSpy.mockReturnValueOnce(0.4);
@@ -53,7 +53,7 @@ describe("House", () => {
     randomSpy.mockReturnValueOnce(0.0);
 
     const { container } = render(
-      <House position={[10, 0, 0]} rotation={Math.PI / 2} onShootRocket={onShootRocket} />,
+      <House position={[10, 0, 0]} rotation={Math.PI / 2} onShootRocket={onShootRocket} />
     );
 
     // Initially not called
@@ -77,12 +77,12 @@ describe("House", () => {
     expect(color).toBeTruthy();
 
     // If any windows are lit, there is a glow pointLight
-    expect(container.querySelector("pointlight")).toBeTruthy();
+    expect(container.querySelector('pointlight')).toBeTruthy();
   });
 
-  it("does not render glow light when all windows are dark", () => {
+  it('does not render glow light when all windows are dark', () => {
     const onShootRocket = vi.fn();
-    const randomSpy = vi.spyOn(Math, "random");
+    const randomSpy = vi.spyOn(Math, 'random');
 
     // Windows lit status (3 calls) - all dark (<0.3)
     randomSpy.mockReturnValueOnce(0.0);
@@ -93,6 +93,6 @@ describe("House", () => {
     randomSpy.mockReturnValueOnce(0.0);
 
     const { container } = render(<House position={[0, 0, 0]} onShootRocket={onShootRocket} />);
-    expect(container.querySelector("pointlight")).toBeFalsy();
+    expect(container.querySelector('pointlight')).toBeFalsy();
   });
 });
