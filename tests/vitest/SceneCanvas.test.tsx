@@ -3,6 +3,8 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import * as THREE from "three";
+import { rocketStore } from "@/utils/rocketStore";
+import { RocketData } from "@/types";
 import { act } from "react";
 
 // SceneCanvas's children are normally rendered by the R3F reconciler (not into the DOM).
@@ -44,21 +46,15 @@ vi.mock("@react-three/fiber", async () => {
 });
 
 // Keep SceneCanvas tests scoped to SceneCanvas behavior: stub out the scene's child modules.
-// Use relative specifiers matching the on-disk paths so mocks apply to SceneCanvas's
-// relative imports (e.g. import('./SceneWorld')).
 vi.mock("../../src/components/DynamicResScaler", () => ({ DynamicResScaler: () => null }));
 
 vi.mock("../../src/SceneWorld", () => ({
-  default: ({
-    onShootRocket,
-  }: {
-    onShootRocket: (start: THREE.Vector3, color: string) => void;
-  }) => (
+  default: () => (
     <div data-testid="scene-world">
       <button
         type="button"
         onClick={() => {
-          onShootRocket(new THREE.Vector3(1, 2, 3), "#ff00ff");
+          rocketStore.addRocket(new THREE.Vector3(1, 2, 3), "#ff00ff");
         }}
       >
         Shoot
@@ -76,33 +72,35 @@ vi.mock("../../src/ScenePostProcessing", () => ({
 }));
 vi.mock("../../src/SceneControls", () => ({ default: () => <div data-testid="scene-controls" /> }));
 
-vi.mock("../../src/components/FireworksManager", () => ({
-  FireworksManager: ({
-    rockets,
-    removeRocket,
-  }: {
-    rockets: Array<{ id: string; targetHeight: number }>;
-    removeRocket: (id: string) => void;
-  }) => (
-    <div data-testid="fireworks">
-      <div data-testid="rocket-count">{rockets.length}</div>
-      <button
-        type="button"
-        onClick={() => {
-          const first = rockets[0];
-          if (first) removeRocket(first.id);
-        }}
-      >
-        Remove
-      </button>
-      {rockets.map((r) => (
-        <div key={r.id} data-testid="rocket">
-          {r.targetHeight}
+vi.mock("../../src/components/FireworksManager", () => {
+  return {
+    FireworksManager: () => {
+      const [rockets, setRockets] = React.useState<RocketData[]>([]);
+      React.useEffect(() => {
+        return rocketStore.subscribe(setRockets);
+      }, []);
+      return (
+        <div data-testid="fireworks">
+          <div data-testid="rocket-count">{rockets.length}</div>
+          <button
+            type="button"
+            onClick={() => {
+              const first = rockets[0];
+              if (first) rocketStore.removeRocket(first.id);
+            }}
+          >
+            Remove
+          </button>
+          {rockets.map((r) => (
+            <div key={r.id} data-testid="rocket">
+              {r.targetHeight}
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  ),
-}));
+      );
+    }
+  };
+});
 
 import SceneCanvas from "@/SceneCanvas";
 
@@ -225,7 +223,10 @@ describe("SceneCanvas", () => {
     expect(getByTestId("rocket-count")).toHaveTextContent("0");
 
     // Happy path: add a rocket.
-    getByRole("button", { name: "Shoot" }).click();
+    await act(async () => {
+      getByRole("button", { name: "Shoot" }).click();
+    });
+
     await waitFor(() => {
       expect(getByTestId("rocket-count")).toHaveTextContent("1");
     });
@@ -233,7 +234,10 @@ describe("SceneCanvas", () => {
     expect(queryAllByTestId("rocket")[0]).toHaveTextContent("8");
 
     // Happy path: remove the rocket.
-    getByRole("button", { name: "Remove" }).click();
+    await act(async () => {
+      getByRole("button", { name: "Remove" }).click();
+    });
+
     await waitFor(() => {
       expect(getByTestId("rocket-count")).toHaveTextContent("0");
     });

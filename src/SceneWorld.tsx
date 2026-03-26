@@ -4,6 +4,7 @@ import type { Vector3 } from "three";
 import { Ground, Tree, StreetLight, Bush } from "./components/Environment";
 import { IceLake } from "./components/IceLake";
 import House from "./components/House";
+import { LaunchPad } from "./components/LaunchPad";
 
 const HOUSES: ReadonlyArray<
   Readonly<{
@@ -37,6 +38,13 @@ const TREES: ReadonlyArray<readonly [number, number, number]> = [
   [5, 0, -5],
   [-12, 0, 0],
   [12, 0, 0],
+];
+
+const LAUNCH_PADS: ReadonlyArray<readonly [number, number, number]> = [
+  [-15, 0, -15],
+  [15, 0, -15],
+  [-15, 0, 15],
+  [15, 0, 15],
 ];
 
 const BUSHES: ReadonlyArray<readonly [number, number, number]> = [
@@ -76,6 +84,10 @@ function SceneWorldComponent({ onShootRocket }: SceneWorldProps) {
 
       {TREES.map((pos) => (
         <Tree key={pos.join(",")} position={pos} />
+      ))}
+
+      {LAUNCH_PADS.map((pos) => (
+        <LaunchPad key={pos.join(",")} position={pos} onShootMega={onShootRocket} />
       ))}
 
       {BUSHES.map((pos) => (

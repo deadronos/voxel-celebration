@@ -1,9 +1,9 @@
-import { Suspense, useCallback, useEffect, useState, lazy } from "react";
+import { Suspense, useEffect, useState, lazy } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
-import * as THREE from "three";
+
 
 import { DynamicResScaler } from "./components/DynamicResScaler";
-import { RocketData } from "./types";
+import { rocketStore } from "./utils/rocketStore";
 
 const SceneWorld = lazy(() => import("./SceneWorld"));
 const SceneAtmosphere = lazy(() => import("./SceneAtmosphere"));
@@ -86,9 +86,9 @@ type SceneProps = {
   enableLanterns: boolean;
   enableFireworks: boolean;
   enablePostProcessing: boolean;
-  rockets: RocketData[];
-  onShootRocket: (startPos: THREE.Vector3, color: string) => void;
-  removeRocket: (id: string) => void;
+
+
+
 };
 
 function Scene({
@@ -97,9 +97,7 @@ function Scene({
   enableLanterns,
   enableFireworks,
   enablePostProcessing,
-  rockets,
-  onShootRocket,
-  removeRocket,
+
 }: SceneProps) {
   const enableShadows = enableWorld;
 
@@ -133,8 +131,8 @@ function Scene({
 
       {enableWorld && (
         <Suspense fallback={null}>
-          <SceneInteraction onShoot={onShootRocket} />
-          <SceneWorld onShootRocket={onShootRocket} />
+          <SceneInteraction onShoot={(pos, col) => rocketStore.addRocket(pos, col)} />
+          <SceneWorld onShootRocket={(pos, col) => rocketStore.addRocket(pos, col)} />
         </Suspense>
       )}
 
@@ -152,7 +150,7 @@ function Scene({
 
       {enableFireworks && (
         <Suspense fallback={null}>
-          <FireworksManager rockets={rockets} removeRocket={removeRocket} />
+          <FireworksManager />
         </Suspense>
       )}
 
@@ -172,7 +170,7 @@ function Scene({
 }
 
 export default function SceneCanvas() {
-  const [rockets, setRockets] = useState<RocketData[]>([]);
+
   const [enableWorld, setEnableWorld] = useState(false);
   const [enableAtmosphere, setEnableAtmosphere] = useState(false);
   const [enableLanterns, setEnableLanterns] = useState(false);
@@ -180,24 +178,9 @@ export default function SceneCanvas() {
   const [enablePostProcessing, setEnablePostProcessing] = useState(false);
   const [contextLost, setContextLost] = useState(false);
 
-  const handleShootRocket = useCallback((startPos: THREE.Vector3, color: string) => {
-    const id = Math.random().toString(36).substr(2, 9);
-    const targetHeight = 8 + Math.random() * 7;
 
-    setRockets((prev) => [
-      ...prev,
-      {
-        id,
-        position: startPos,
-        color,
-        targetHeight,
-      },
-    ]);
-  }, []);
 
-  const removeRocket = useCallback((id: string) => {
-    setRockets((prev) => prev.filter((r) => r.id !== id));
-  }, []);
+
 
   useEffect(() => {
     const cleanup = [
@@ -246,9 +229,7 @@ export default function SceneCanvas() {
           enableLanterns={enableLanterns}
           enableFireworks={enableFireworks}
           enablePostProcessing={enablePostProcessing}
-          rockets={rockets}
-          onShootRocket={handleShootRocket}
-          removeRocket={removeRocket}
+
         />
       </Canvas>
 

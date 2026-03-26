@@ -2,18 +2,17 @@ import { useLayoutEffect, useRef, useMemo, type FC } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { RocketData } from "@/types";
+import { rocketStore } from "@/utils/rocketStore";
+import { useState, useEffect } from "react";
 import { stepRocketPosition } from "@/utils/rocket";
 import { getSharedBoxGeometry, getVoxelMaterial } from "@/utils/threeCache";
 
-interface FireworksManagerProps {
-  rockets: RocketData[];
-  removeRocket: (id: string) => void;
-}
 
-const MAX_PARTICLES = 4000;
+
+const MAX_PARTICLES = 8000;
 const MAX_ROCKETS = 256;
 const MAX_LIGHTS = 8;
-const GRAVITY = 9.8 * 0.5;
+const GRAVITY = 9.8 * 0.8;
 
 /**
  * Optimized Shader for Particle Systems
@@ -78,7 +77,12 @@ const RocketMaterial = getVoxelMaterial({
   emissiveIntensity: 2,
 });
 
-export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRocket }) => {
+export const FireworksManager: FC = () => {
+  const [rockets, setRockets] = useState<RocketData[]>([]);
+
+  useEffect(() => {
+    return rocketStore.subscribe(setRockets);
+  }, []);
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const rocketMeshRef = useRef<THREE.InstancedMesh>(null);
   const lightRefs = useRef<(THREE.PointLight | null)[]>([]);
@@ -107,7 +111,19 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
     for (let i = 0; i < MAX_PARTICLES; i++) {
       mesh.setMatrixAt(i, identity);
     }
+
+    // Update particle attributes for trails and explosions
+    if (attrRefs.current) {
+      attrRefs.current.aStartPosition.needsUpdate = true;
+      attrRefs.current.aVelocity.needsUpdate = true;
+      attrRefs.current.aColor.needsUpdate = true;
+      attrRefs.current.aStartTime.needsUpdate = true;
+      attrRefs.current.aDuration.needsUpdate = true;
+      attrRefs.current.aBaseScale.needsUpdate = true;
+    }
+
     mesh.instanceMatrix.needsUpdate = true;
+
 
     const createAttr = (size: number) => {
       const attr = new THREE.InstancedBufferAttribute(new Float32Array(MAX_PARTICLES * size), size);
@@ -220,6 +236,27 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
     attrs.aBaseScale.needsUpdate = true;
   };
 
+
+  const addTrailParticle = (position: THREE.Vector3, color: string) => {
+    const attrs = attrRefs.current;
+    if (!attrs) return;
+
+    const currentTime = FireworksShaderMaterial.uniforms.uTime.value as number;
+    const baseColor = tempColor.set(color);
+
+    let cursor = cursorRef.current;
+    cursor = (cursor + 1) % MAX_PARTICLES;
+
+    attrs.aStartPosition.setXYZ(cursor, position.x, position.y, position.z);
+    attrs.aVelocity.setXYZ(cursor, (Math.random() - 0.5) * 0.8, -1.5, (Math.random() - 0.5) * 0.8);
+    attrs.aColor.setXYZ(cursor, baseColor.r * 5.0, baseColor.g * 5.0, baseColor.b * 5.0);
+    attrs.aStartTime.setX(cursor, currentTime);
+    attrs.aDuration.setX(cursor, 0.4 + Math.random() * 0.4);
+    attrs.aBaseScale.setX(cursor, 0.1 + Math.random() * 0.1);
+
+    cursorRef.current = cursor;
+  };
+
   useFrame((state, delta) => {
     // Update global shader time
     FireworksShaderMaterial.uniforms.uTime.value = state.clock.getElapsedTime();
@@ -243,6 +280,8 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
       }
 
       const { newY, exploded } = stepRocketPosition(currentY, 15, delta, rocket.targetHeight);
+      tempRocket.position.set(rocket.position.x, newY, rocket.position.z);
+      if (!exploded) addTrailParticle(tempRocket.position, rocket.color);
       yPositionsRef.current.set(rocket.id, newY);
 
       // Update Matrix
@@ -268,7 +307,7 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
       if (exploded) {
         addExplosion(new THREE.Vector3(rocket.position.x, newY, rocket.position.z), rocket.color);
         yPositionsRef.current.delete(rocket.id);
-        removeRocket(rocket.id);
+        rocketStore.removeRocket(rocket.id);
       }
     }
 
@@ -278,7 +317,19 @@ export const FireworksManager: FC<FireworksManagerProps> = ({ rockets, removeRoc
       if (light) light.intensity = 0;
     }
 
+
+    // Update particle attributes for trails and explosions
+    if (attrRefs.current) {
+      attrRefs.current.aStartPosition.needsUpdate = true;
+      attrRefs.current.aVelocity.needsUpdate = true;
+      attrRefs.current.aColor.needsUpdate = true;
+      attrRefs.current.aStartTime.needsUpdate = true;
+      attrRefs.current.aDuration.needsUpdate = true;
+      attrRefs.current.aBaseScale.needsUpdate = true;
+    }
+
     mesh.instanceMatrix.needsUpdate = true;
+
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
 
     // Cleanup stale entries in yPositionsRef

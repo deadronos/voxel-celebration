@@ -38,7 +38,12 @@ vi.mock("@/components/IceLake", () => ({
   IceLake: () => <div data-testid="icelake" />,
 }));
 
+vi.mock("@/components/LaunchPad", () => ({
+  LaunchPad: (_props: Record<string, unknown>) => <div data-testid="launchpad" />,
+}));
+
 import SceneWorld from "@/SceneWorld";
+
 
 describe("SceneWorld", () => {
   const mockOnShootRocket = vi.fn();
