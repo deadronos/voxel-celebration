@@ -1,6 +1,6 @@
-import { useMemo } from "react";
-import { useFrame } from "@react-three/fiber";
-import * as THREE from "three";
+import { useMemo } from 'react';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
 
 const vertexShader = `
 varying vec2 vUv;
@@ -85,11 +85,11 @@ export function AuroraSky() {
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uColor1: { value: new THREE.Color("#38003b") }, // Deep purple
-      uColor2: { value: new THREE.Color("#00b7ff") }, // Bright Cyan
-      uColor3: { value: new THREE.Color("#ff0080") }, // Magenta
+      uColor1: { value: new THREE.Color('#38003b') }, // Deep purple
+      uColor2: { value: new THREE.Color('#00b7ff') }, // Bright Cyan
+      uColor3: { value: new THREE.Color('#ff0080') }, // Magenta
     }),
-    [],
+    []
   );
 
   useFrame((state) => {

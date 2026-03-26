@@ -1,12 +1,12 @@
-import { useFrame, useThree } from "@react-three/fiber";
-import { useRef, useEffect } from "react";
+import { useFrame, useThree } from '@react-three/fiber';
+import { useRef, useEffect } from 'react';
 
 // Configuration
 const TARGET_FPS = 60;
 const CHECK_INTERVAL = 500; // Check every 500ms
 const FPS_TOLERANCE = 5; // Allow 55-65 FPS before adjusting
 const MIN_DPR = 0.5;
-const MAX_DPR = typeof window !== "undefined" ? Math.min(window.devicePixelRatio ?? 1, 2) : 1;
+const MAX_DPR = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio ?? 1, 2) : 1;
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
@@ -52,7 +52,7 @@ export function DynamicResScaler({ minDpr, maxDpr }: DynamicResScalerProps) {
   const setDpr = useThree((state) => state.setDpr);
 
   const deviceMaxDpr =
-    typeof window !== "undefined" ? Math.min(window.devicePixelRatio ?? 1, 2) : 1;
+    typeof window !== 'undefined' ? Math.min(window.devicePixelRatio ?? 1, 2) : 1;
   const effectiveMaxDpr = clamp(maxDpr ?? MAX_DPR, MIN_DPR, deviceMaxDpr);
   const effectiveMinDpr = clamp(minDpr ?? MIN_DPR, MIN_DPR, effectiveMaxDpr);
   const initialDpr = clamp(START_DPR, effectiveMinDpr, effectiveMaxDpr);
@@ -98,7 +98,7 @@ export function DynamicResScaler({ minDpr, maxDpr }: DynamicResScalerProps) {
       if (newDpr !== dprRef.current) {
         dprRef.current = newDpr;
         setDpr(newDpr);
-        if (process.env.NODE_ENV === "development") {
+        if (process.env.NODE_ENV === 'development') {
           console.log(`[DynamicResScaler] FPS: ${fps}, Adjusting DPR to: ${newDpr.toFixed(2)}`);
         }
       }

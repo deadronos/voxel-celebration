@@ -1,12 +1,12 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy } from 'react';
 
-const SceneCanvas = lazy(() => import("./SceneCanvas"));
+const SceneCanvas = lazy(() => import('./SceneCanvas'));
 
-export const DEFAULT_GREETING = "Happy New Year";
+export const DEFAULT_GREETING = 'Happy New Year';
 export const MAX_GREETING_LENGTH = 80;
 
 export function sanitizeGreeting(rawGreeting: string | null): string {
-  if (typeof rawGreeting !== "string") {
+  if (typeof rawGreeting !== 'string') {
     return DEFAULT_GREETING;
   }
 
@@ -17,11 +17,11 @@ export function sanitizeGreeting(rawGreeting: string | null): string {
   }
 
   const normalizedGreeting = trimmedGreeting
-    .replace(/^['"]+|['"]+$/g, "")
-    .replace(/[\u0000-\u001F\u007F]/g, "")
-    .replace(/[\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u2069\uFEFF]/g, "")
-    .replace(/[<>]/g, "")
-    .replace(/\s+/g, " ")
+    .replace(/^['"]+|['"]+$/g, '')
+    .replace(/[\u0000-\u001F\u007F]/g, '')
+    .replace(/[\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u2069\uFEFF]/g, '')
+    .replace(/[<>]/g, '')
+    .replace(/\s+/g, ' ')
     .trim()
     .slice(0, MAX_GREETING_LENGTH)
     .trim();
@@ -31,12 +31,12 @@ export function sanitizeGreeting(rawGreeting: string | null): string {
 
 export function getGreetingFromSearch(search: string): string {
   const searchParams = new URLSearchParams(search);
-  return sanitizeGreeting(searchParams.get("greeting"));
+  return sanitizeGreeting(searchParams.get('greeting'));
 }
 
 function App() {
   const greeting =
-    typeof window === "undefined"
+    typeof window === 'undefined'
       ? DEFAULT_GREETING
       : getGreetingFromSearch(window.location.search);
 

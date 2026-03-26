@@ -1,32 +1,31 @@
-import { Suspense, useCallback, useEffect, useState, lazy } from "react";
-import { Canvas, useThree } from "@react-three/fiber";
-import * as THREE from "three";
+import { Suspense, useEffect, useState, lazy } from 'react';
+import { Canvas, useThree } from '@react-three/fiber';
 
-import { DynamicResScaler } from "./components/DynamicResScaler";
-import { RocketData } from "./types";
+import { DynamicResScaler } from './components/DynamicResScaler';
+import { rocketStore } from './utils/rocketStore';
 
-const SceneWorld = lazy(() => import("./SceneWorld"));
-const SceneAtmosphere = lazy(() => import("./SceneAtmosphere"));
-const SceneLanterns = lazy(() => import("./SceneLanterns"));
-const ScenePostProcessing = lazy(() => import("./ScenePostProcessing"));
-const SceneControls = lazy(() => import("./SceneControls"));
+const SceneWorld = lazy(() => import('./SceneWorld'));
+const SceneAtmosphere = lazy(() => import('./SceneAtmosphere'));
+const SceneLanterns = lazy(() => import('./SceneLanterns'));
+const ScenePostProcessing = lazy(() => import('./ScenePostProcessing'));
+const SceneControls = lazy(() => import('./SceneControls'));
 const FireworksManager = lazy(() =>
-  import("./components/FireworksManager").then((module) => ({ default: module.FireworksManager })),
+  import('./components/FireworksManager').then((module) => ({ default: module.FireworksManager }))
 );
-const SceneInteraction = lazy(() => import("./components/SceneInteraction"));
+const SceneInteraction = lazy(() => import('./components/SceneInteraction'));
 
 type IdleDeadline = { timeRemaining: () => number; didTimeout: boolean };
 type IdleCallbackHandle = number;
 type IdleWindow = Window & {
   requestIdleCallback?: (
     callback: (deadline: IdleDeadline) => void,
-    options?: { timeout: number },
+    options?: { timeout: number }
   ) => IdleCallbackHandle;
   cancelIdleCallback?: (handle: IdleCallbackHandle) => void;
 };
 
 export const scheduleIdle = (callback: () => void, timeout: number): (() => void) => {
-  if (typeof window === "undefined") {
+  if (typeof window === 'undefined') {
     callback();
     return () => {};
   }
@@ -68,12 +67,12 @@ function WebGLContextListener({ onChange }: { onChange: (lost: boolean) => void 
       onChange(false);
     };
 
-    canvas.addEventListener("webglcontextlost", handleLost, { passive: false });
-    canvas.addEventListener("webglcontextrestored", handleRestored);
+    canvas.addEventListener('webglcontextlost', handleLost, { passive: false });
+    canvas.addEventListener('webglcontextrestored', handleRestored);
 
     return () => {
-      canvas.removeEventListener("webglcontextlost", handleLost);
-      canvas.removeEventListener("webglcontextrestored", handleRestored);
+      canvas.removeEventListener('webglcontextlost', handleLost);
+      canvas.removeEventListener('webglcontextrestored', handleRestored);
     };
   }, [gl, onChange]);
 
@@ -86,9 +85,6 @@ type SceneProps = {
   enableLanterns: boolean;
   enableFireworks: boolean;
   enablePostProcessing: boolean;
-  rockets: RocketData[];
-  onShootRocket: (startPos: THREE.Vector3, color: string) => void;
-  removeRocket: (id: string) => void;
 };
 
 function Scene({
@@ -97,19 +93,16 @@ function Scene({
   enableLanterns,
   enableFireworks,
   enablePostProcessing,
-  rockets,
-  onShootRocket,
-  removeRocket,
 }: SceneProps) {
   const enableShadows = enableWorld;
 
   return (
     <>
-      <color attach="background" args={["#050510"]} />
+      <color attach="background" args={['#050510']} />
 
       <DynamicResScaler />
 
-      <fog attach="fog" args={["#0b0026", 15, 60]} />
+      <fog attach="fog" args={['#0b0026', 15, 60]} />
 
       <ambientLight intensity={0.4} color="#332255" />
       <hemisphereLight intensity={0.5} groundColor="#000022" color="#5533aa" />
@@ -133,8 +126,8 @@ function Scene({
 
       {enableWorld && (
         <Suspense fallback={null}>
-          <SceneInteraction onShoot={onShootRocket} />
-          <SceneWorld onShootRocket={onShootRocket} />
+          <SceneInteraction onShoot={(pos, col) => rocketStore.addRocket(pos, col)} />
+          <SceneWorld onShootRocket={(pos, col) => rocketStore.addRocket(pos, col)} />
         </Suspense>
       )}
 
@@ -152,7 +145,7 @@ function Scene({
 
       {enableFireworks && (
         <Suspense fallback={null}>
-          <FireworksManager rockets={rockets} removeRocket={removeRocket} />
+          <FireworksManager />
         </Suspense>
       )}
 
@@ -172,32 +165,12 @@ function Scene({
 }
 
 export default function SceneCanvas() {
-  const [rockets, setRockets] = useState<RocketData[]>([]);
   const [enableWorld, setEnableWorld] = useState(false);
   const [enableAtmosphere, setEnableAtmosphere] = useState(false);
   const [enableLanterns, setEnableLanterns] = useState(false);
   const [enableFireworks, setEnableFireworks] = useState(false);
   const [enablePostProcessing, setEnablePostProcessing] = useState(false);
   const [contextLost, setContextLost] = useState(false);
-
-  const handleShootRocket = useCallback((startPos: THREE.Vector3, color: string) => {
-    const id = Math.random().toString(36).substr(2, 9);
-    const targetHeight = 8 + Math.random() * 7;
-
-    setRockets((prev) => [
-      ...prev,
-      {
-        id,
-        position: startPos,
-        color,
-        targetHeight,
-      },
-    ]);
-  }, []);
-
-  const removeRocket = useCallback((id: string) => {
-    setRockets((prev) => prev.filter((r) => r.id !== id));
-  }, []);
 
   useEffect(() => {
     const cleanup = [
@@ -216,13 +189,13 @@ export default function SceneCanvas() {
   useEffect(() => {
     // Start prefetching immediately (next idle tick) so resources are ready
     const cancelPrefetch = scheduleIdle(() => {
-      void import("./SceneWorld");
-      void import("./SceneAtmosphere");
-      void import("./SceneLanterns");
-      void import("./ScenePostProcessing");
-      void import("./components/FireworksManager");
-      void import("./SceneControls");
-      void import("./components/SceneInteraction");
+      void import('./SceneWorld');
+      void import('./SceneAtmosphere');
+      void import('./SceneLanterns');
+      void import('./ScenePostProcessing');
+      void import('./components/FireworksManager');
+      void import('./SceneControls');
+      void import('./components/SceneInteraction');
     }, 100);
 
     return cancelPrefetch;
@@ -235,7 +208,7 @@ export default function SceneCanvas() {
         dpr={1}
         camera={{ position: [20, 15, 20], fov: 45 }}
         gl={{
-          powerPreference: "high-performance",
+          powerPreference: 'high-performance',
           antialias: true,
         }}
       >
@@ -246,9 +219,6 @@ export default function SceneCanvas() {
           enableLanterns={enableLanterns}
           enableFireworks={enableFireworks}
           enablePostProcessing={enablePostProcessing}
-          rockets={rockets}
-          onShootRocket={handleShootRocket}
-          removeRocket={removeRocket}
         />
       </Canvas>
 

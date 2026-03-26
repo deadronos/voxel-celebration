@@ -1,19 +1,19 @@
-import React from "react";
-import { describe, expect, it, vi } from "vitest";
-import { render } from "@testing-library/react";
+import React from 'react';
+import { describe, expect, it, vi } from 'vitest';
+import { render } from '@testing-library/react';
 
 let lastStarsProps: Record<string, unknown> | undefined;
 let lastCloudProps: Record<string, unknown> | undefined;
 
-vi.mock("@/components/AuroraSky", () => ({
+vi.mock('@/components/AuroraSky', () => ({
   AuroraSky: () => <div data-testid="aurora" />,
 }));
 
-vi.mock("@/components/Snowfall", () => ({
+vi.mock('@/components/Snowfall', () => ({
   Snowfall: () => <div data-testid="snowfall" />,
 }));
 
-vi.mock("@react-three/drei", () => ({
+vi.mock('@react-three/drei', () => ({
   Stars: (props: Record<string, unknown>) => {
     lastStarsProps = props;
     return <div data-testid="stars" />;
@@ -24,16 +24,16 @@ vi.mock("@react-three/drei", () => ({
   },
 }));
 
-import SceneAtmosphere from "@/SceneAtmosphere";
+import SceneAtmosphere from '@/SceneAtmosphere';
 
-describe("SceneAtmosphere", () => {
-  it("renders AuroraSky, Stars, and Cloud with expected props", () => {
+describe('SceneAtmosphere', () => {
+  it('renders AuroraSky, Stars, and Cloud with expected props', () => {
     const { getByTestId } = render(<SceneAtmosphere />);
 
-    expect(getByTestId("aurora")).toBeTruthy();
-    expect(getByTestId("snowfall")).toBeTruthy();
-    expect(getByTestId("stars")).toBeTruthy();
-    expect(getByTestId("cloud")).toBeTruthy();
+    expect(getByTestId('aurora')).toBeTruthy();
+    expect(getByTestId('snowfall')).toBeTruthy();
+    expect(getByTestId('stars')).toBeTruthy();
+    expect(getByTestId('cloud')).toBeTruthy();
 
     expect(lastStarsProps).toEqual(
       expect.objectContaining({
@@ -44,7 +44,7 @@ describe("SceneAtmosphere", () => {
         saturation: 0.9,
         fade: true,
         speed: 2,
-      }),
+      })
     );
     expect(lastCloudProps).toEqual(
       expect.objectContaining({
@@ -53,8 +53,8 @@ describe("SceneAtmosphere", () => {
         bounds: [40, 6, 4],
         segments: 30,
         position: [0, 25, -20],
-        color: "#221133",
-      }),
+        color: '#221133',
+      })
     );
   });
 });

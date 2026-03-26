@@ -1,7 +1,7 @@
-import { Cloud, Stars } from "@react-three/drei";
+import { Cloud, Stars } from '@react-three/drei';
 
-import { AuroraSky } from "./components/AuroraSky";
-import { Snowfall } from "./components/Snowfall";
+import { AuroraSky } from './components/AuroraSky';
+import { Snowfall } from './components/Snowfall';
 
 export default function SceneAtmosphere() {
   return (
