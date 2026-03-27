@@ -1,8 +1,8 @@
-import { useMemo, memo, type FC } from "react";
-import { InstancedVoxels, type VoxelInstance } from "./InstancedVoxels";
-import { VoxelModel } from "./VoxelModel";
-import { COLORS } from "../constants";
-import { getVoxelMaterial } from "@/utils/threeCache";
+import { useMemo, memo, type FC } from 'react';
+import { InstancedVoxels, type VoxelInstance } from './InstancedVoxels';
+import { VoxelModel } from './VoxelModel';
+import { COLORS } from '../constants';
+import { getVoxelMaterial } from '@/utils/threeCache';
 
 const TreeComponent: FC<{ position: readonly [number, number, number] }> = ({ position }) => {
   const instances = useMemo<readonly VoxelInstance[]>(
@@ -16,14 +16,14 @@ const TreeComponent: FC<{ position: readonly [number, number, number] }> = ({ po
       { position: [0, 2, -1], color: COLORS.leaves },
       { position: [0, 3, 0], color: COLORS.leaves },
     ],
-    [],
+    []
   );
 
   return <VoxelModel position={position} instances={instances} />;
 };
 
 export const Tree = memo(TreeComponent);
-Tree.displayName = "Tree";
+Tree.displayName = 'Tree';
 
 const StreetLightComponent: FC<{ position: readonly [number, number, number] }> = ({
   position,
@@ -35,15 +35,15 @@ const StreetLightComponent: FC<{ position: readonly [number, number, number] }> 
       { position: [0, 2, 0], color: COLORS.stone },
       { position: [0, 3, 0], color: COLORS.stone },
     ],
-    [],
+    []
   );
 
   const fixtureInstances = useMemo<readonly VoxelInstance[]>(
-    () => [{ position: [0, 4, 0], color: "#ffffff" }],
-    [],
+    () => [{ position: [0, 4, 0], color: '#ffffff' }],
+    []
   );
   // High intensity for Bloom
-  const fixtureMaterial = getVoxelMaterial({ emissive: "#fffacd", emissiveIntensity: 0.8 });
+  const fixtureMaterial = getVoxelMaterial({ emissive: '#fffacd', emissiveIntensity: 0.8 });
 
   return (
     <VoxelModel position={position} instances={poleInstances}>
@@ -54,7 +54,7 @@ const StreetLightComponent: FC<{ position: readonly [number, number, number] }> 
 };
 
 export const StreetLight = memo(StreetLightComponent);
-StreetLight.displayName = "StreetLight";
+StreetLight.displayName = 'StreetLight';
 
 const GroundComponent: FC = () => {
   const instances = useMemo<readonly VoxelInstance[]>(() => {
@@ -82,7 +82,7 @@ const GroundComponent: FC = () => {
 };
 
 export const Ground = memo(GroundComponent);
-Ground.displayName = "Ground";
+Ground.displayName = 'Ground';
 
 const BushComponent: FC<{ position: readonly [number, number, number] }> = ({ position }) => {
   const instances = useMemo<readonly VoxelInstance[]>(
@@ -93,11 +93,11 @@ const BushComponent: FC<{ position: readonly [number, number, number] }> = ({ po
       { position: [0, 0, 0.5], color: COLORS.leaves, scale: [0.8, 0.8, 0.8] },
       { position: [0, 0, -0.5], color: COLORS.leaves, scale: [0.8, 0.8, 0.8] },
     ],
-    [],
+    []
   );
 
   return <VoxelModel position={position} instances={instances} />;
 };
 
 export const Bush = memo(BushComponent);
-Bush.displayName = "Bush";
+Bush.displayName = 'Bush';

@@ -1,6 +1,6 @@
-import { vi, beforeAll, afterAll } from "vitest";
-import { act } from "react";
-import { setConsoleFunction } from "three";
+import { vi, beforeAll, afterAll } from 'vitest';
+import { act } from 'react';
+import { setConsoleFunction } from 'three';
 
 // React 18+/19: enable act() semantics for tests (used by RTL and @react-three/test-renderer)
 // https://react.dev/reference/react-dom/test-utils/act
@@ -8,7 +8,7 @@ import { setConsoleFunction } from "three";
 
 // Avoid background idle-callback work (SceneCanvas schedules lazy imports in idle time).
 // Call idle callbacks synchronously inside act() so suspended resources resolve inside act.
-if (typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
   (
     window as Window & { requestIdleCallback?: typeof window.requestIdleCallback }
   ).requestIdleCallback = vi.fn((callback: IdleRequestCallback) => {
@@ -29,19 +29,19 @@ class ResizeObserverMock implements ResizeObserver {
   disconnect(): void {}
 }
 // JSDOM doesn't implement ResizeObserver by default; define it explicitly
-Object.defineProperty(globalThis, "ResizeObserver", {
+Object.defineProperty(globalThis, 'ResizeObserver', {
   value: ResizeObserverMock,
   configurable: true,
 });
 
 // Mock WebGL context with comprehensive API coverage for Three.js.
 // Guard for Node-environment tests where HTMLCanvasElement doesn't exist.
-if (typeof HTMLCanvasElement !== "undefined") {
+if (typeof HTMLCanvasElement !== 'undefined') {
   HTMLCanvasElement.prototype.getContext = vi.fn().mockImplementation((contextType) => {
     if (
-      contextType === "webgl" ||
-      contextType === "webgl2" ||
-      contextType === "experimental-webgl"
+      contextType === 'webgl' ||
+      contextType === 'webgl2' ||
+      contextType === 'experimental-webgl'
     ) {
       return {
         canvas: {},
@@ -56,7 +56,7 @@ if (typeof HTMLCanvasElement !== "undefined") {
           antialias: true,
           premultipliedAlpha: true,
           preserveDrawingBuffer: false,
-          powerPreference: "default",
+          powerPreference: 'default',
           failIfMajorPerformanceCaveat: false,
         }),
 
@@ -110,8 +110,8 @@ if (typeof HTMLCanvasElement !== "undefined") {
         deleteShader: vi.fn(),
         getShaderParameter: vi.fn().mockReturnValue(true),
         getProgramParameter: vi.fn().mockReturnValue(true),
-        getShaderInfoLog: vi.fn().mockReturnValue(""),
-        getProgramInfoLog: vi.fn().mockReturnValue(""),
+        getShaderInfoLog: vi.fn().mockReturnValue(''),
+        getProgramInfoLog: vi.fn().mockReturnValue(''),
 
         // Uniform and attribute operations
         getUniformLocation: vi.fn(),
@@ -162,9 +162,9 @@ beforeAll(() => {
   console.error = (...args: unknown[]): void => {
     const first = args[0];
     if (
-      typeof first === "string" &&
-      (first.includes("Not implemented: HTMLFormElement.prototype.requestSubmit") ||
-        first.includes("Could not parse CSS stylesheet"))
+      typeof first === 'string' &&
+      (first.includes('Not implemented: HTMLFormElement.prototype.requestSubmit') ||
+        first.includes('Could not parse CSS stylesheet'))
     ) {
       return;
     }
@@ -174,7 +174,7 @@ beforeAll(() => {
   // Intercept console.warn early so we can silence Three.js 'Multiple instances' warnings
   console.warn = (...args: unknown[]): void => {
     const first = args[0];
-    if (typeof first === "string" && first.includes("Multiple instances of Three.js")) {
+    if (typeof first === 'string' && first.includes('Multiple instances of Three.js')) {
       return; // ignore noisy, non-actionable warning in tests
     }
     (originalWarn as (...args: unknown[]) => void).apply(console, args);
@@ -182,20 +182,20 @@ beforeAll(() => {
 
   // Also use Three.js setConsoleFunction to prevent additional spam where possible
   try {
-    setConsoleFunction((level: "log" | "warn" | "error", message: string, ...params: unknown[]) => {
+    setConsoleFunction((level: 'log' | 'warn' | 'error', message: string, ...params: unknown[]) => {
       if (
-        level === "warn" &&
-        typeof message === "string" &&
-        message.includes("Multiple instances of Three.js")
+        level === 'warn' &&
+        typeof message === 'string' &&
+        message.includes('Multiple instances of Three.js')
       ) {
         return; // ignore this specific, non-actionable warning in tests
       }
       // Forward to the appropriate console method with safe typing
-      if (level === "log") {
+      if (level === 'log') {
         console.log(message, ...params);
-      } else if (level === "warn") {
+      } else if (level === 'warn') {
         console.warn(message, ...params);
-      } else if (level === "error") {
+      } else if (level === 'error') {
         console.error(message, ...params);
       }
     });

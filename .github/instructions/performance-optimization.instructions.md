@@ -3,8 +3,8 @@
 #
 # Performance guidance was moved to an opt-in skill to avoid always-on context bloat.
 # See `.github/skills/performance-optimization/SKILL.md`.
-applyTo: "___disabled___"
-description: "DEPRECATED (disabled): moved to .github/skills/performance-optimization to make performance guidance opt-in."
+applyTo: '___disabled___'
+description: 'DEPRECATED (disabled): moved to .github/skills/performance-optimization to make performance guidance opt-in.'
 ---
 
 # Performance Optimization (Deprecated as instructions)

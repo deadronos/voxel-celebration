@@ -1,6 +1,6 @@
 ---
-agent: "agent"
-description: "Review and refactor code in your project according to defined instructions"
+agent: 'agent'
+description: 'Review and refactor code in your project according to defined instructions'
 ---
 
 ## Role

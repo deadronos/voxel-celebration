@@ -1,11 +1,11 @@
-import { type FC } from "react";
-import * as THREE from "three";
+import { type FC } from 'react';
+import * as THREE from 'three';
 
 interface SceneInteractionProps {
   onShoot: (pos: THREE.Vector3, color: string) => void;
 }
 
-const FESTIVE_COLORS = ["#ff0044", "#00ff88", "#0088ff", "#ffcc00", "#ff00ff", "#ffffff"];
+const FESTIVE_COLORS = ['#ff0044', '#00ff88', '#0088ff', '#ffcc00', '#ff00ff', '#ffffff'];
 
 const SceneInteraction: FC<SceneInteractionProps> = ({ onShoot }) => {
   return (

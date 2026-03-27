@@ -1,8 +1,8 @@
-import { useRef, useState, memo, type FC } from "react";
-import { useFrame } from "@react-three/fiber";
-import { Voxel } from "./VoxelUtils";
-import * as THREE from "three";
-import { COLORS } from "../constants";
+import { useRef, useState, memo, type FC } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { Voxel } from './VoxelUtils';
+import * as THREE from 'three';
+import { COLORS } from '../constants';
 
 interface SkyLanternProps {
   position: readonly [number, number, number];
@@ -10,7 +10,9 @@ interface SkyLanternProps {
 }
 
 const SkyLanternComponent: FC<SkyLanternProps> = ({ position, color }) => {
-  const [randomColor] = useState(() => color ?? COLORS.fireworks[Math.floor(Math.random() * COLORS.fireworks.length)]);
+  const [randomColor] = useState(
+    () => color ?? COLORS.fireworks[Math.floor(Math.random() * COLORS.fireworks.length)]
+  );
   const groupRef = useRef<THREE.Group>(null);
   const lightRef = useRef<THREE.PointLight>(null);
   // Store initial X/Z to drift around them
@@ -79,4 +81,4 @@ const SkyLanternComponent: FC<SkyLanternProps> = ({ position, color }) => {
 };
 
 export const SkyLantern = memo(SkyLanternComponent);
-SkyLantern.displayName = "SkyLantern";
+SkyLantern.displayName = 'SkyLantern';
