@@ -1,11 +1,11 @@
-import React from 'react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import React from "react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { render } from "@testing-library/react";
 
 const frameCallbacks: Array<(state: unknown, delta: number) => void> = [];
 const setDprSpy = vi.fn();
 
-vi.mock('@react-three/fiber', () => ({
+vi.mock("@react-three/fiber", () => ({
   useFrame: (cb: (state: unknown, delta: number) => void) => {
     frameCallbacks.push(cb);
   },
@@ -13,22 +13,22 @@ vi.mock('@react-three/fiber', () => ({
     selector({ setDpr: setDprSpy }),
 }));
 
-import { DynamicResScaler } from '@/components/DynamicResScaler';
+import { DynamicResScaler } from "@/components/DynamicResScaler";
 
 const runFrames = (count: number, delta = 1 / 60) => {
   const cb = frameCallbacks.at(-1);
-  if (!cb) throw new Error('No useFrame callback registered');
+  if (!cb) throw new Error("No useFrame callback registered");
   for (let i = 0; i < count; i++) cb({} as unknown, delta);
 };
 
-describe('DynamicResScaler', () => {
+describe("DynamicResScaler", () => {
   const originalEnv = process.env.NODE_ENV;
   const startDpr = 1.0;
 
   beforeEach(() => {
     frameCallbacks.length = 0;
     setDprSpy.mockClear();
-    vi.stubGlobal('devicePixelRatio', 2.0);
+    vi.stubGlobal("devicePixelRatio", 2.0);
   });
 
   afterEach(() => {
@@ -37,15 +37,15 @@ describe('DynamicResScaler', () => {
     vi.unstubAllGlobals();
   });
 
-  it('sets initial DPR once on mount', () => {
+  it("sets initial DPR once on mount", () => {
     render(<DynamicResScaler />);
     expect(setDprSpy).toHaveBeenCalledTimes(1);
     expect(setDprSpy).toHaveBeenCalledWith(startDpr);
   });
 
-  it('reduces DPR when FPS is consistently low (clamped)', () => {
+  it("reduces DPR when FPS is consistently low (clamped)", () => {
     let t = 0;
-    vi.spyOn(performance, 'now').mockImplementation(() => t);
+    vi.spyOn(performance, "now").mockImplementation(() => t);
 
     render(<DynamicResScaler />);
     expect(setDprSpy).toHaveBeenCalledWith(startDpr);
@@ -61,9 +61,9 @@ describe('DynamicResScaler', () => {
     expect(afterLow).toBeGreaterThanOrEqual(0.5);
   });
 
-  it('increases DPR when FPS is high (up to MAX_DPR)', () => {
+  it("increases DPR when FPS is high (up to MAX_DPR)", () => {
     let t = 0;
-    vi.spyOn(performance, 'now').mockImplementation(() => t);
+    vi.spyOn(performance, "now").mockImplementation(() => t);
 
     render(<DynamicResScaler />);
 
@@ -89,12 +89,12 @@ describe('DynamicResScaler', () => {
     expect(afterHigh).toBeLessThanOrEqual(2.0);
   });
 
-  it('logs DPR adjustments in development', () => {
-    process.env.NODE_ENV = 'development';
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+  it("logs DPR adjustments in development", () => {
+    process.env.NODE_ENV = "development";
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
     let t = 0;
-    vi.spyOn(performance, 'now').mockImplementation(() => t);
+    vi.spyOn(performance, "now").mockImplementation(() => t);
 
     render(<DynamicResScaler />);
     // Trigger one low-FPS adjustment
@@ -106,9 +106,9 @@ describe('DynamicResScaler', () => {
     expect(logSpy).toHaveBeenCalled();
   });
 
-  it('clamps DPR to provided minDpr when FPS stays low', () => {
+  it("clamps DPR to provided minDpr when FPS stays low", () => {
     let t = 0;
-    vi.spyOn(performance, 'now').mockImplementation(() => t);
+    vi.spyOn(performance, "now").mockImplementation(() => t);
 
     render(<DynamicResScaler minDpr={0.8} maxDpr={1.2} />);
 
@@ -126,9 +126,9 @@ describe('DynamicResScaler', () => {
     expect(last).toBeGreaterThanOrEqual(0.8);
   });
 
-  it('clamps DPR to provided maxDpr when FPS is high', () => {
+  it("clamps DPR to provided maxDpr when FPS is high", () => {
     let t = 0;
-    vi.spyOn(performance, 'now').mockImplementation(() => t);
+    vi.spyOn(performance, "now").mockImplementation(() => t);
 
     render(<DynamicResScaler minDpr={0.5} maxDpr={0.9} />);
 

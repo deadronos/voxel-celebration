@@ -1,8 +1,8 @@
-import { useMemo, useEffect, memo, type FC } from 'react';
-import { InstancedVoxels, type VoxelInstance } from './InstancedVoxels';
-import { COLORS } from '../constants';
-import * as THREE from 'three';
-import { getVoxelMaterial } from '@/utils/threeCache';
+import { useMemo, useEffect, memo, type FC } from "react";
+import { InstancedVoxels, type VoxelInstance } from "./InstancedVoxels";
+import { COLORS } from "../constants";
+import * as THREE from "three";
+import { getVoxelMaterial } from "@/utils/threeCache";
 
 interface HouseProps {
   position: readonly [number, number, number];
@@ -39,7 +39,7 @@ const House: FC<HouseProps> = ({
         color: COLORS.roof,
       },
       { position: [width / 4, height + 1.5, depth / 4], scale: [1, 2, 1], color: COLORS.stone },
-      { position: [0, 1, depth / 2 + 0.05], scale: [width * 0.25, 2, 0.1], color: '#3e2723' },
+      { position: [0, 1, depth / 2 + 0.05], scale: [width * 0.25, 2, 0.1], color: "#3e2723" },
     ];
 
     const lit: VoxelInstance[] = [];

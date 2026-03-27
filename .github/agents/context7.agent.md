@@ -1,14 +1,14 @@
 ---
 name: Context7-Expert
-description: 'Expert in latest library versions, best practices, and correct syntax using up-to-date documentation'
+description: "Expert in latest library versions, best practices, and correct syntax using up-to-date documentation"
 argument-hint: 'Ask about specific libraries/frameworks (e.g., "Next.js routing", "React hooks", "Tailwind CSS")'
-tools: ['read', 'search', 'web', 'context7/*', 'agent/runSubagent']
+tools: ["read", "search", "web", "context7/*", "agent/runSubagent"]
 mcp-servers:
   context7:
     type: http
-    url: 'https://mcp.context7.com/mcp'
-    headers: { 'CONTEXT7_API_KEY': '${{ secrets.COPILOT_MCP_CONTEXT7 }}' }
-    tools: ['get-library-docs', 'resolve-library-id']
+    url: "https://mcp.context7.com/mcp"
+    headers: { "CONTEXT7_API_KEY": "${{ secrets.COPILOT_MCP_CONTEXT7 }}" }
+    tools: ["get-library-docs", "resolve-library-id"]
 handoffs:
   - label: Implement with Context7
     agent: agent
@@ -498,14 +498,14 @@ Your workflow:
 get -
   library -
   docs({
-    context7CompatibleLibraryID: '/vercel/next.js/v14.2.0',
+    context7CompatibleLibraryID: "/vercel/next.js/v14.2.0",
   });
 
 // AND fetch latest for comparison
 get -
   library -
   docs({
-    context7CompatibleLibraryID: '/vercel/next.js/v15.0.0',
+    context7CompatibleLibraryID: "/vercel/next.js/v15.0.0",
   });
 ```
 

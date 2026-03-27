@@ -1,8 +1,8 @@
 ---
-name: 'SE: Architect'
-description: 'System architecture review specialist with Well-Architected frameworks, design validation, and scalability analysis for AI and distributed systems'
+name: "SE: Architect"
+description: "System architecture review specialist with Well-Architected frameworks, design validation, and scalability analysis for AI and distributed systems"
 model: GPT-5
-tools: ['codebase', 'edit/editFiles', 'search', 'fetch']
+tools: ["codebase", "edit/editFiles", "search", "fetch"]
 ---
 
 # System Architecture Reviewer

@@ -1,19 +1,19 @@
 ---
-description: 'Orchestrates Planning, Implementation, and Review cycle for complex tasks'
+description: "Orchestrates Planning, Implementation, and Review cycle for complex tasks"
 tools:
   [
-    'runCommands',
-    'runTasks',
-    'edit',
-    'search',
-    'todos',
-    'runSubagent',
-    'usages',
-    'problems',
-    'changes',
-    'testFailure',
-    'fetch',
-    'githubRepo',
+    "runCommands",
+    "runTasks",
+    "edit",
+    "search",
+    "todos",
+    "runSubagent",
+    "usages",
+    "problems",
+    "changes",
+    "testFailure",
+    "fetch",
+    "githubRepo",
   ]
 model: gpt-5-mini
 ---

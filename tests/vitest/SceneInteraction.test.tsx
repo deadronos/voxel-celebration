@@ -1,11 +1,11 @@
-import { describe, expect, it } from 'vitest';
-import ReactThreeTestRenderer from '@react-three/test-renderer';
-import type { Mesh } from 'three';
+import { describe, expect, it } from "vitest";
+import ReactThreeTestRenderer from "@react-three/test-renderer";
+import type { Mesh } from "three";
 
-import SceneInteraction from '@/components/SceneInteraction';
+import SceneInteraction from "@/components/SceneInteraction";
 
-describe('SceneInteraction', () => {
-  it('renders a raycastable ground plane at the scene floor', async () => {
+describe("SceneInteraction", () => {
+  it("renders a raycastable ground plane at the scene floor", async () => {
     const renderer = await ReactThreeTestRenderer.create(<SceneInteraction onShoot={() => {}} />);
 
     const meshNode = renderer.scene.find((node) => {

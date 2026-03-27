@@ -1,19 +1,19 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('measure webgl performance', async ({ page }) => {
+test("measure webgl performance", async ({ page }) => {
   // Increase timeout for this test as we want to measure over time
   test.setTimeout(60000);
 
   // Navigate to the app
-  await page.goto('http://localhost:5173');
+  await page.goto("http://localhost:5173");
 
   // Wait for the canvas to be present
-  await page.waitForSelector('canvas');
+  await page.waitForSelector("canvas");
 
   // Wait for the scene to load components (scheduleIdle delays up to 1600ms)
   await page.waitForTimeout(3000);
 
-  console.log('Starting performance measurement...');
+  console.log("Starting performance measurement...");
 
   const fpsSamples: number[] = [];
   const duration = 5000; // Measure for 5 seconds

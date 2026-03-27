@@ -1,4 +1,4 @@
-import { Bloom, EffectComposer } from '@react-three/postprocessing';
+import { Bloom, EffectComposer } from "@react-three/postprocessing";
 
 export default function ScenePostProcessing() {
   return (

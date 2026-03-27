@@ -1,16 +1,16 @@
 ---
-description: 'Debug your application to find and fix a bug'
+description: "Debug your application to find and fix a bug"
 tools:
   [
-    'edit/editFiles',
-    'search',
-    'runCommands',
-    'usages',
-    'problems',
-    'testFailure',
-    'fetch',
-    'githubRepo',
-    'runTests',
+    "edit/editFiles",
+    "search",
+    "runCommands",
+    "usages",
+    "problems",
+    "testFailure",
+    "fetch",
+    "githubRepo",
+    "runTests",
   ]
 ---
 

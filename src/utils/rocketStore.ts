@@ -1,5 +1,5 @@
-import * as THREE from 'three';
-import { RocketData } from '../types';
+import * as THREE from "three";
+import { RocketData } from "../types";
 
 type Listener = (rockets: RocketData[]) => void;
 
@@ -22,17 +22,20 @@ class RocketStore {
     const id = Math.random().toString(36).substr(2, 9);
     const targetHeight = 8 + Math.random() * 7;
 
-    this.rockets = [...this.rockets, { id, position, color, targetHeight }];
+    this.rockets = [
+      ...this.rockets,
+      { id, position, color, targetHeight }
+    ];
     this.notify();
   }
 
   removeRocket(id: string) {
-    this.rockets = this.rockets.filter((r) => r.id !== id);
+    this.rockets = this.rockets.filter(r => r.id !== id);
     this.notify();
   }
 
   private notify() {
-    this.listeners.forEach((l) => l(this.rockets));
+    this.listeners.forEach(l => l(this.rockets));
   }
 }
 

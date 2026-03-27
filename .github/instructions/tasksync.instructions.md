@@ -4,8 +4,8 @@
 # TaskSync is an opt-in *agent* now (see `.github/agents/tasksync-terminal-agent.agent.md`).
 # Keeping this file (disabled) preserves history and avoids reintroducing a repo-wide
 # instruction that can override normal interaction patterns.
-applyTo: '___disabled___'
-description: 'DEPRECATED (disabled): TaskSync moved to an opt-in agent. See .github/agents/tasksync-terminal-agent.agent.md.'
+applyTo: "___disabled___"
+description: "DEPRECATED (disabled): TaskSync moved to an opt-in agent. See .github/agents/tasksync-terminal-agent.agent.md."
 ---
 
 # TaskSync (Deprecated as instructions)

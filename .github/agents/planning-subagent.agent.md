@@ -1,7 +1,7 @@
 ---
 description: Research context and return findings to parent agent
 argument-hint: Research goal or problem statement
-tools: ['search', 'usages', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo']
+tools: ["search", "usages", "problems", "changes", "testFailure", "fetch", "githubRepo"]
 model: gpt-5-mini
 ---
 

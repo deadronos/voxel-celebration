@@ -1,6 +1,6 @@
 ---
-description: 'Review code changes from a completed implementation phase.'
-tools: ['search', 'usages', 'problems', 'changes']
+description: "Review code changes from a completed implementation phase."
+tools: ["search", "usages", "problems", "changes"]
 model: gpt-5-mini
 ---
 

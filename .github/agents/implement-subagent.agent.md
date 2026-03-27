@@ -1,18 +1,18 @@
 ---
-description: 'Execute implementation tasks delegated by the CONDUCTOR agent.'
+description: "Execute implementation tasks delegated by the CONDUCTOR agent."
 tools:
   [
-    'edit',
-    'search',
-    'runCommands',
-    'runTasks',
-    'usages',
-    'problems',
-    'changes',
-    'testFailure',
-    'fetch',
-    'githubRepo',
-    'todos',
+    "edit",
+    "search",
+    "runCommands",
+    "runTasks",
+    "usages",
+    "problems",
+    "changes",
+    "testFailure",
+    "fetch",
+    "githubRepo",
+    "todos",
   ]
 model: gpt-5-mini
 ---
