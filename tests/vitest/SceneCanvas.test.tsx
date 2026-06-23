@@ -116,11 +116,8 @@ const setIdleCallbackCapture = (callbacks: Array<() => void>) => {
 };
 
 const unsetIdleCallback = () => {
-  (
-    window as Window & { requestIdleCallback?: typeof window.requestIdleCallback }
-  ).requestIdleCallback = undefined;
-  (window as Window & { cancelIdleCallback?: (handle: number) => void }).cancelIdleCallback =
-    undefined;
+  Reflect.deleteProperty(window, 'requestIdleCallback');
+  Reflect.deleteProperty(window, 'cancelIdleCallback');
 };
 
 describe('SceneCanvas', () => {

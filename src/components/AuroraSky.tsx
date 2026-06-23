@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
@@ -82,6 +82,7 @@ void main() {
 `;
 
 export function AuroraSky() {
+  const materialRef = useRef<THREE.ShaderMaterial>(null);
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
@@ -93,13 +94,16 @@ export function AuroraSky() {
   );
 
   useFrame((state) => {
-    uniforms.uTime.value = state.clock.getElapsedTime();
+    if (materialRef.current) {
+      materialRef.current.uniforms.uTime.value = state.clock.getElapsedTime();
+    }
   });
 
   return (
     <mesh scale={[100, 100, 100]} position={[0, -10, 0]}>
       <sphereGeometry args={[1, 64, 64]} />
       <shaderMaterial
+        ref={materialRef}
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
         uniforms={uniforms}

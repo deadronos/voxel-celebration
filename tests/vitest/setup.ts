@@ -208,7 +208,15 @@ afterAll(() => {
   console.error = originalError;
   console.warn = originalWarn;
   try {
-    setConsoleFunction(null as unknown as ((...args: unknown[]) => void) | null);
+    setConsoleFunction((level: 'log' | 'warn' | 'error', message: string, ...params: unknown[]) => {
+      if (level === 'log') {
+        console.log(message, ...params);
+      } else if (level === 'warn') {
+        console.warn(message, ...params);
+      } else if (level === 'error') {
+        console.error(message, ...params);
+      }
+    });
   } catch {
     // ignore
   }

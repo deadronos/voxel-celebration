@@ -91,12 +91,10 @@ export const Snowfall: FC = () => {
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          count={SNOW_COUNT}
-          array={positions}
-          itemSize={3}
+          args={[positions, 3]}
         />
-        <bufferAttribute attach="attributes-speed" count={SNOW_COUNT} array={speeds} itemSize={1} />
-        <bufferAttribute attach="attributes-aSize" count={SNOW_COUNT} array={sizes} itemSize={1} />
+        <bufferAttribute attach="attributes-speed" args={[speeds, 1]} />
+        <bufferAttribute attach="attributes-aSize" args={[sizes, 1]} />
       </bufferGeometry>
       <shaderMaterial
         ref={materialRef}
