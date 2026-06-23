@@ -17,6 +17,7 @@
       "@/*": ["./src/*"]
     },
     "allowImportingTsExtensions": true,
+    "ignoreDeprecations": "6.0",
     "noEmit": true
   },
   "include": ["src", "tests", "playwright.config.ts", "vite.config.ts", "eslint.config.js"]
