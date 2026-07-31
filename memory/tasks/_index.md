@@ -20,6 +20,7 @@
 - [TASK009] Page load optimization (lazy scene hydration) — Completed 2025-12-28
 - [TASK010] Adopt TDD (Red-Green-Refactor) — Completed 2025-12-28
 - [TASK011] Hotpath performance optimizations — Completed 2025-12-28
+- [TASK012] Dependency upgrade pass (August 2026) — Completed 2026-08-01
 
 ## Abandoned
 

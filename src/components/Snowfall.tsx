@@ -89,10 +89,7 @@ export const Snowfall: FC = () => {
   return (
     <points>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]}
-        />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
         <bufferAttribute attach="attributes-speed" args={[speeds, 1]} />
         <bufferAttribute attach="attributes-aSize" args={[sizes, 1]} />
       </bufferGeometry>

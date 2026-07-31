@@ -2,6 +2,8 @@
 
 **What works (current state):**
 
+- All direct dependencies are on their latest stable versions as of 2026-08-01 (three 0.185.1, fiber 9.7.0, vite 8.2.0, vitest 4.1.10, react 19.2.8, tailwind 4.3.3, prettier 3.9.6). `npm audit` reports 0 vulnerabilities, and the full validation suite passes.
+- ESLint is held on 9.39.5 and TypeScript on 6.0.3 (latest supported by the current plugin ecosystem); revisit once `eslint-plugin-react`, `eslint-plugin-jsx-a11y`, and `@typescript-eslint` support ESLint 10 / TypeScript 7.
 - Project builds and runs locally (`npm install`, `npm run dev`).
 - Scene is implemented with core components: `House`, `FireworksManager`, `SkyLantern`, and `Environment` (see `src/`).
 - Static voxel scenery uses instanced meshes with shared geometry/material caching to reduce draw calls.
@@ -27,9 +29,10 @@
 
 **Known issues / constraints:**
 
+- three 0.185 emits deprecation warnings from library internals (`THREE.Clock`, `PCFSoftShadowMap`) via drei/fiber; they are non-fatal and will resolve when the libraries update.
 - Visual tests are not present—visual regression would be a future improvement.
 - Some rendering behavior (particles) may be non-deterministic which makes snapshot testing more difficult; write deterministic helpers where possible.
-- `npm audit` still reports 2 high-severity vulnerabilities in transitive dependencies after the dependency refresh; follow-up triage can address those separately from this focused package update.
+- `npm audit` is clean after the 2026-08-01 pass (`npm audit fix` cleared babel core, brace-expansion, and tmp advisories).
 
 **Overall status:** _Active_ — core demo working, documentation being backfilled, tests to expand.
 
