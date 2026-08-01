@@ -30,7 +30,7 @@ describe('FireworksManager', () => {
     stepRocketPositionMock.mockReset();
   });
 
-  it('initializes an instanced particle mesh with max count', async () => {
+  it('initializes an instanced particle mesh with max capacity, drawing nothing yet', async () => {
     let renderer: any;
     await ReactThreeTestRenderer.act(async () => {
       renderer = await ReactThreeTestRenderer.create(<FireworksManager />);
@@ -41,13 +41,17 @@ describe('FireworksManager', () => {
     // One for particles, one for rockets
     expect(meshes.length).toBe(2);
 
-    const particleMesh = meshes.find((m: any) => (m.instance as InstancedMesh).count === 8000);
+    const particleMesh = meshes.find(
+      (m: any) => (m.instance as InstancedMesh).instanceMatrix.count === 8000
+    );
     expect(particleMesh).toBeDefined();
+    // No live particles yet, so the compacted draw is empty
+    expect((particleMesh.instance as InstancedMesh).count).toBe(0);
 
     await renderer.unmount();
   });
 
-  it('explodes a rocket, removes it', async () => {
+  it('explodes a rocket, removes it, and draws the explosion particles', async () => {
     let stepCalls = 0;
     stepRocketPositionMock.mockImplementation((_y, _speed, _delta, _target) => {
       stepCalls++;
@@ -73,6 +77,19 @@ describe('FireworksManager', () => {
     });
 
     expect(spy).toHaveBeenCalled();
+
+    // The burst particles are stamped at the end of the frame they were born
+    // in, so they become visible in the compaction on the following frame.
+    await ReactThreeTestRenderer.act(async () => {
+      await renderer.advanceFrames(1, 0.016);
+    });
+
+    const particleMesh = renderer.scene
+      .findAll((n: any) => isInstancedMesh(n.instance))
+      .map((node: any) => node.instance as InstancedMesh)
+      .find((mesh: any) => mesh.instanceMatrix.count === 8000);
+
+    expect(particleMesh?.count).toBeGreaterThan(0);
 
     await renderer.unmount();
   });
@@ -102,7 +119,7 @@ describe('FireworksManager', () => {
     const rocketMesh = renderer.scene
       .findAll((n: any) => isInstancedMesh(n.instance))
       .map((node: any) => node.instance as InstancedMesh)
-      .find((mesh: any) => mesh.count !== 8000);
+      .find((mesh: any) => mesh.instanceMatrix.count === 256);
 
     expect(rocketMesh?.count).toBe(51);
 

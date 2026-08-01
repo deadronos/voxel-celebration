@@ -22,6 +22,7 @@
 - [TASK011] Hotpath performance optimizations — Completed 2025-12-28
 - [TASK012] Dependency upgrade pass (August 2026) — Completed 2026-08-01
 - [TASK013] Address post-upgrade review findings — Completed 2026-08-01
+- [TASK014] Fix missing fireworks explosions in Safari/WebKit — Completed 2026-08-01
 
 ## Abandoned
 

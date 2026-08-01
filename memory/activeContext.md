@@ -2,6 +2,11 @@
 
 ## Current focus
 
+- Safari/WebKit renders the deployed scene but rocket explosions were
+  invisible. Fixed by replacing the GPU-driven custom `ShaderMaterial` particle
+  system with a CPU-simulated instanced mesh using `MeshBasicMaterial`
+  (`instanceMatrix`/`instanceColor`) and compact draw counts. See
+  `memory/tasks/TASK014-safari-fireworks-rendering.md`.
 - Review follow-ups from the dependency upgrade: soft shadows restored via VSM (three 0.185 deprecation), dead patch-package config removed, deploy workflow aligned to Node 22, engines field added, vestigial CDN import map removed, `@types/node` aligned with CI runtime. See `memory/tasks/TASK013-address-review-findings.md`.
 - Remaining upstream item: `THREE.Clock` deprecation warning from `@react-three/fiber` internals (not fixable in this repo).
 - Held versions: ESLint stays on 9.39.5 (latest 9.x) and TypeScript on 6.0.3 (latest 6.x) because the latest `eslint-plugin-react`/`eslint-plugin-jsx-a11y` and `@typescript-eslint` do not yet support ESLint 10 / TypeScript 7.

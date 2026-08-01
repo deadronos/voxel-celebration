@@ -2,6 +2,13 @@
 
 **What works (current state):**
 
+- Fireworks explosions (and trails) now render correctly in Safari/WebKit
+  through the post-processing pipeline. The particle system was moved from a
+  GPU `ShaderMaterial` to a CPU-simulated instanced mesh
+  (`MeshBasicMaterial` + `instanceMatrix`/`instanceColor`) that packs only live
+  particles into each draw (`mesh.count`), which also cuts the particle draw
+  from 8000 instances to the handful that are alive. Verified with Playwright
+  WebKit + Chromium; test/lint/typecheck/format all pass.
 - Review follow-ups merged: soft shadows via VSM under three 0.185, dead patch-package/stats-gl override removed, Node 22 aligned across CI + deploy workflows, `engines` documented, inert CDN import map removed, `@types/node` matched to CI runtime.
 - All direct dependencies are on their latest stable versions as of 2026-08-01 (three 0.185.1, fiber 9.7.0, vite 8.2.0, vitest 4.1.10, react 19.2.8, tailwind 4.3.3, prettier 3.9.6). `npm audit` reports 0 vulnerabilities, and the full validation suite passes.
 - ESLint is held on 9.39.5 and TypeScript on 6.0.3 (latest supported by the current plugin ecosystem); revisit once `eslint-plugin-react`, `eslint-plugin-jsx-a11y`, and `@typescript-eslint` support ESLint 10 / TypeScript 7.
