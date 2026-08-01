@@ -204,7 +204,9 @@ export default function SceneCanvas() {
   return (
     <div className="w-full h-full relative">
       <Canvas
-        shadows
+        // three >=0.185 deprecated PCFSoftShadowMap (it now falls back to hard
+        // PCF shadows); VSM keeps the soft shadow look this scene was built with.
+        shadows="variance"
         dpr={1}
         camera={{ position: [20, 15, 20], fov: 45 }}
         gl={{

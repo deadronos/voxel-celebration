@@ -2,6 +2,7 @@
 
 **What works (current state):**
 
+- Review follow-ups merged: soft shadows via VSM under three 0.185, dead patch-package/stats-gl override removed, Node 22 aligned across CI + deploy workflows, `engines` documented, inert CDN import map removed, `@types/node` matched to CI runtime.
 - All direct dependencies are on their latest stable versions as of 2026-08-01 (three 0.185.1, fiber 9.7.0, vite 8.2.0, vitest 4.1.10, react 19.2.8, tailwind 4.3.3, prettier 3.9.6). `npm audit` reports 0 vulnerabilities, and the full validation suite passes.
 - ESLint is held on 9.39.5 and TypeScript on 6.0.3 (latest supported by the current plugin ecosystem); revisit once `eslint-plugin-react`, `eslint-plugin-jsx-a11y`, and `@typescript-eslint` support ESLint 10 / TypeScript 7.
 - Project builds and runs locally (`npm install`, `npm run dev`).
@@ -29,7 +30,7 @@
 
 **Known issues / constraints:**
 
-- three 0.185 emits deprecation warnings from library internals (`THREE.Clock`, `PCFSoftShadowMap`) via drei/fiber; they are non-fatal and will resolve when the libraries update.
+- `THREE.Clock` deprecation warning remains, emitted by `@react-three/fiber@9.7.0` internals; non-fatal and will resolve when fiber migrates to `THREE.Timer`.
 - Visual tests are not present—visual regression would be a future improvement.
 - Some rendering behavior (particles) may be non-deterministic which makes snapshot testing more difficult; write deterministic helpers where possible.
 - `npm audit` is clean after the 2026-08-01 pass (`npm audit fix` cleared babel core, brace-expansion, and tmp advisories).

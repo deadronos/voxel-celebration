@@ -2,12 +2,16 @@
 
 ## Current focus
 
-- Dependency refresh: all direct dependencies upgraded to latest stable versions as of 2026-08-01; validation suite green, audit clean, browser smoke test passed. See `memory/tasks/TASK012-upgrade-dependencies-2026-08.md`.
+- Review follow-ups from the dependency upgrade: soft shadows restored via VSM (three 0.185 deprecation), dead patch-package config removed, deploy workflow aligned to Node 22, engines field added, vestigial CDN import map removed, `@types/node` aligned with CI runtime. See `memory/tasks/TASK013-address-review-findings.md`.
+- Remaining upstream item: `THREE.Clock` deprecation warning from `@react-three/fiber` internals (not fixable in this repo).
 - Held versions: ESLint stays on 9.39.5 (latest 9.x) and TypeScript on 6.0.3 (latest 6.x) because the latest `eslint-plugin-react`/`eslint-plugin-jsx-a11y` and `@typescript-eslint` do not yet support ESLint 10 / TypeScript 7.
 - Future work: revisit ESLint 10 and TypeScript 7 once plugin ecosystem support lands.
 
 ## Recent changes
 
+- `SceneCanvas` now uses VSM (`shadows="variance"`) to keep soft shadows under three 0.185.
+- Removed `patch-package`, `patches/three+0.182.0.patch`, and the `stats-gl` override; removed the inert CDN import map from `index.html`.
+- Added `engines.node >=22.22.2`; aligned `deploy-pages.yml` to Node 22 and `@types/node` to ^22.
 - Upgraded all direct dependencies to latest stable (2026-08-01): `three` 0.185.1, `@react-three/fiber` 9.7.0, `vite` 8.2.0, `vitest` 4.1.10, `jsdom` 30.0.1, `@testing-library/jest-dom` 7.0.0, `prettier` 3.9.6, `eslint` 9.39.5, `typescript` 6.0.3, and others.
 - Applied `npm audit fix` (0 vulnerabilities), re-formatted `Snowfall.tsx` for Prettier 3.9.6, and aligned the `index.html` CDN import map with installed versions.
 - Completed a real-browser smoke test (canvas + WebGL2 mounted, no console errors).
