@@ -1,0 +1,15 @@
+{
+  "name": "Voxel New Years Celebration",
+  "short_name": "Voxel NY",
+  "description": "A 3D voxel-based night scene with illuminated houses and fireworks celebrating New Year's Eve.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#050510",
+  "theme_color": "#050510",
+  "icons": [
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "favicon-32.png", "sizes": "32x32", "type": "image/png" },
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

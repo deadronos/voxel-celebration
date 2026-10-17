@@ -2,6 +2,10 @@
 
 ## Current focus
 
+- Voxel rocket favicon shipped (TASK016): the dangling `/vite.svg` reference that 404'd on the
+  deployed site is replaced by a purpose-built icon set in `public/`, and a new regression test
+  asserts that every asset reference in `index.html` actually resolves. See
+  `memory/tasks/TASK016-voxel-rocket-favicon.md`.
 - Latest dependency refresh is done (TASK015): all direct dependencies are on their
   2026-10-17 latest, Vitest is on 5.x, and the runtime baseline is Node 24 LTS
   (`engines.node >=24.15.0`, CI + deploy workflows on Node 24). No source changes were
@@ -19,6 +23,7 @@
 
 ## Recent changes
 
+- Added a voxel rocket favicon set in `public/` (`favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`, `site.webmanifest`) plus `scripts/generate-favicons.mjs` to regenerate the PNGs, replacing the dangling `/vite.svg` reference that 404'd on the deployed site. `index.html` now also sets `theme-color`. New `tests/vitest/indexHtmlAssets.test.ts` guards every `index.html` asset reference and the manifest's relative icon paths.
 - Dependency refresh (2026-10-17): `vitest`/`@vitest/coverage-v8` 4 → 5.0.5, `three` 0.186.1, `@react-three/fiber` 9.8.2, `@react-three/drei` 10.7.9, `@react-three/postprocessing` 3.2.0, `react`/`react-dom` 19.3.1, `vite` 8.3.4, `@vitejs/plugin-react` 6.1.2, `@typescript-eslint/*` 8.71.2, `jsdom` 30.1.3, `prettier` 3.9.10, `@playwright/test` 1.64.1, and the `@testing-library/*` trio. GitHub Actions bumped to latest majors (`checkout` v7, `setup-node` v7, `upload-pages-artifact` v5, `deploy-pages` v5). `npm audit fix` cleared 3 transitive advisories (0 vulnerabilities). No `src/` changes were needed.
 - Runtime baseline moved to Node 24 LTS: `engines.node >=24.15.0` (the `jsdom` floor on the 24.x line), `ci.yml` and `deploy-pages.yml` on `node-version: '24'`, and `@types/node` on ^24 (types now match the runtime instead of targeting a newer Node).
 - `SceneCanvas` uses VSM (`shadows="variance"`) to keep soft shadows under three 0.185+.
