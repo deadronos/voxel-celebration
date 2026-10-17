@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
   return {
     base: mode === 'production' ? '/voxel-celebration/' : '/',
     server: {
-      port: 3000,
+      port: 5173,
       host: '0.0.0.0',
     },
     plugins: [tailwindcss(), react()],

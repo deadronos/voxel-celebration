@@ -2,21 +2,27 @@
 
 ## Current focus
 
+- Latest dependency refresh is done (TASK015): all direct dependencies are on their
+  2026-10-17 latest, Vitest is on 5.x, and the runtime baseline is Node 24 LTS
+  (`engines.node >=24.15.0`, CI + deploy workflows on Node 24). No source changes were
+  required; the full suite and a real-browser smoke test pass. See
+  `memory/tasks/TASK015-upgrade-dependencies-2026-10.md`.
 - Safari/WebKit renders the deployed scene but rocket explosions were
   invisible. Fixed by replacing the GPU-driven custom `ShaderMaterial` particle
   system with a CPU-simulated instanced mesh using `MeshBasicMaterial`
   (`instanceMatrix`/`instanceColor`) and compact draw counts. See
   `memory/tasks/TASK014-safari-fireworks-rendering.md`.
-- Review follow-ups from the dependency upgrade: soft shadows restored via VSM (three 0.185 deprecation), dead patch-package config removed, deploy workflow aligned to Node 22, engines field added, vestigial CDN import map removed, `@types/node` aligned with CI runtime. See `memory/tasks/TASK013-address-review-findings.md`.
-- Remaining upstream item: `THREE.Clock` deprecation warning from `@react-three/fiber` internals (not fixable in this repo).
+- Review follow-ups from the August dependency upgrade: soft shadows restored via VSM (three 0.185 deprecation), dead patch-package config removed, vestigial CDN import map removed. See `memory/tasks/TASK013-address-review-findings.md`.
+- Remaining upstream item: `THREE.Clock` deprecation warning from `@react-three/fiber` internals (still present in 9.8.2, not fixable in this repo).
 - Held versions: ESLint stays on 9.39.5 (latest 9.x) and TypeScript on 6.0.3 (latest 6.x) because the latest `eslint-plugin-react`/`eslint-plugin-jsx-a11y` and `@typescript-eslint` do not yet support ESLint 10 / TypeScript 7.
 - Future work: revisit ESLint 10 and TypeScript 7 once plugin ecosystem support lands.
 
 ## Recent changes
 
-- `SceneCanvas` now uses VSM (`shadows="variance"`) to keep soft shadows under three 0.185.
+- Dependency refresh (2026-10-17): `vitest`/`@vitest/coverage-v8` 4 → 5.0.5, `three` 0.186.1, `@react-three/fiber` 9.8.2, `@react-three/drei` 10.7.9, `@react-three/postprocessing` 3.2.0, `react`/`react-dom` 19.3.1, `vite` 8.3.4, `@vitejs/plugin-react` 6.1.2, `@typescript-eslint/*` 8.71.2, `jsdom` 30.1.3, `prettier` 3.9.10, `@playwright/test` 1.64.1, and the `@testing-library/*` trio. GitHub Actions bumped to latest majors (`checkout` v7, `setup-node` v7, `upload-pages-artifact` v5, `deploy-pages` v5). `npm audit fix` cleared 3 transitive advisories (0 vulnerabilities). No `src/` changes were needed.
+- Runtime baseline moved to Node 24 LTS: `engines.node >=24.15.0` (the `jsdom` floor on the 24.x line), `ci.yml` and `deploy-pages.yml` on `node-version: '24'`, and `@types/node` on ^24 (types now match the runtime instead of targeting a newer Node).
+- `SceneCanvas` uses VSM (`shadows="variance"`) to keep soft shadows under three 0.185+.
 - Removed `patch-package`, `patches/three+0.182.0.patch`, and the `stats-gl` override; removed the inert CDN import map from `index.html`.
-- Added `engines.node >=22.22.2`; aligned `deploy-pages.yml` to Node 22 and `@types/node` to ^22.
 - Upgraded all direct dependencies to latest stable (2026-08-01): `three` 0.185.1, `@react-three/fiber` 9.7.0, `vite` 8.2.0, `vitest` 4.1.10, `jsdom` 30.0.1, `@testing-library/jest-dom` 7.0.0, `prettier` 3.9.6, `eslint` 9.39.5, `typescript` 6.0.3, and others.
 - Applied `npm audit fix` (0 vulnerabilities), re-formatted `Snowfall.tsx` for Prettier 3.9.6, and aligned the `index.html` CDN import map with installed versions.
 - Completed a real-browser smoke test (canvas + WebGL2 mounted, no console errors).
@@ -35,6 +41,7 @@
 ## Next steps & immediate tasks
 
 - Re-evaluate ESLint 10 / TypeScript 7 upgrade when `eslint-plugin-react`, `eslint-plugin-jsx-a11y`, and `@typescript-eslint` add support.
+- Follow-up (done 2026-10-17): dev-server port unified on **5173** in `vite.config.ts`, matching `README.md`, `AGENTS.md`, `playwright.config.ts`, and `tests/performance.spec.ts`. The repo's Playwright perf spec now runs end-to-end.
 - Complete Memory Bank files and create `memory/tasks/TASK001-backfill-memory-bank.md` to track this work (in progress).
 - Add a `memory/designs/` placeholder and capture any design decisions for the fireworks system.
 - Added targeted unit tests for particle generator and rocket step logic; next: consider integration tests for the full `FireworksManager` rendering lifecycle.

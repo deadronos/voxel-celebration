@@ -12,7 +12,9 @@
 
 ## Dev environment
 
-- Node.js (recommended LTS, e.g., 18+ or the version compatible with dependencies from `package.json`).
+- Node.js **24 LTS** (minimum `24.15.0`, enforced by `engines.node`; CI and the Pages deploy workflow both pin Node 24). The floor comes from `jsdom` 30, which requires `^22.22.2 || ^24.15.0 || >=26.0.0`.
+- Current direct dependency baseline (2026-10-17): React 19.3.1, three 0.186.1, `@react-three/fiber` 9.8.2, `@react-three/drei` 10.7.9, `@react-three/postprocessing` 3.2.0, Vite 8.3.4, Vitest 5.0.5, jsdom 30.1.3, TypeScript 6.0.3, ESLint 9.39.5, Prettier 3.9.10, `@types/node` 24.19.2.
+- ESLint is intentionally held on 9.x and TypeScript on 6.0.x: the latest `eslint-plugin-react`/`eslint-plugin-jsx-a11y` do not yet peer ESLint 10, and `@typescript-eslint` 8.x peers `typescript <6.1.0`.
 - Standard dev commands:
   - `npm install` — install dependencies
   - `npm run dev` — start local dev server (Vite)
