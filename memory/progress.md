@@ -2,6 +2,7 @@
 
 **What works (current state):**
 
+- Dependencies refreshed to their 2026-10-17 latest (TASK015): Vitest 5.0.5, three 0.186.1, fiber 9.8.2, drei 10.7.9, postprocessing 3.2.0, react 19.3.1, vite 8.3.4, jsdom 30.1.3, prettier 3.9.10, playwright 1.64.1. The runtime baseline is now Node 24 LTS (`engines.node >=24.15.0`, CI + deploy on Node 24, `@types/node` ^24). `npm audit` reports 0 vulnerabilities, `npm ci` reproduces the tree, and the full validation suite plus a real-browser smoke test pass with no source changes required.
 - Fireworks explosions (and trails) now render correctly in Safari/WebKit
   through the post-processing pipeline. The particle system was moved from a
   GPU `ShaderMaterial` to a CPU-simulated instanced mesh
@@ -9,8 +10,7 @@
   particles into each draw (`mesh.count`), which also cuts the particle draw
   from 8000 instances to the handful that are alive. Verified with Playwright
   WebKit + Chromium; test/lint/typecheck/format all pass.
-- Review follow-ups merged: soft shadows via VSM under three 0.185, dead patch-package/stats-gl override removed, Node 22 aligned across CI + deploy workflows, `engines` documented, inert CDN import map removed, `@types/node` matched to CI runtime.
-- All direct dependencies are on their latest stable versions as of 2026-08-01 (three 0.185.1, fiber 9.7.0, vite 8.2.0, vitest 4.1.10, react 19.2.8, tailwind 4.3.3, prettier 3.9.6). `npm audit` reports 0 vulnerabilities, and the full validation suite passes.
+- Review follow-ups merged: soft shadows via VSM under three 0.185, dead patch-package/stats-gl override removed, `engines` documented, inert CDN import map removed.
 - ESLint is held on 9.39.5 and TypeScript on 6.0.3 (latest supported by the current plugin ecosystem); revisit once `eslint-plugin-react`, `eslint-plugin-jsx-a11y`, and `@typescript-eslint` support ESLint 10 / TypeScript 7.
 - Project builds and runs locally (`npm install`, `npm run dev`).
 - Scene is implemented with core components: `House`, `FireworksManager`, `SkyLantern`, and `Environment` (see `src/`).
@@ -37,10 +37,11 @@
 
 **Known issues / constraints:**
 
-- `THREE.Clock` deprecation warning remains, emitted by `@react-three/fiber@9.7.0` internals; non-fatal and will resolve when fiber migrates to `THREE.Timer`.
+- `THREE.Clock` deprecation warning remains, emitted by `@react-three/fiber` internals (still present in 9.8.2); non-fatal and will resolve when fiber migrates to `THREE.Timer`.
 - Visual tests are not present—visual regression would be a future improvement.
 - Some rendering behavior (particles) may be non-deterministic which makes snapshot testing more difficult; write deterministic helpers where possible.
-- `npm audit` is clean after the 2026-08-01 pass (`npm audit fix` cleared babel core, brace-expansion, and tmp advisories).
+- `npm audit` is clean after the 2026-10-17 pass (`npm audit fix` cleared `@humanfs/node`, `brace-expansion`, and `fflate` advisories).
+- Dev-server port is inconsistent: `vite.config.ts` uses 3000 while `README.md`, `playwright.config.ts`, and `tests/performance.spec.ts` reference 5173.
 
 **Overall status:** _Active_ — core demo working, documentation being backfilled, tests to expand.
 

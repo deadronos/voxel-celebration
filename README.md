@@ -31,7 +31,7 @@ The demo showcases a cozy voxel village, dynamic fireworks, floating sky lantern
 
 ## Quick start ⚡
 
-**Prerequisites:** Node.js (18+ recommended)
+**Prerequisites:** Node.js 24 LTS (>=24.15.0; enforced by `engines.node`)
 
 1. Install dependencies
 

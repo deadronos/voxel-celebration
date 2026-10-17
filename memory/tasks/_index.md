@@ -23,6 +23,7 @@
 - [TASK012] Dependency upgrade pass (August 2026) — Completed 2026-08-01
 - [TASK013] Address post-upgrade review findings — Completed 2026-08-01
 - [TASK014] Fix missing fireworks explosions in Safari/WebKit — Completed 2026-08-01
+- [TASK015] Dependency upgrade pass (October 2026) — Completed 2026-10-17
 
 ## Abandoned
 
