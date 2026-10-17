@@ -25,6 +25,7 @@ Refreshed every direct dependency to its latest stable version available on 2026
 - **Held versions (unchanged rationale from TASK012):** ESLint stays on 9.39.5 and TypeScript on 6.0.3 — both are already the newest release in their major line, and the next majors remain blocked upstream:
   - `eslint-plugin-react` 7.37.5 peers `eslint ^…^9.7` and `eslint-plugin-jsx-a11y` 6.10.2 peers `^…^9`, so ESLint 10 is not yet usable.
   - `@typescript-eslint` 8.71.2 peers `typescript >=4.8.4 <6.1.0`, so TypeScript 7 is not yet usable with the linter.
+- **Dev-server port unified on 5173** (follow-up flagged in the PR): `vite.config.ts` used 3000 while `README.md`, `AGENTS.md`, `playwright.config.ts`, and `tests/performance.spec.ts` all said 5173. Now consistent, and the repo's Playwright perf spec runs end-to-end for the first time.
 - No `src/` changes were needed: lint, typecheck, formatting, and all 90 tests passed against the new stack as-is.
 
 ## Validation
@@ -37,7 +38,8 @@ Refreshed every direct dependency to its latest stable version available on 2026
 - `npm run test:coverage` — success (92.21% statements / 81.33% branches)
 - `npm ci` — clean install from the committed lockfile, 0 vulnerabilities
 - `npm audit` — 0 vulnerabilities
-- Browser smoke test on `npm run dev` (port 3000) — canvas mounts with a live WebGL 2.0 context, voxel scene + lanterns + snowfall + aurora render, the fireworks and bloom stages hydrate, 0 console errors
+- Browser smoke test on `npm run dev` (port 5173) — canvas mounts with a live WebGL 2.0 context, voxel scene + lanterns + snowfall + aurora render, the fireworks and bloom stages hydrate, 0 console errors
+- `npx playwright test tests/performance.spec.ts` — 1 passed; confirms the port fix (the spec's `webServer`/`baseURL` at 5173 now resolves) and exercises playwright 1.64.1 + three 0.186.1 in headless Chromium/WebGL
 
 ## Known non-blocking warnings (upstream, not actionable here)
 
@@ -47,7 +49,9 @@ Refreshed every direct dependency to its latest stable version available on 2026
 
 ## Out-of-scope observation
 
-`vite.config.ts` serves the dev server on port **3000**, but `README.md` and `playwright.config.ts` (`webServer.url`, `tests/performance.spec.ts`) still reference **5173**. Pre-existing and unrelated to this upgrade, so it was left untouched; worth a small follow-up task.
+~~`vite.config.ts` served the dev server on port **3000** while `README.md`, `AGENTS.md`, `playwright.config.ts`, and `tests/performance.spec.ts` all referenced **5173**.~~ **Fixed on 2026-10-17:** `vite.config.ts` now serves on **5173**, so the documented URL and the Playwright `webServer`/`baseURL` config match reality. `npx playwright test tests/performance.spec.ts` passes end-to-end (it previously could not run, since nothing served the port its config pointed at).
+
+Note: running Playwright leaves an untracked `test-results/` directory that is not covered by `.gitignore` — worth adding if browser tests get wired into CI.
 
 ## Progress Log
 

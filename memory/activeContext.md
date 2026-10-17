@@ -41,7 +41,7 @@
 ## Next steps & immediate tasks
 
 - Re-evaluate ESLint 10 / TypeScript 7 upgrade when `eslint-plugin-react`, `eslint-plugin-jsx-a11y`, and `@typescript-eslint` add support.
-- Follow-up (small, unrelated to the upgrade): the dev server runs on port 3000, but `README.md`, `playwright.config.ts`, and `tests/performance.spec.ts` still reference 5173.
+- Follow-up (done 2026-10-17): dev-server port unified on **5173** in `vite.config.ts`, matching `README.md`, `AGENTS.md`, `playwright.config.ts`, and `tests/performance.spec.ts`. The repo's Playwright perf spec now runs end-to-end.
 - Complete Memory Bank files and create `memory/tasks/TASK001-backfill-memory-bank.md` to track this work (in progress).
 - Add a `memory/designs/` placeholder and capture any design decisions for the fireworks system.
 - Added targeted unit tests for particle generator and rocket step logic; next: consider integration tests for the full `FireworksManager` rendering lifecycle.

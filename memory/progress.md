@@ -41,7 +41,7 @@
 - Visual tests are not present—visual regression would be a future improvement.
 - Some rendering behavior (particles) may be non-deterministic which makes snapshot testing more difficult; write deterministic helpers where possible.
 - `npm audit` is clean after the 2026-10-17 pass (`npm audit fix` cleared `@humanfs/node`, `brace-expansion`, and `fflate` advisories).
-- Dev-server port is inconsistent: `vite.config.ts` uses 3000 while `README.md`, `playwright.config.ts`, and `tests/performance.spec.ts` reference 5173.
+- Dev-server port unified on **5173** (`vite.config.ts` previously used 3000, contradicting `README.md`, `AGENTS.md`, `playwright.config.ts`, and `tests/performance.spec.ts`). The Playwright perf spec now runs end-to-end.
 
 **Overall status:** _Active_ — core demo working, documentation being backfilled, tests to expand.
 
