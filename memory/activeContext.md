@@ -19,7 +19,7 @@
 
 ## Recent changes
 
-- Dependency refresh (2026-10-17): `vitest`/`@vitest/coverage-v8` 4 → 5.0.5, `three` 0.186.1, `@react-three/fiber` 9.8.2, `@react-three/drei` 10.7.9, `@react-three/postprocessing` 3.2.0, `react`/`react-dom` 19.3.1, `vite` 8.3.4, `@vitejs/plugin-react` 6.1.2, `@typescript-eslint/*` 8.71.2, `jsdom` 30.1.3, `prettier` 3.9.10, `@playwright/test` 1.64.1, and the `@testing-library/*` trio. `npm audit fix` cleared 3 transitive advisories (0 vulnerabilities). No `src/` changes were needed.
+- Dependency refresh (2026-10-17): `vitest`/`@vitest/coverage-v8` 4 → 5.0.5, `three` 0.186.1, `@react-three/fiber` 9.8.2, `@react-three/drei` 10.7.9, `@react-three/postprocessing` 3.2.0, `react`/`react-dom` 19.3.1, `vite` 8.3.4, `@vitejs/plugin-react` 6.1.2, `@typescript-eslint/*` 8.71.2, `jsdom` 30.1.3, `prettier` 3.9.10, `@playwright/test` 1.64.1, and the `@testing-library/*` trio. GitHub Actions bumped to latest majors (`checkout` v7, `setup-node` v7, `upload-pages-artifact` v5, `deploy-pages` v5). `npm audit fix` cleared 3 transitive advisories (0 vulnerabilities). No `src/` changes were needed.
 - Runtime baseline moved to Node 24 LTS: `engines.node >=24.15.0` (the `jsdom` floor on the 24.x line), `ci.yml` and `deploy-pages.yml` on `node-version: '24'`, and `@types/node` on ^24 (types now match the runtime instead of targeting a newer Node).
 - `SceneCanvas` uses VSM (`shadows="variance"`) to keep soft shadows under three 0.185+.
 - Removed `patch-package`, `patches/three+0.182.0.patch`, and the `stats-gl` override; removed the inert CDN import map from `index.html`.
